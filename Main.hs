@@ -1,4 +1,4 @@
--- Always imported
+-- Main file for game setup
 import Graphics.Gloss
 import Graphics.Gloss.Interface.Pure.Game
 import Test
