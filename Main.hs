@@ -3,7 +3,34 @@ import Graphics.Gloss
 import Graphics.Gloss.Interface.Pure.Game
 import Test
 
+
+
+data Node = Node {
+  next :: ([Node],[Int]),
+  distance :: Int,
+  shop :: String
+}
+
+-- data BSTree k v = Empty
+--                 | Node k v (BSTree k v) (BSTree k v)
+--          deriving (Show, Read)
+
+
 data World = World {
+    day :: Int,
+    month :: Int,
+    partyHealth :: [Int],
+    partyConditions :: [String],
+    food :: Int,
+    nextLocation :: Node,
+    position :: Int,
+    cash :: Float,
+    supplies :: [Int],
+    rationing :: Float, -- percentage
+    screenType :: String,
+    pace :: Float, -- percentage
+    oxen :: Int,
+    -- todo remove
     health :: Integer,
     message :: String
 }
@@ -12,7 +39,7 @@ windowDisplay :: Display
 windowDisplay = InWindow "Window" (1280, 720) (0, 0)
 
 initialWorld :: World
-initialWorld = World 5 textTest
+initialWorld = World 0 0 [] [] 0 (Node ([],[]) 0 "") 0 0 [] 0 "" 0 0 0  textTest
 
 main :: IO ()
 main = play
