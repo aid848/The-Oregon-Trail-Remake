@@ -2,14 +2,10 @@
 import Graphics.Gloss
 import Graphics.Gloss.Interface.Pure.Game
 import Test
+import Map
 
 
 
-data Node = Node {
-  next :: ([Node],[Int]),
-  distance :: Int,
-  shop :: String
-}
 
 -- data BSTree k v = Empty
 --                 | Node k v (BSTree k v) (BSTree k v)
