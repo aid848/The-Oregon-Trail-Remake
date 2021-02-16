@@ -26,6 +26,9 @@ data World = World {
     message :: String
 }
 
+initialWorld :: World
+initialWorld = World 0 0 [100,100,100,100,100] [[],[],[],[],[]] 0 (Node ([],[]) 0 "") 0 0 [] 0 "" 0 0 "" False 0 0  "textTest"
+
 windowDims :: (Int,Int)
 windowDims = (1280, 720)
 

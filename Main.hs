@@ -8,10 +8,6 @@ import Definitions
 windowDisplay :: Display
 windowDisplay = InWindow "Window" windowDims zoomDims
 
-initialWorld :: World
-
-initialWorld = World 0 0 [100,100,100,100,100] [[],[],[],[],[]] 0 (Node ([],[]) 0 "") 0 0 [] 0 "" 0 0 0  textTest
-
 
 main :: IO ()
 main = play
