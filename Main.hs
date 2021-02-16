@@ -1,7 +1,6 @@
 -- Main file for game setup
 import Graphics.Gloss
 import Graphics.Gloss.Interface.Pure.Game
-
 import ScreenHandler
 import Definitions
 

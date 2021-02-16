@@ -1,15 +1,14 @@
 module Map where
-
 import Shop
 import Date
 
--- map node defn
 data Node = Node {
   name :: String,
   next :: Upcoming,
   dist :: Int,
   shop :: Shop
 } deriving(Eq, Show)
+
 
 -- map nodes ahead on the trail: list of (name, distance) tuples or Empty
 data Upcoming = Empty
