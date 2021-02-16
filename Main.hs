@@ -20,7 +20,7 @@ data World = World {
     day :: Int,
     month :: Int,
     partyHealth :: [Int],
-    partyConditions :: [String],
+    partyConditions :: [[String]],
     food :: Int,
     nextLocation :: Node,
     position :: Int,
@@ -39,7 +39,7 @@ windowDisplay :: Display
 windowDisplay = InWindow "Window" (1280, 720) (0, 0)
 
 initialWorld :: World
-initialWorld = World 0 0 [] [] 0 (Node ([],[]) 0 "") 0 0 [] 0 "" 0 0 0  textTest
+initialWorld = World 0 0 [100,100,100,100,100] [[],[],[],[],[]] 0 (Node ([],[]) 0 "") 0 0 [] 0 "" 0 0 0  textTest
 
 main :: IO ()
 main = play
