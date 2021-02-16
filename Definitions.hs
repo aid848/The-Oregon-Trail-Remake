@@ -20,6 +20,7 @@ data World = World {
     oxen :: Int,
     userInput :: String, -- used for keyboard input of text like names
     userEnter :: Bool, -- used to confirm action
+    userstage :: Int, -- used to show stage in screen
     -- todo remove
     health :: Integer,
     message :: String
@@ -27,6 +28,12 @@ data World = World {
 
 windowDims :: (Int,Int)
 windowDims = (1280, 720)
+
+halfX :: Float
+halfX = 1280 / 2
+
+halfY :: Float
+halfY = 720 / 2
 
 zoomDims :: (Int,Int)
 zoomDims = (0, 0)
@@ -39,3 +46,9 @@ halfTextSpan = 35
 
 textHeight :: Int
 textHeight = 50
+
+halfTextSpanF :: Float
+halfTextSpanF = 35.0
+
+textHeightF :: Float
+textHeightF = 50.0

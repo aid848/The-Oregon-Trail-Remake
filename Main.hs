@@ -1,7 +1,6 @@
 -- Main file for game setup
 import Graphics.Gloss
 import Graphics.Gloss.Interface.Pure.Game
-import Test
 import ScreenHandler
 import Definitions
 
@@ -10,7 +9,7 @@ windowDisplay :: Display
 windowDisplay = InWindow "Window" windowDims zoomDims
 
 initialWorld :: World
-initialWorld = World 0 0 [] [] 0 (Node ([],[]) 0 "") 0 0 [] 0 "" 0 0 "" False 0  textTest
+initialWorld = World 0 0 [] [] 0 (Node ([],[]) 0 "") 0 0 [] 0 "" 0 0 "" False 0 0  "textTest"
 
 main :: IO ()
 main = play
