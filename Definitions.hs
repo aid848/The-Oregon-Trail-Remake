@@ -6,6 +6,7 @@ import Map
 
 data World = World {
     date :: Date,
+    partyNames :: [String],
     partyHealth :: [Int],
     partyConditions :: [[String]],
     food :: Int,
@@ -20,7 +21,8 @@ data World = World {
     userInput :: String, -- used for keyboard input of text like names
     userEnter :: Bool, -- used to confirm action
     userstage :: Int, -- used to show stage in screen
-    message :: String 
+    message :: String,
+    rngSeed :: Int -- used to generate random numbers 
 }
 
 -- startingShop 
@@ -29,7 +31,7 @@ startingDate :: Date
 startingDate = dateCons 1 "March" 1848
 
 initialWorld :: World
-initialWorld = World startingDate [100,100,100,100,100] [[],[],[],[],[]] 0 (buffalo_head) 0 0 [] 0 "" 0 0 "" False 0  "textTest"
+initialWorld = World startingDate ["A", "B", "C", "D", "E"] [100,100,100,100,100] [[],[],[],[],[]] 0 (buffalo_head) 0 0 [] 0 "" 0 0 "" False 0  "textTest" 42
 
 windowDims :: (Int,Int)
 windowDims = (1280, 720)
