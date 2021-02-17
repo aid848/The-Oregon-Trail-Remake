@@ -23,9 +23,10 @@ replaceNth (h:t) 0 new = new:t
 replaceNth (h:t) n new = h:(replaceNth t (n-1) new)
 
 -- ********************** Events **********************
--- Each event takes in the World state and outputs the new IO World state
+
+-- Each event takes in the World state and outputs the new World state
 -- Each event updates the message field to contain a description of what happened,
---   to be displayed to the player
+--   to be displayed to the player. "" if no event occurred.
 
 -- Reduces world.oxen by a random number between 1 and (world.oxen - 1)
 theftOxen :: World -> World
@@ -61,4 +62,5 @@ cholera w = let (newW, n) = generateRandomInt w 5
                     | "cholera" `elem` partyMemberConditions = newW {message = ""} -- party member already has cholera, do nothing
                     | otherwise                              = newW {partyConditions = replaceNth oldConditions n ("cholera":partyMemberConditions), message = partyMemberName ++ " has cholera."}
                 in newWorld
+
 -- ********************** End of events **********************
