@@ -26,7 +26,7 @@ drawingFunc w = drawScreen w w -- todo fix this to not need the same argument tw
 -- A function to handle input events.
 inputHandler :: Event -> World -> World -- todo case analysis here based on world state
 inputHandler (EventKey (SpecialKey KeySpace) Down _ _) w = w {message = "hihi"}
-inputHandler _ w = w
+inputHandler _ w = w 
 
 -- A function to step the world one iteration. It is passed the period of time (in seconds) needing to be advanced. 
 updateFunc :: Float -> World -> World 

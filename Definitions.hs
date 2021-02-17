@@ -12,6 +12,7 @@ data World = World {
     nextLocation :: Node,
     position :: Int,
     cash :: Float,
+    bill :: Float, -- todo remove and use shop chosen to buy
     supplies :: [Int],
     rationing :: Float, -- percentage
     screenType :: String,
@@ -29,7 +30,7 @@ startingDate :: Date
 startingDate = dateCons 1 "March" 1848
 
 initialWorld :: World
-initialWorld = World startingDate [100,100,100,100,100] [[],[],[],[],[]] 0 (buffalo_head) 0 0 [] 0 "" 0 0 "" False 0  "textTest"
+initialWorld = World startingDate [100,100,100,100,100] [[],[],[],[],[]] 0 (buffalo_head) 0 0 0 [] 0 "" 0 0 "_" False 0  "textTest"
 
 windowDims :: (Int,Int)
 windowDims = (1280, 720)
