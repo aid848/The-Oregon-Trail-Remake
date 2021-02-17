@@ -2,7 +2,7 @@ module RandomEvents where
 
 import Definitions
 
--- Helpers
+-- ********************** Helpers **********************
 
 -- generateRandomInt w lower upper
 -- Takes in a world state and an upper bound and returns a new world state and a random Int n, 0 <= n < upper
@@ -22,16 +22,37 @@ replaceNth [] _ new = []
 replaceNth (h:t) 0 new = new:t
 replaceNth (h:t) n new = h:(replaceNth t (n-1) new)
 
+-- ********************** End of Helpers **********************
+
+
+-- ********************** Random Event Generator **********************
+
+randomEvent :: World -> World
+randomEvent w = let (newW, n) = generateRandomInt w 100
+                    newWorld
+                        | n `elem` [0..49]  = noEvent newW
+                        | n `elem` [50..69] = theftOxen newW
+                        | n `elem` [70..84] = dysentery newW
+                        | n `elem` [85..99] = cholera newW
+                    in newWorld
+
+-- ********************** End of Random Event Generator **********************
+
+
 -- ********************** Events **********************
 
 -- Each event takes in the World state and outputs the new World state
 -- Each event updates the message field to contain a description of what happened,
 --   to be displayed to the player. "" if no event occurred.
 
+-- Nothing happened
+noEvent :: World -> World
+noEvent w = w {message = ""}
+
 -- Reduces world.oxen by a random number between 1 and (world.oxen - 1)
 theftOxen :: World -> World
 theftOxen w 
-    | (oxen w) == 1 = w {message = ""} -- there is only 1 oxen left, do nothing
+    | (oxen w) == 1 = noEvent w -- there is only 1 oxen left, do nothing
     | otherwise     = let numOxen = (oxen w)
                           (newW, n) = generateRandomInt w (numOxen - 1)
                           scaledN = n + 1
@@ -45,8 +66,8 @@ dysentery w = let (newW, n) = generateRandomInt w 5
                   partyMemberConditions = oldConditions!!n
                   partyMemberName = (partyNames newW)!!n
                   newWorld 
-                    | partyMemberHealth == 0                   = newW {message = ""} -- party member is dead, do nothing
-                    | "dysentery" `elem` partyMemberConditions = newW {message = ""} -- party member already has dysentery, do nothing
+                    | partyMemberHealth == 0                   = noEvent newW -- party member is dead, do nothing
+                    | "dysentery" `elem` partyMemberConditions = noEvent newW -- party member already has dysentery, do nothing
                     | otherwise                                = newW {partyConditions = replaceNth oldConditions n ("dysentery":partyMemberConditions), message = partyMemberName ++ " has dysentery."}
                   in newWorld
 
@@ -58,8 +79,8 @@ cholera w = let (newW, n) = generateRandomInt w 5
                 partyMemberConditions = oldConditions!!n
                 partyMemberName = (partyNames newW)!!n
                 newWorld 
-                    | partyMemberHealth == 0                 = newW {message = ""} -- party member is dead, do nothing
-                    | "cholera" `elem` partyMemberConditions = newW {message = ""} -- party member already has cholera, do nothing
+                    | partyMemberHealth == 0                 = noEvent newW -- party member is dead, do nothing
+                    | "cholera" `elem` partyMemberConditions = noEvent newW -- party member already has cholera, do nothing
                     | otherwise                              = newW {partyConditions = replaceNth oldConditions n ("cholera":partyMemberConditions), message = partyMemberName ++ " has cholera."}
                 in newWorld
 
