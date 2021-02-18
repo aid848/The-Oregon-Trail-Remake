@@ -1,18 +1,33 @@
 module UpdateHandler where
 
 import Definitions
+import Date
 import RandomEvents
 import Helpers
 
+-- ********************** Constants **********************
+
+-- Rationing
+rationingHealthDrain = [0, 2, 5]
+rationingFoodDrain = [20, 10, 5]
+
+-- Pace
+paceHealthDrain = [0, 2, 5]
+
+-- Conditions
 dysenteryHealthDrain = 5
 choleraHealthDrain = 5
+
+-- ********************** End of constants **********************
 
 -- update w
 -- Takes in a world and steps forward by one day, causing all the effects necessary:
 --   - (Possibly) generate a random event
 -- Returns the updated world
 update :: World -> World
-update w = (randomEvent (applyPartyConditions w))
+update w = let newW = (randomEvent (applyPartyConditions w))
+               oldDate = date newW
+               in newW {date = updateDate oldDate}
 
 -- applyPartyConditions w
 -- Takes in a world and causes effects based on the party's conditions, if any
@@ -29,6 +44,18 @@ applyPartyConditions w = (applyNthMemberConditions 0
 -- Returns the updated world
 applyNthMemberConditions :: Int -> World -> World
 applyNthMemberConditions n w = (applyCholera n (applyDysentery n w))
+
+-- applyRationingHealthDrain n w
+-- Takes in a party member number n and the current world, and causes party member n to lose health if rations < 1
+-- TODO
+
+-- applyRationingFoodDrain n w
+-- Takes in a party member number n and the current world, and causes party member n to lose health if rations < 1
+-- TODO
+
+-- applyPaceHealthDrain n w
+-- Takes in a party member number n and the current world, and causes party member n to lose health if rations < 1
+-- TODO
 
 -- applyDysentery n w
 -- Takes in a party member number n and the current world, and causes party member n to lose health if they have dysentery
