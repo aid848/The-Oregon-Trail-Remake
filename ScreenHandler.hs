@@ -11,11 +11,11 @@ textColor = white
 
 -- top level screen drawer based on world state
 drawScreen :: World -> World -> Picture
-drawScreen World{screenType=""} w = settlementScreen w -- for testing, remove or keep for showing error
+drawScreen World{screenType=""} w = settlementScreen w w -- for testing, remove or keep for showing error
 drawScreen World{screenType="Start"} w = startScreen
 drawScreen World{screenType="On route"} w = onRouteScreen
 drawScreen World{screenType="Shop"} w = shopScreen w w
-drawScreen World{screenType="Settlement"} w = settlementScreen w
+drawScreen World{screenType="Settlement"} w = settlementScreen w w
 drawScreen World{screenType="River"} w = riverScreen
 drawScreen World{screenType="Inventory"} w = inventoryScreen
 drawScreen World{screenType="Generic"} w = genericScreen
