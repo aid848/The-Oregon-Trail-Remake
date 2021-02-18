@@ -26,8 +26,15 @@ settleTrade :: String
 settleTrade = "7. Attempt to trade"
 -- settleTalk :: String -- not enough time for it to be worth it?
 -- settleTalk = "8. Talk to people"
+invFood :: String
+invFood = "8. Hunt for food"
 settleShop :: String
 settleShop = "9. Buy supplies"
 
+baseActionText :: [String]
+baseActionText = ["You may:",settleContinue,settleCheck,settleMap,settleChangePace,settleFood,settleRest,settleTrade]
+
+invActionsText :: [String]
+invActionsText = baseActionText++[invFood]
 settleActionsText :: [String]
-settleActionsText = ["You may:",settleContinue,settleCheck,settleMap,settleChangePace,settleFood,settleRest,settleTrade,settleShop]
+settleActionsText = baseActionText++[settleShop]

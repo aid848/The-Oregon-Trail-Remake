@@ -11,13 +11,13 @@ textColor = white
 
 -- top level screen drawer based on world state
 drawScreen :: World -> World -> Picture
-drawScreen World{screenType=""} w = settlementScreen w w -- for testing, remove or keep for showing error
+drawScreen World{screenType=""} w = inventoryScreen w w -- for testing, remove or keep for showing error
 drawScreen World{screenType="Start"} w = startScreen
 drawScreen World{screenType="On route"} w = onRouteScreen
 drawScreen World{screenType="Shop"} w = shopScreen w w
 drawScreen World{screenType="Settlement"} w = settlementScreen w w
 drawScreen World{screenType="River"} w = riverScreen
-drawScreen World{screenType="Inventory"} w = inventoryScreen
+drawScreen World{screenType="Inventory"} w = inventoryScreen w w
 drawScreen World{screenType="Generic"} w = genericScreen
 drawScreen World{screenType="Splash"} w = splashScreen
 
@@ -152,16 +152,16 @@ settleDate w = Translate (-125) (265) (textWriter ((month (date w))++" "++(show 
 
 
 settleWeather :: World -> Picture
-settleWeather w = Translate (-350) (40) (textWriterInverted ("Weather: "++(weather w)) "half")
+settleWeather w = Translate (-350) (38) (textWriterInverted ("Weather: "++(weather w)) "half")
 
 settleHealth :: World -> Picture
-settleHealth w = Translate (-350) (10) (textWriterInverted ("Health: "++(partyHealthToWord (partyHealth w))) "half")
+settleHealth w = Translate (-350) (8) (textWriterInverted ("Health: "++(partyHealthToWord (partyHealth w))) "half")
 
 settlePace :: World -> Picture
-settlePace w = Translate (-350) (-20) (textWriterInverted ("Pace: "++paceToWord((pace w))) "half")
+settlePace w = Translate (-350) (-22) (textWriterInverted ("Pace: "++paceToWord((pace w))) "half")
 
 settleRations :: World -> Picture
-settleRations w = Translate (-350) (-50) (textWriterInverted ("Rations: "++rationsToWord((rationing w))) "half")
+settleRations w = Translate (-350) (-52) (textWriterInverted ("Rations: "++rationsToWord((rationing w))) "half")
 
 settleStatusBar :: World -> Picture
 settleStatusBar w = Translate (0) (175) (Pictures [(color white (lineGen 800 130)), settleWeather w, settleHealth w ,settlePace w, settleRations w ])
@@ -174,13 +174,16 @@ settleChoice w = Translate (50) (-325) (textWriter ("What is your choice? "++(us
 
 -- TODO all the other screens for actions -_-
 settlementScreen World{userstage = 0} w = Pictures [settleName w, settleDate w,settleStatusBar w, settleActions, settleChoice w]
-settlementScreen World{userstage = 1} w = Pictures [settleName w, settleDate w,settleStatusBar w, settleActions, settleChoice w]
+-- settlementScreen World{userstage = 1} w = Pictures [settleName w, settleDate w,settleStatusBar w, settleActions, settleChoice w]
 
 -- River TODO 
 riverScreen = Color white ( anchorElement "bottom full text" (textWriter "todo" "full"))
 
--- Inventory TODO 
-inventoryScreen = Color white ( anchorElement "bottom full text" (textWriter "todo" "full"))
+-- Inventory TODO all the other screens for actions -_-
+inventoryActions :: Picture
+inventoryActions = Translate (-400) (75) (textWriterFormatted invActionsText)
+
+inventoryScreen World{userstage = 0} w = Pictures [settleDate w,settleStatusBar w, inventoryActions, settleChoice w]
 
 -- Generic menu (for changing settings and stuff) TODO sus on this one
 genericScreen = Color white ( anchorElement "bottom full text" (textWriter "todo" "full"))
