@@ -36,6 +36,12 @@ initialWorld = World startingDate [100,100,100,100,100] [[],[],[],[],[]] 0 (buff
 windowDims :: (Int,Int)
 windowDims = (1280, 720)
 
+xDim :: Float
+xDim = 1280
+
+yDim :: Float
+yDim = 720
+
 halfX :: Float
 halfX = 1280 / 2
 

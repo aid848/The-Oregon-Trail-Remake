@@ -46,7 +46,7 @@ date0 = dateCons 1 "Feburary" 1848
 
 -- A test Shop
 shop0 :: Shop
-shop0 = shopCons "Matt's General Store" date0 [("1. Oxen", 160.00), ("2. Food", 300.00), ("3. Clothes", 100.00), ("4. Guns", 50.00), ("2. Spare Parts", 20.00)] 
+shop0 = shopCons "Matt's General Store" date0 [("1. Oxen", 160.00), ("2. Food", 300.00), ("3. Clothes", 100.00), ("4. Guns", 50.00), ("5. Spare Parts", 20.00)] 
         "Which item would you like to buy?" "Press SPACE BAR to leave the store"
 
 gold_gulch :: Node

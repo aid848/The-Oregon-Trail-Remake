@@ -11,9 +11,9 @@ textColor = white
 
 -- top level screen drawer based on world state
 drawScreen :: World -> World -> Picture
-drawScreen World{screenType=""} w = inventoryScreen w w -- for testing, remove or keep for showing error
+drawScreen World{screenType=""} w = onRouteScreen w w -- for testing, remove or keep for showing error
 drawScreen World{screenType="Start"} w = startScreen
-drawScreen World{screenType="On route"} w = onRouteScreen
+drawScreen World{screenType="On route"} w = onRouteScreen w w
 drawScreen World{screenType="Shop"} w = shopScreen w w
 drawScreen World{screenType="Settlement"} w = settlementScreen w w
 drawScreen World{screenType="River"} w = riverScreen
@@ -60,6 +60,34 @@ anchorElement "bottom short half" pic = Translate (halfTextSpanF - halfX/2) (-ha
 userText :: World -> String
 userText w = userInput w
 
+lineGen :: Float -> Float -> Picture
+lineGen x y = (Polygon [(x/(-2),y/2),(x/(-2),y/(-2)),(x/2,y/(-2)),(x/2,y/2)])
+
+partyHealthToWord :: [Int] -> String -- TODO
+partyHealthToWord partyHp = "good"
+
+paceToWord :: Float -> String -- TODO
+paceToWord val = "steady"
+
+dateText :: World -> String
+dateText w = (month (date w))++" "++(show (day (date w)))++", "++(show (year (date w)))
+
+weatherText :: World -> String
+weatherText w = ("Weather: "++(weather w))
+
+healthText :: World -> String
+healthText w = ("Health: "++(partyHealthToWord(partyHealth w)))
+
+foodText :: World -> String
+foodText w = ("Food: "++(show (food w))++" pounds")
+
+--todo change to remaining distance
+landmarkText :: World -> String
+landmarkText w = ("Next landmark: "++(show (dist (nextLocation w)))++" miles")
+
+-- todo add this to world props or something
+milesTraveledText :: World -> String
+milesTraveledText w = ("Miles Traveled: "++"Todo"++" miles")
 
 -- retrieve bitmap data for rendering on screen TODO
 -- drawBitmap :: ? -> Picture
@@ -78,8 +106,56 @@ testScreen = Color white ( anchorElement "bottom full text" (textWriter "bigTxt"
 -- starting screen todo
 startScreen = Color white ( anchorElement "bottom full text" (textWriter "todo" "full"))
 
--- On route todo
-onRouteScreen = Color white ( anchorElement "bottom full text" (textWriter "todo" "full"))
+-- On route (stage 0 = stopped, stage 1 = traveling stage, 2 = stopped dialogue box)
+
+routeStatusBackground:: Picture
+routeStatusBackground = Color white (lineGen xDim 275)
+
+routeDate:: World -> Picture
+routeDate w = textWriterInverted (dateText w) "full"
+
+routeWeather:: World -> Picture
+routeWeather w = textWriterInverted (weatherText w) "full"
+
+routeHealth:: World -> Picture
+routeHealth w = textWriterInverted (healthText w) "full"
+
+routeFood:: World -> Picture
+routeFood w = textWriterInverted (foodText w) "full"
+
+routeLandmark:: World -> Picture
+routeLandmark w = textWriterInverted (landmarkText w) "full"
+
+routeMilesTraveled:: World -> Picture
+routeMilesTraveled w = textWriterInverted (milesTraveledText w) "full"
+
+routeStatusBar :: World -> Picture
+routeStatusBar w = Translate (0) (-225) (Pictures[routeStatusBackground,routeDate w, routeWeather w, routeHealth w, routeFood w,routeLandmark w, routeMilesTraveled w])
+
+routeNearPlane :: Picture -- static for now but it could be different?
+routeNearPlane = Color green (lineGen xDim 175)
+
+-- todo draw a line with a sine wave or something for a far plane effect
+routeFarPlane :: Picture
+routeFarPlane = Text "Todo"
+
+-- todo have message and spot for user input
+routeDialogueBox :: World -> Picture
+routeDialogueBox w = Text "Todo"
+
+-- load bitmap
+routeWagon :: Picture
+routeWagon = Text "Todo"
+
+-- gonna need some world props or something to do the animation of approching river
+routeRiver :: World -> Picture
+routeRiver w = Text "Todo"
+
+
+
+onRouteScreen :: World -> World -> Picture
+onRouteScreen World{userstage = 0} w = Color white (Pictures[routeNearPlane,routeStatusBar w])
+
 
 -- Shop (userstage 0 = main shop menu, 1 = item selected and asking how much to buy and info about it)
 -- TODO stage 1 with item info and amount to buy needed
@@ -95,9 +171,6 @@ showItemSelect w = Translate (-200) (-205) (textWriter ("Which item would you li
 
 shopBill:: World -> Picture
 shopBill w = Translate (125) (-75) (textWriter ("Total bill:  $"++((show (bill w)))) "half")
-
-lineGen :: Float -> Float -> Picture
-lineGen x y = (Polygon [(x/(-2),y/2),(x/(-2),y/(-2)),(x/2,y/(-2)),(x/2,y/2)])
 
 shopDate :: World -> Picture
 shopDate w = Translate (0) (255) (textWriter ((month (date w))++" "++(show (day (date w)))++", "++(show (year (date w))) ) "half")
@@ -135,11 +208,6 @@ shopScreen World{userstage = 1} w = Pictures [shopStaticTextElements,(shopDynami
 
 -- Settlement (user state based on selection number)
 
-partyHealthToWord :: [Int] -> String -- TODO
-partyHealthToWord partyHp = "good"
-
-paceToWord :: Float -> String -- TODO
-paceToWord val = "steady"
 
 rationsToWord :: Float -> String -- TODO
 rationsToWord ra = "filling"
@@ -147,12 +215,13 @@ rationsToWord ra = "filling"
 settleName :: World -> Picture
 settleName w = anchorElement "top half text" (textWriter (name (nextLocation w)) "full")
 
+
 settleDate :: World -> Picture
-settleDate w = Translate (-125) (265) (textWriter ((month (date w))++" "++(show (day (date w)))++", "++(show (year (date w)))) "full")
+settleDate w = Translate (-125) (265) (textWriter (dateText w) "full")
 
 
 settleWeather :: World -> Picture
-settleWeather w = Translate (-350) (38) (textWriterInverted ("Weather: "++(weather w)) "half")
+settleWeather w = Translate (-350) (38) (textWriterInverted (weatherText w) "half")
 
 settleHealth :: World -> Picture
 settleHealth w = Translate (-350) (8) (textWriterInverted ("Health: "++(partyHealthToWord (partyHealth w))) "half")
