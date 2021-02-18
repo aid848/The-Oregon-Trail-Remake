@@ -11,11 +11,11 @@ textColor = white
 
 -- top level screen drawer based on world state
 drawScreen :: World -> World -> Picture
-drawScreen World{screenType=""} w = shopScreen w -- for testing, remove or keep for showing error
+drawScreen World{screenType=""} w = settlementScreen w -- for testing, remove or keep for showing error
 drawScreen World{screenType="Start"} w = startScreen
 drawScreen World{screenType="On route"} w = onRouteScreen
-drawScreen World{screenType="Shop"} w = shopScreen w
-drawScreen World{screenType="Settlement"} w = settlementScreen
+drawScreen World{screenType="Shop"} w = shopScreen w w
+drawScreen World{screenType="Settlement"} w = settlementScreen w
 drawScreen World{screenType="River"} w = riverScreen
 drawScreen World{screenType="Inventory"} w = inventoryScreen
 drawScreen World{screenType="Generic"} w = genericScreen
@@ -27,6 +27,10 @@ drawScreen World{screenType="Splash"} w = splashScreen
 textWriter :: String -> String -> Picture
 textWriter str "full" = Color white (arrangeText (foldr (\ x y -> (Scale 0.25 0.25(Text x)):y) [] (splitText str fullTextSpan)))
 textWriter str _ = Color white (arrangeText (foldr (\ x y -> (Scale 0.25 0.25(Text x)):y) [] (splitText str halfTextSpan)))
+
+textWriterInverted :: String -> String -> Picture
+textWriterInverted str "full" = Color black (arrangeText (foldr (\ x y -> (Scale 0.25 0.25(Text x)):y) [] (splitText str fullTextSpan)))
+textWriterInverted str _ = Color black (arrangeText (foldr (\ x y -> (Scale 0.25 0.25(Text x)):y) [] (splitText str halfTextSpan)))
 
 --todo have another textWriter for none automatic string splitting for static elements like menus
 textWriterFormatted :: [String] -> Picture
@@ -92,8 +96,8 @@ showItemSelect w = Translate (-200) (-205) (textWriter ("Which item would you li
 shopBill:: World -> Picture
 shopBill w = Translate (125) (-75) (textWriter ("Total bill:  $"++((show (bill w)))) "half")
 
-shopLineGen :: Float -> Float -> Picture
-shopLineGen x y = color red (Polygon [(x/(-2),y/2),(x/(-2),y/(-2)),(x/2,y/(-2)),(x/2,y/2)])
+lineGen :: Float -> Float -> Picture
+lineGen x y = (Polygon [(x/(-2),y/2),(x/(-2),y/(-2)),(x/2,y/(-2)),(x/2,y/2)])
 
 shopDate :: World -> Picture
 shopDate w = Translate (0) (255) (textWriter ((month (date w))++" "++(show (day (date w)))++", "++(show (year (date w))) ) "half")
@@ -116,7 +120,7 @@ shopNameMessage w = (anchorElement "top half text" (textWriter ((store (shop (ne
 
 -- top to bottom arrangement of bars
 shopBars :: Picture
-shopBars = Pictures [Translate (100) (350) (shopLineGen 700 10) , Translate (100) (235) (shopLineGen 700 10), Translate (100) (-25) (shopLineGen 700 10)]
+shopBars = color red (Pictures [Translate (100) (350) (lineGen 700 10) , Translate (100) (235) (lineGen 700 10), Translate (100) (-25) (lineGen 700 10)])
 
 shopStaticTextElements :: Picture
 shopStaticTextElements = Pictures [shopLeaveMessage, shopBars]
@@ -125,12 +129,52 @@ shopDynamicElements :: World -> Picture
 shopDynamicElements w = Pictures [shopMoneyCount w,showItemSelect w, shopBill w, shopDate w, shopStockShow w, shopNameMessage w]
 
 
-shopScreen :: World -> Picture
-shopScreen World{userstage = 0} = Pictures [shopStaticTextElements,(shopDynamicElements w)]
-shopScreen World{userstage = 1} = Pictures [shopStaticTextElements,(shopDynamicElements w)]
+shopScreen :: World -> World -> Picture
+shopScreen World{userstage = 0} w = Pictures [shopStaticTextElements,(shopDynamicElements w)]
+shopScreen World{userstage = 1} w = Pictures [shopStaticTextElements,(shopDynamicElements w)]
 
--- Settlement TODO
-settlementScreen = Color white ( anchorElement "bottom full text" (textWriter "todo" "full"))
+-- Settlement (user state based on selection number)
+
+partyHealthToWord :: [Int] -> String -- TODO
+partyHealthToWord partyHp = "good"
+
+paceToWord :: Float -> String -- TODO
+paceToWord val = "steady"
+
+rationsToWord :: Float -> String -- TODO
+rationsToWord ra = "filling"
+
+settleName :: World -> Picture
+settleName w = anchorElement "top half text" (textWriter (name (nextLocation w)) "full")
+
+settleDate :: World -> Picture
+settleDate w = Translate (-125) (265) (textWriter ((month (date w))++" "++(show (day (date w)))++", "++(show (year (date w)))) "full")
+
+
+settleWeather :: World -> Picture
+settleWeather w = Translate (-350) (40) (textWriterInverted ("Weather: "++(weather w)) "half")
+
+settleHealth :: World -> Picture
+settleHealth w = Translate (-350) (10) (textWriterInverted ("Health: "++(partyHealthToWord (partyHealth w))) "half")
+
+settlePace :: World -> Picture
+settlePace w = Translate (-350) (-20) (textWriterInverted ("Pace: "++paceToWord((pace w))) "half")
+
+settleRations :: World -> Picture
+settleRations w = Translate (-350) (-50) (textWriterInverted ("Rations: "++rationsToWord((rationing w))) "half")
+
+settleStatusBar :: World -> Picture
+settleStatusBar w = Translate (0) (175) (Pictures [(color white (lineGen 800 130)), settleWeather w, settleHealth w ,settlePace w, settleRations w ])
+
+settleActions :: Picture
+settleActions = Translate (-400) (75) (textWriterFormatted settleActionsText)
+
+settleChoice :: World -> Picture
+settleChoice w = Translate (50) (-325) (textWriter ("What is your choice? "++(userInput w)) "half")
+
+-- TODO all the other screens for actions -_-
+settlementScreen World{userstage = 0} w = Pictures [settleName w, settleDate w,settleStatusBar w, settleActions, settleChoice w]
+settlementScreen World{userstage = 1} w = Pictures [settleName w, settleDate w,settleStatusBar w, settleActions, settleChoice w]
 
 -- River TODO 
 riverScreen = Color white ( anchorElement "bottom full text" (textWriter "todo" "full"))

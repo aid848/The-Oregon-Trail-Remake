@@ -21,7 +21,8 @@ data World = World {
     userInput :: String, -- used for keyboard input of text like names
     userEnter :: Bool, -- used to confirm action
     userstage :: Int, -- used to show stage in screen
-    message :: String 
+    message :: String,
+    weather :: String
 }
 
 -- startingShop 
@@ -30,7 +31,7 @@ startingDate :: Date
 startingDate = dateCons 1 "March" 1848
 
 initialWorld :: World
-initialWorld = World startingDate [100,100,100,100,100] [[],[],[],[],[]] 0 (buffalo_head) 0 0 0 [] 0 "" 0 0 "_" False 0  "textTest"
+initialWorld = World startingDate [100,100,100,100,100] [[],[],[],[],[]] 0 (buffalo_head) 0 0 0 [] 0 "" 0 0 "_" False 0  "textTest" "Cloudy"
 
 windowDims :: (Int,Int)
 windowDims = (1280, 720)
