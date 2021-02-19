@@ -2,8 +2,8 @@ module Shop where
 
 data Shop = Shop {
     store :: String,            -- e.g. "Matt's General Store"
-    items :: [(String, Float)], -- e.g. [("1. Oxen", 160.00), ("2. Food", 300.00)] 
-} deriving(Show)
+    items :: [(String, Float)] -- e.g. [("1. Oxen", 160.00), ("2. Food", 300.00)] 
+ } deriving(Show)
 
 instance Eq Shop where
     Shop {store = s1} == Shop {store = s2} = s1 == s2
@@ -14,7 +14,7 @@ instance Eq Shop where
 -- Shop constructor
 -- pass shop name, shop inventory, selected items
 shopCons :: String -> [(String, Float)] -> [(String, Int, Float)] -> Shop
-shopCons st its slct = Shop {store = st, items = its, selected = slct}
+shopCons st its slct = Shop {store = st, items = its}
 
 
 
@@ -24,13 +24,13 @@ shopCons st its slct = Shop {store = st, items = its, selected = slct}
 --                - selected is non-empty and does contain item
 --
 -- updateSelected(shop, item, #item, item price)
-updateSelected :: Shop -> String -> Int -> Float-> Shop
-updateSelected s item amt price
-    | (selected s) == [] = s {selected = [(item, amt, price)]}
-    | item `elem` stock = s {selected = (updateHelper (selected s) item amt price)} 
-    | otherwise = s {selected = (item, amt, price):(selected s)}
-    where 
-        stock = stringItUp (selected s) 
+-- updateSelected :: Shop -> String -> Int -> Float-> Shop
+-- updateSelected s item amt price
+--     | (selected s) == [] = s {cart = [(item, amt, price)]}
+--     | item `elem` stock = s {cart = (updateHelper (cart s) item amt price)} 
+--     | otherwise = s {cart = (item, amt, price):(cart s)}
+--     where 
+--         stock = stringItUp (cart s) 
 
 
 

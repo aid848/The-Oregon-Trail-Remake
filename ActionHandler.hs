@@ -57,7 +57,7 @@ updateInvBalPurchase w = let thisShop = (shop (currentLocation w))
                              invalidReset = shopCons (store thisShop) (items thisShop) []   -- work done
                              thisNode = currentLocation w                                   -- if invalid purchase,
                              resetShop = thisNode {shop = invalidReset}                     -- resets selected field
-                             purchases = selected thisShop
+                             purchases = [] -- TODO change
                              cost = getPurchaseTotal purchases
                              wallet = cash w                --
                              numFood = food w               --

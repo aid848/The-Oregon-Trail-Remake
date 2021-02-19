@@ -18,7 +18,6 @@ data World = World {
     milesTravelled :: Int,          -- cumulative distance travelled
     cash :: Float,
     bill :: Float, -- todo remove and use shop chosen to buy
-    cart :: [(String, Int, Float)],  -- e.g. [("Oxen", 2, 320.00)]
     rationing :: Int, -- 1 = filling, 2 = meager, 3 = bare bones
     screenType :: String,
     pace :: Int, -- 1 = steady, 2 = strenuous, 3 = grueling
@@ -28,7 +27,8 @@ data World = World {
     userstage :: Int, -- used to show stage in screen
     message :: String,
     weather :: String,
-    rngSeed :: Int -- used to generate random numbers 
+    rngSeed :: Int, -- used to generate random numbers 
+    cart :: [(String, Int, Float)]  -- e.g. [("Oxen", 2, 320.00)]
 } deriving(Show)
 
 
@@ -38,7 +38,7 @@ startingDate = dateCons 1 "March" 1848
 
 -- TODO: check that initialWorld is set to starting values that make sense
 initialWorld :: World
-initialWorld = World startingDate ["A", "B", "C", "D", "E"] [100,100,100,100,100] [[],[],[],[],[]] 0 0 0 0 (buffalo_head) (blue_river) 0 0.0 0.0 1 "" 1 10 "" False 0  "textTest" "Cloudy" 42
+initialWorld = World startingDate ["A", "B", "C", "D", "E"] [100,100,100,100,100] [[],[],[],[],[]] 0 0 0 0 (buffalo_head) (blue_river) 0 0.0 0.0 1 "" 1 10 "" False 0  "textTest" "Cloudy" 42 []
 
 
 
