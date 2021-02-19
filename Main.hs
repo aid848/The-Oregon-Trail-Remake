@@ -3,7 +3,6 @@ import Graphics.Gloss
 import Graphics.Gloss.Interface.Pure.Game
 import ScreenHandler
 import Definitions
-import RandomEvents
 import UpdateHandler
 
 
