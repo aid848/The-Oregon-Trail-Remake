@@ -41,6 +41,7 @@ initialWorld :: World
 initialWorld = World startingDate ["A", "B", "C", "D", "E"] [100,100,100,100,100] [[],[],[],[],[]] 0 0 0 0 (buffalo_head) (blue_river) 0 0.0 0.0 1 "" 1 10 "" False 0  "textTest" "Cloudy" 42
 
 
+
 windowDims :: (Int,Int)
 windowDims = (1280, 720)
 

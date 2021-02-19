@@ -11,7 +11,7 @@ textColor = white
 
 -- top level screen drawer based on world state
 drawScreen :: World -> World -> Picture
-drawScreen World{screenType=""} w = onRouteScreen w w -- for testing, remove or keep for showing error
+drawScreen World{screenType=""} w = settlementScreen w w -- for testing, remove or keep for showing error
 drawScreen World{screenType="Start"} w = startScreen
 drawScreen World{screenType="On route"} w = onRouteScreen w w
 drawScreen World{screenType="Shop"} w = shopScreen w w
@@ -63,6 +63,10 @@ userText w = userInput w
 lineGen :: Float -> Float -> Picture
 lineGen x y = (Polygon [(x/(-2),y/2),(x/(-2),y/(-2)),(x/2,y/(-2)),(x/2,y/2)])
 
+-- this kinda looks bad
+sinePolyGen :: Float -> Float -> Float -> Float -> Picture
+sinePolyGen x y n step = Pictures (map (\s -> Translate (0) (s) (Line (zip [0,step..x] (map (\a -> (y/2)*(sin a)) [35,(35+step)..x])))) [0..n] )
+
 partyHealthToWord :: [Int] -> String -- TODO
 partyHealthToWord partyHp = "good"
 
@@ -107,7 +111,7 @@ testScreen = Color white ( anchorElement "bottom full text" (textWriter "bigTxt"
 -- starting screen todo
 startScreen = Color white ( anchorElement "bottom full text" (textWriter "todo" "full"))
 
--- On route (stage 0 = stopped, stage 1 = traveling stage, 2 = stopped dialogue box)
+-- On route 
 
 routeStatusBackground:: Picture
 routeStatusBackground = Color white (lineGen xDim 275)
@@ -128,7 +132,7 @@ routeLandmark:: World -> Picture
 routeLandmark w = Translate (-halfX/4 + halfTextSpanF/2) (-60) (textWriterInverted (landmarkText w) "full")
 
 routeMilesTraveled:: World -> Picture
-routeMilesTraveled w = Translate (-halfX/4 + halfTextSpanF/2) (-90) (textWriterInverted (milesTraveledText w) "full")
+routeMilesTraveled w = Translate (-halfX/4 + halfTextSpanF/2) (-100) (textWriterInverted (milesTraveledText w) "full")
 
 routeStatusBar :: World -> Picture
 routeStatusBar w = Translate (0) (-225) (Pictures[routeStatusBackground,routeDate w, routeWeather w, routeHealth w, routeFood w,routeLandmark w, routeMilesTraveled w])
@@ -136,13 +140,23 @@ routeStatusBar w = Translate (0) (-225) (Pictures[routeStatusBackground,routeDat
 routeNearPlane :: Picture -- static for now but it could be different?
 routeNearPlane = Color green (lineGen xDim 175)
 
--- todo draw a line with a sine wave or something for a far plane effect
+-- draw a line with a sine wave for a far plane effect
 routeFarPlane :: Picture
-routeFarPlane = Text "Todo"
+routeFarPlane = Translate (-halfX) (300) (Color green (sinePolyGen (xDim+30) 10 20 40))
+
+
+routeMessage :: World -> Picture
+routeMessage w = Translate ((-halfX*3)/5) (15) (textWriter (message w) "half")
+
+routeUserInput :: World -> Picture
+routeUserInput w = Translate (halfX/2) (-30) (if (userstage w) == 1 then textWriter "_" "half" else textWriter (userInput w) "half")
+
+routeDialogueBackground :: Picture
+routeDialogueBackground = Pictures [Color white (lineGen ((xDim*2)/3) 165),Color black (lineGen (((xDim*2)/3)-20) (165-20))]
 
 -- todo have message and spot for user input
 routeDialogueBox :: World -> Picture
-routeDialogueBox w = Text "Todo"
+routeDialogueBox w = if (message w) /= "" then Translate (0) (5) (Pictures[routeDialogueBackground, routeMessage w,routeUserInput w]) else blank
 
 -- load bitmap
 routeWagon :: Picture
@@ -153,10 +167,10 @@ routeRiver :: World -> Picture
 routeRiver w = Text "Todo"
 
 
-
+-- (stage 0 = traveling stage, stage 1 = stopped, 2 = stopped dialogue box)
 onRouteScreen :: World -> World -> Picture
-onRouteScreen World{userstage = 0} w = Color white (Pictures[routeNearPlane,routeStatusBar w])
--- onRouteScreen World{userstage = 1} w = Color white (Pictures[routeNearPlane,routeStatusBar w])
+onRouteScreen World{userstage = 0} w = Pictures[routeNearPlane,routeStatusBar w, routeDialogueBox w,routeFarPlane]
+onRouteScreen World{userstage = 1} w = Pictures[routeNearPlane,routeStatusBar w, routeDialogueBox w,routeFarPlane]
 -- onRouteScreen World{userstage = 2} w = Color white (Pictures[routeNearPlane,routeStatusBar w])
 
 -- Shop (userstage 0 = main shop menu, 1 = item selected and asking how much to buy and info about it)
@@ -243,9 +257,6 @@ settleActions = Translate (-400) (75) (textWriterFormatted settleActionsText)
 settleChoice :: World -> Picture
 settleChoice w = Translate (50) (-325) (textWriter ("What is your choice? "++(userInput w)) "half")
 
--- TODO all the other screens for actions -_-
-settlementScreen World{userstage = 0} w = Pictures [settleName w, settleDate w,settleStatusBar w, settleActions, settleChoice w]
--- settlementScreen World{userstage = 1} w = Pictures [settleName w, settleDate w,settleStatusBar w, settleActions, settleChoice w]
 
 -- River TODO 
 riverScreen = Color white ( anchorElement "bottom full text" (textWriter "todo" "full"))
@@ -256,7 +267,11 @@ inventoryActions = Translate (-400) (75) (textWriterFormatted invActionsText)
 
 inventoryScreen World{userstage = 0} w = Pictures [settleDate w,settleStatusBar w, inventoryActions, settleChoice w]
 
--- Generic menu (for changing settings and stuff) TODO sus on this one
+-- TODO all the other screens for actions -_-
+settlementScreen World{userstage = 0} w = Pictures [settleName w, settleDate w,settleStatusBar w, settleActions, settleChoice w]
+-- settlementScreen World{userstage = 1} w = Pictures [settleName w, settleDate w,settleStatusBar w, settleActions, settleChoice w]
+
+-- Generic menu (for changing settings and stuff) TODO remove?
 genericScreen = Color white ( anchorElement "bottom full text" (textWriter "todo" "full"))
 
 -- ******************* End of screen definitions *******************
