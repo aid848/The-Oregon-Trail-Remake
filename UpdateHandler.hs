@@ -29,22 +29,6 @@ update w = let newW = (randomEvent (applyPace (applyRationing (applyPartyConditi
                oldDate = date newW
                in newW {date = updateDate oldDate}
 
--- applyPartyConditions w
--- Takes in a world and causes effects based on the party's conditions, if any
--- Returns the updated world
-applyPartyConditions :: World -> World
-applyPartyConditions w = (applyNthMemberConditions 0
-                             (applyNthMemberConditions 1 
-                                 (applyNthMemberConditions 2
-                                     (applyNthMemberConditions 3 
-                                         (applyNthMemberConditions 4 w)))))
-
--- applyNthMemberConditions n w
--- Takes in a number n 0 <= n <= 4 and causes effects based on party member n's conditions, if any
--- Returns the updated world
-applyNthMemberConditions :: Int -> World -> World
-applyNthMemberConditions n w = (applyCholera n (applyDysentery n w))
-
 -- applyRationing n w
 -- Takes in the current world, and decrements food count and party health accordingly
 applyRationing :: World -> World
@@ -89,6 +73,22 @@ applyNthMemberPace n w = let partyHealths = partyHealth w
                                 | memberHealth <= 0 = w -- Party member is dead, do nothing
                                 | otherwise         = w {partyHealth = replaceNth partyHealths n (memberHealth - healthDrain)}
                              in newWorld
+
+-- applyPartyConditions w
+-- Takes in a world and causes effects based on the party's conditions, if any
+-- Returns the updated world
+applyPartyConditions :: World -> World
+applyPartyConditions w = (applyNthMemberConditions 0
+                             (applyNthMemberConditions 1 
+                                 (applyNthMemberConditions 2
+                                     (applyNthMemberConditions 3 
+                                         (applyNthMemberConditions 4 w)))))
+
+-- applyNthMemberConditions n w
+-- Takes in a number n 0 <= n <= 4 and causes effects based on party member n's conditions, if any
+-- Returns the updated world
+applyNthMemberConditions :: Int -> World -> World
+applyNthMemberConditions n w = (applyCholera n (applyDysentery n w))
 
 -- applyDysentery n w
 -- Takes in a party member number n and the current world, and causes party member n to lose health if they have dysentery
