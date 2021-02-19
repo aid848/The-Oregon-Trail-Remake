@@ -270,17 +270,21 @@ theftOxen w
 
 -- Reduces food by a random number
 wagonFireFood :: World -> World
-wagonFireFood w = let numFood = (food w)
-                      (newW, n) = generateRandomInt w numFood
-                      scaledN = n + 1
-                      in newW {food = numFood - scaledN, message = "A fire in the wagon results in the loss of " ++ show scaledN ++ " lbs of food."}
+wagonFireFood w 
+    | (food w) == 0 = noEvent w -- there is no food to burn, do nothing
+    | otherwise     = let numFood = (food w)
+                          (newW, n) = generateRandomInt w numFood
+                          scaledN = n + 1
+                          in newW {food = numFood - scaledN, message = "A fire in the wagon results in the loss of " ++ show scaledN ++ " lbs of food."}
 
 -- Reduces cash by a random number
 wagonFireCash :: World -> World
-wagonFireCash w = let numCash = (cash w)
-                      (newW, n) = generateRandomInt w (truncate numCash)
-                      scaledN = n + 1
-                      in newW {cash = numCash - (fromIntegral scaledN), message = "A fire in the wagon results in the loss of $" ++ show scaledN ++ " worth of cash."}
+wagonFireCash w 
+    | (cash w) < 1.0 = noEvent w -- there is no cash to burn, do nothing
+    | otherwise      = let numCash = (cash w)
+                           (newW, n) = generateRandomInt w (truncate numCash)
+                           scaledN = n + 1
+                           in newW {cash = numCash - (fromIntegral scaledN), message = "A fire in the wagon results in the loss of $" ++ show scaledN ++ " worth of cash."}
 
 -- Whole party loses health due to lack of water
 veryLittleWater :: World -> World
