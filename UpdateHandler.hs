@@ -19,6 +19,10 @@ choleraHealthDrain = 5
 measlesHealthDrain = 5
 feverHealthDrain = 5
 
+-- Misc
+littleWaterHealthDrain = 2
+badWaterHealthDrain = 2
+
 -- ********************** End of constants **********************
 
 
@@ -167,8 +171,10 @@ randomEvent w = let (newW, n) = generateRandomInt w 100
                     newWorld
                         | n `elem` [0..19]  = noEvent newW
                         | n `elem` [20..29] = findOxen newW
-                        | n `elem` [30..39] = findFood newW
-                        | n `elem` [40..49] = findCash newW
+                        | n `elem` [30..34] = findFood newW
+                        | n `elem` [35..39] = veryLittleWater newW
+                        | n `elem` [40..44] = findCash newW
+                        | n `elem` [45..49] = badWater newW
                         | n `elem` [50..54] = theftOxen newW
                         | n `elem` [55..59] = fever newW
                         | n `elem` [60..64] = lostTrail newW
@@ -257,6 +263,16 @@ theftOxen w
                           (newW, n) = generateRandomInt w (numOxen - 1)
                           scaledN = n + 1
                           in newW {oxen = numOxen - scaledN, message = "A thief comes during the night and steals " ++ show scaledN ++ " oxen."}
+
+-- Whole party loses health due to lack of water
+veryLittleWater :: World -> World
+veryLittleWater w = let partyHealthArr = (partyHealth w)
+                        in w {partyHealth = map (\x -> x - littleWaterHealthDrain) partyHealthArr, message = "Very little water."}
+
+-- Whole party loses health due to bad water
+badWater :: World -> World
+badWater w = let partyHealthArr = (partyHealth w)
+                 in w {partyHealth = map (\x -> x - badWaterHealthDrain) partyHealthArr, message = "Bad water."}
 
 -- Gives the "dysentery" condition to a random party member
 dysentery :: World -> World
