@@ -140,8 +140,9 @@ randomEvent w = let (newW, n) = generateRandomInt w 100
                         | n `elem` [0..49]  = noEvent newW
                         | n `elem` [50..59] = theftOxen newW
                         | n `elem` [60..69] = lostTrail newW
-                        | n `elem` [70..84] = dysentery newW
-                        | n `elem` [85..99] = cholera newW
+                        | n `elem` [70..79] = dysentery newW
+                        | n `elem` [80..89] = killOxen newW
+                        | n `elem` [90..99] = cholera newW
                     in newWorld
 
 -- ********************** End of Random Event Generator **********************
@@ -170,6 +171,13 @@ lostTrailNDays n w
     | otherwise = let newW = applyPaceRationingConditions w
                       oldDate = date newW
                       in lostTrailNDays (n-1) (newW {date = updateDate oldDate})
+
+-- Reduces world.oxen by 1 if world.oxen > 1
+killOxen :: World -> World
+killOxen w
+    | (oxen w) == 1 = noEvent w -- there is only 1 oxen left, do nothing
+    | otherwise     = let numOxen = (oxen w)
+                          in w {oxen = numOxen - 1, message = "One of the oxen has died."}
 
 -- Reduces world.oxen by a random number between 1 and (world.oxen - 1)
 theftOxen :: World -> World
