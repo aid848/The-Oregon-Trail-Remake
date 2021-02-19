@@ -22,6 +22,7 @@ feverHealthDrain = 5
 -- Misc
 littleWaterHealthDrain = 2
 badWaterHealthDrain = 2
+snakeBiteHealthDrain = 5
 
 -- ********************** End of constants **********************
 
@@ -37,16 +38,16 @@ update w = let newW = (randomEvent (applyPaceRationingConditions w))
                oldDate = date newW
                in newW {date = updateDate oldDate}
 
+-- ********************** End of update **********************
+
+
+-- ********************** Update helpers **********************
+
 -- applyPaceRationingConditions w
 -- Takes in a world and applies all pace, rationing, and conditioning effects
 -- Returns the updated world
 applyPaceRationingConditions :: World -> World
 applyPaceRationingConditions w = (applyPace (applyRationing (applyPartyConditions w)))
-
--- ********************** End of update **********************
-
-
--- ********************** Update helpers **********************
 
 -- applyRationing n w
 -- Takes in the current world, and decrements food count and party health accordingly
@@ -169,7 +170,8 @@ applyFever n w = let partyHealths = partyHealth w
 randomEvent :: World -> World
 randomEvent w = let (newW, n) = generateRandomInt w 100
                     newWorld
-                        | n `elem` [0..48]  = noEvent newW
+                        | n `elem` [0..45]  = noEvent newW
+                        | n `elem` [46..48] = snakeBite newW
                         | n `elem` [49..51] = wagonFireCash newW
                         | n `elem` [52..54] = findOxen newW
                         | n `elem` [55..57] = wagonFireFood newW
@@ -289,6 +291,17 @@ veryLittleWater w = let partyHealthArr = (partyHealth w)
 badWater :: World -> World
 badWater w = let partyHealthArr = (partyHealth w)
                  in w {partyHealth = map (\x -> x - badWaterHealthDrain) partyHealthArr, message = "Bad water."}
+
+-- A random party member loses health once
+snakeBite :: World -> World
+snakeBite w = let (newW, n) = generateRandomInt w 5
+                  partyHealthArr = (partyHealth newW)
+                  memberHealth = partyHealthArr!!n
+                  memberName = (partyNames newW)!!n
+                  newWorld
+                    | memberHealth <= 0 = noEvent newW -- party member is dead, do nothing
+                    | otherwise = newW {partyHealth = replaceNth partyHealthArr n (memberHealth - snakeBiteHealthDrain), message = memberName ++ " has a snakebite."}
+                  in newWorld
 
 -- Gives the "dysentery" condition to a random party member
 dysentery :: World -> World
