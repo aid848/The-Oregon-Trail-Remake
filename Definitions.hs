@@ -7,15 +7,15 @@ import Map
 data World = World {
     date :: Date,
     partyHealth :: [Int],
-    partyConditions :: [[String]],
+    partyConditions :: [[String]], -- 0 = dead, 1 = poor, 2 = fair, 3 = good
     food :: Int,
     nextLocation :: Node,
     position :: Int,
     cash :: Float,
     supplies :: [Int],
-    rationing :: Float, -- percentage
+    rationing :: Int, -- 1 = filling, 2 = meager, 3 = bare bones
     screenType :: String,
-    pace :: Float, -- percentage
+    pace :: Int, -- 1 = steady, 2 = strenuous, 3 = grueling
     oxen :: Int,
     userInput :: String, -- used for keyboard input of text like names
     userEnter :: Bool, -- used to confirm action
