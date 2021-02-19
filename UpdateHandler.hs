@@ -27,9 +27,15 @@ choleraHealthDrain = 5
 --   - (Possibly) generate a random event
 -- Returns the updated world
 update :: World -> World
-update w = let newW = (randomEvent (applyPace (applyRationing (applyPartyConditions w))))
+update w = let newW = (randomEvent (applyPaceRationingConditions w))
                oldDate = date newW
                in newW {date = updateDate oldDate}
+
+-- applyPaceRationingConditions w
+-- Takes in a world and applies all pace, rationing, and conditioning effects
+-- Returns the updated world
+applyPaceRationingConditions :: World -> World
+applyPaceRationingConditions w = (applyPace (applyRationing (applyPartyConditions w)))
 
 -- ********************** End of update **********************
 
@@ -132,7 +138,8 @@ randomEvent :: World -> World
 randomEvent w = let (newW, n) = generateRandomInt w 100
                     newWorld
                         | n `elem` [0..49]  = noEvent newW
-                        | n `elem` [50..69] = theftOxen newW
+                        | n `elem` [50..59] = theftOxen newW
+                        | n `elem` [60..69] = lostTrail newW
                         | n `elem` [70..84] = dysentery newW
                         | n `elem` [85..99] = cholera newW
                     in newWorld
@@ -149,6 +156,20 @@ randomEvent w = let (newW, n) = generateRandomInt w 100
 -- Nothing happened
 noEvent :: World -> World
 noEvent w = w {message = ""}
+
+-- Lost trail, lose a random number of days between 1 and 3 inclusive
+lostTrail :: World -> World
+lostTrail w = let (newW, n) = generateRandomInt w 3
+                  newWorld = lostTrailNDays (n+1) newW
+                  in newWorld {message = "Lost trail. Lose " ++ show (n+1) ++ " days."}
+
+-- Lost trail for n days
+lostTrailNDays :: Int -> World -> World
+lostTrailNDays n w
+    | n == 0 = w
+    | otherwise = let newW = applyPaceRationingConditions w
+                      oldDate = date newW
+                      in lostTrailNDays (n-1) (newW {date = updateDate oldDate})
 
 -- Reduces world.oxen by a random number between 1 and (world.oxen - 1)
 theftOxen :: World -> World
