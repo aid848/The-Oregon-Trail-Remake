@@ -7,8 +7,8 @@ import Date
 
 data Node = Node {
   name :: String,
-  next :: Upcoming,
-  dist :: Int,
+  next :: Upcoming, -- (Node, distance tuples).  Distances indicate distance from THIS node
+  dist :: Int,      -- distance travelled from THIS node, e.g., 0 <= dist <= chosen node in Upcoming
   shop :: Shop
 } deriving(Eq, Show)
 

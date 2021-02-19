@@ -13,11 +13,12 @@ data World = World {
     clothing :: Int,
     medicine :: Int,
     parts :: Int,
-    nextLocation :: Node,
-    currentLocation :: Node,
-    position :: Int, -- change to milesTravelled?
+    nextLocation :: Node,           -- Either next in currentLocation node, or result of user selection if currentLocation had a branch
+    currentLocation :: Node,        -- Node that we are either in, or in transit from
+    milesTravelled :: Int,          -- cumulative distance travelled
     cash :: Float,
     bill :: Float, -- todo remove and use shop chosen to buy
+    cart :: [(String, Int, Float)],  -- e.g. [("Oxen", 2, 320.00)]
     rationing :: Int, -- 1 = filling, 2 = meager, 3 = bare bones
     screenType :: String,
     pace :: Int, -- 1 = steady, 2 = strenuous, 3 = grueling

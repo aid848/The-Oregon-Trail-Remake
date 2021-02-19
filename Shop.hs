@@ -2,8 +2,7 @@ module Shop where
 
 data Shop = Shop {
     store :: String,            -- e.g. "Matt's General Store"
-    items :: [(String, Float)], -- e.g. [("1. Oxen", 160.00), ("2. Food", 300.00)]
-    selected :: [(String, Int, Float)]  -- e.g. [("Oxen", 2, 320.00)]
+    items :: [(String, Float)], -- e.g. [("1. Oxen", 160.00), ("2. Food", 300.00)] 
 } deriving(Show)
 
 instance Eq Shop where
