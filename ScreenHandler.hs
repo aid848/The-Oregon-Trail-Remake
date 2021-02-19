@@ -11,7 +11,7 @@ textColor = white
 
 -- top level screen drawer based on world state
 drawScreen :: World -> World -> Picture
-drawScreen World{screenType=""} w = settlementScreen w w -- for testing, remove or keep for showing error
+drawScreen World{screenType=""} w = onRouteScreen w w -- for testing, remove or keep for showing error
 drawScreen World{screenType="Start"} w = startScreen
 drawScreen World{screenType="On route"} w = onRouteScreen w w
 drawScreen World{screenType="Shop"} w = shopScreen w w
@@ -113,22 +113,22 @@ routeStatusBackground:: Picture
 routeStatusBackground = Color white (lineGen xDim 275)
 
 routeDate:: World -> Picture
-routeDate w = textWriterInverted (dateText w) "full"
+routeDate w = Translate (-halfX/4 + halfTextSpanF/2) (100) (textWriterInverted ("Date: "++(dateText w)) "full")
 
 routeWeather:: World -> Picture
-routeWeather w = textWriterInverted (weatherText w) "full"
+routeWeather w = Translate (-halfX/4 + halfTextSpanF/2) (60) (textWriterInverted (weatherText w) "full")
 
 routeHealth:: World -> Picture
-routeHealth w = textWriterInverted (healthText w) "full"
+routeHealth w = Translate (-halfX/4 + halfTextSpanF/2) (20) (textWriterInverted (healthText w) "full")
 
 routeFood:: World -> Picture
-routeFood w = textWriterInverted (foodText w) "full"
+routeFood w = Translate (-halfX/4 + halfTextSpanF/2) (-20) (textWriterInverted (foodText w) "full")
 
 routeLandmark:: World -> Picture
-routeLandmark w = textWriterInverted (landmarkText w) "full"
+routeLandmark w = Translate (-halfX/4 + halfTextSpanF/2) (-60) (textWriterInverted (landmarkText w) "full")
 
 routeMilesTraveled:: World -> Picture
-routeMilesTraveled w = textWriterInverted (milesTraveledText w) "full"
+routeMilesTraveled w = Translate (-halfX/4 + halfTextSpanF/2) (-90) (textWriterInverted (milesTraveledText w) "full")
 
 routeStatusBar :: World -> Picture
 routeStatusBar w = Translate (0) (-225) (Pictures[routeStatusBackground,routeDate w, routeWeather w, routeHealth w, routeFood w,routeLandmark w, routeMilesTraveled w])
@@ -156,7 +156,8 @@ routeRiver w = Text "Todo"
 
 onRouteScreen :: World -> World -> Picture
 onRouteScreen World{userstage = 0} w = Color white (Pictures[routeNearPlane,routeStatusBar w])
-
+-- onRouteScreen World{userstage = 1} w = Color white (Pictures[routeNearPlane,routeStatusBar w])
+-- onRouteScreen World{userstage = 2} w = Color white (Pictures[routeNearPlane,routeStatusBar w])
 
 -- Shop (userstage 0 = main shop menu, 1 = item selected and asking how much to buy and info about it)
 -- TODO stage 1 with item info and amount to buy needed
