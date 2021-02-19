@@ -8,13 +8,15 @@ data World = World {
     date :: Date,
     partyNames :: [String],
     partyHealth :: [Int], -- todo decide what is healthy, fair, poor, very poor
-    partyConditions :: [[String]], -- 0 = dead, 1 = poor, 2 = fair, 3 = good
+    partyConditions :: [[String]], -- 0 = dead, 1 = very poor, 2 = poor, 3 = fair, 4 = healthy
     food :: Int,
+    clothing :: Int,
+    medicine :: Int,
+    parts :: Int,
     nextLocation :: Node,
     position :: Int,
     cash :: Float,
     bill :: Float, -- todo remove and use shop chosen to buy
-    supplies :: [Int],
     rationing :: Int, -- 1 = filling, 2 = meager, 3 = bare bones
     screenType :: String,
     pace :: Int, -- 1 = steady, 2 = strenuous, 3 = grueling
