@@ -1,6 +1,8 @@
 module Map where
 import Shop
-import Date
+
+-- TODO: showing current distance, distance remaining, check reached next destination
+--         - implement after discussion on location of distance values
 
 data Node = Node {
   name :: String,
@@ -26,6 +28,10 @@ instance Show Upcoming where
 
 
 
+-- A test Shop
+shop0 :: Shop
+shop0 = shopCons "Matt's General Store" [("1. Oxen", 160.00), ("2. Food", 300.00)] []
+
 
 {- 
 define a short test path:
@@ -40,14 +46,7 @@ buffalo head---22---blue river-----13-----salmon run-----50----- gold gulch
 						--------30------ red ridge ------ 41 ------
 -}
 
--- A test Date
-date0 :: Date
-date0 = dateCons 1 "Feburary" 1848
-
--- A test Shop
-shop0 :: Shop
-shop0 = shopCons "Matt's General Store" date0 [("1. Oxen", 160.00), ("2. Food", 300.00)] 
-        "Which item would you like to buy?" "Press SPACE BAR to leave the store"
+-- Nodes corresponding to the above path:
 
 gold_gulch :: Node
 gold_gulch = Node {name = "Denver", next = Empty, dist = 0, shop = shop0}
@@ -71,24 +70,26 @@ buffalo_head = Node {name = "Buffalo Head", next = Dests [(blue_river, 22)], dis
 -- a map is a list of nodes
 type Map = [Node]
 
-
--- map constructor for straight paths
-mapCons :: Node -> Map
-mapCons node
-    | next node == Empty = [node]
-    | otherwise = node : (mapCons (getFirstInNext node))
-
 -- test function showing node names in map
 -- showMap :: Map -> String
 -- showMap [] = " "
 -- showMap (h:t) = show (name h) ++ " " ++ showMap t
 
 
--- checks to see if next field is empty
+-- checks to see if next field is Empty
+-- returns True if Empty
 isNextEmpty :: Node -> Bool
 isNextEmpty n
     | upcomingToList (next n) == [] = True
     | otherwise = False
+
+-- checks to see if node's next field contains a branch (two tuples)
+-- returns True if branch
+hasBranch :: Node -> Bool
+hasBranch n
+    | tail (upcomingToList (next n)) == [] = False
+    | otherwise = True
+
 
 -- returns first Node in next of current Node
 -- assumes not Empty
@@ -121,10 +122,3 @@ upcomingToList u
 -- helper to extract list from Upcoming
 upcomingToListHelper :: Upcoming -> [(Node, Int)]
 upcomingToListHelper (Dests [(n, d)]) = [(n, d)]
-
-
-
-
-
-
-
