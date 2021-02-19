@@ -1,5 +1,6 @@
 module Map where
 import Shop
+import Date
 
 -- TODO: showing current distance, distance remaining, check reached next destination
 --         - implement after discussion on location of distance values
@@ -46,7 +47,9 @@ buffalo head---22---blue river-----13-----salmon run-----50----- gold gulch
 						--------30------ red ridge ------ 41 ------
 -}
 
--- Nodes corresponding to the above path:
+-- A test Date
+date0 :: Date
+date0 = dateCons 1 "Feburary" 1848
 
 gold_gulch :: Node
 gold_gulch = Node {name = "Denver", next = Empty, dist = 0, shop = shop0}

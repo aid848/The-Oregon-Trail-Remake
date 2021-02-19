@@ -6,12 +6,14 @@ import Map
 
 data World = World {
     date :: Date,
-    partyHealth :: [Int],
+    partyNames :: [String],
+    partyHealth :: [Int], -- todo decide what is healthy, fair, poor, very poor
     partyConditions :: [[String]], -- 0 = dead, 1 = poor, 2 = fair, 3 = good
     food :: Int,
     nextLocation :: Node,
     position :: Int,
     cash :: Float,
+    bill :: Float, -- todo remove and use shop chosen to buy
     supplies :: [Int],
     rationing :: Int, -- 1 = filling, 2 = meager, 3 = bare bones
     screenType :: String,
@@ -20,19 +22,29 @@ data World = World {
     userInput :: String, -- used for keyboard input of text like names
     userEnter :: Bool, -- used to confirm action
     userstage :: Int, -- used to show stage in screen
-    message :: String 
-}
+    message :: String,
+    weather :: String,
+    rngSeed :: Int -- used to generate random numbers 
+} deriving(Show)
 
 -- startingShop 
 
 startingDate :: Date
 startingDate = dateCons 1 "March" 1848
 
+-- TODO: check that initialWorld is set to starting values that make sense
 initialWorld :: World
-initialWorld = World startingDate [100,100,100,100,100] [[],[],[],[],[]] 0 (buffalo_head) 0 0 [] 0 "" 0 0 "" False 0  "textTest"
+initialWorld = World startingDate ["A", "B", "C", "D", "E"] [100,100,100,100,100] [[],[],[],[],[]] 0 (buffalo_head) 0 0 0 [] 1 "" 1 10 "" False 0  "textTest" "Cloudy" 42
+
 
 windowDims :: (Int,Int)
 windowDims = (1280, 720)
+
+xDim :: Float
+xDim = 1280
+
+yDim :: Float
+yDim = 720
 
 halfX :: Float
 halfX = 1280 / 2
