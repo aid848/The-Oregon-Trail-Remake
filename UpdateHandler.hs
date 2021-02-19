@@ -169,22 +169,24 @@ applyFever n w = let partyHealths = partyHealth w
 randomEvent :: World -> World
 randomEvent w = let (newW, n) = generateRandomInt w 100
                     newWorld
-                        | n `elem` [0..19]  = noEvent newW
-                        | n `elem` [20..29] = findOxen newW
-                        | n `elem` [30..34] = findFood newW
-                        | n `elem` [35..39] = veryLittleWater newW
-                        | n `elem` [40..44] = findCash newW
-                        | n `elem` [45..49] = badWater newW
-                        | n `elem` [50..54] = theftOxen newW
-                        | n `elem` [55..59] = fever newW
-                        | n `elem` [60..64] = lostTrail newW
-                        | n `elem` [64..69] = wrongTrail newW
-                        | n `elem` [70..74] = dysentery newW
-                        | n `elem` [75..79] = cholera newW
-                        | n `elem` [80..84] = killOxen newW
-                        | n `elem` [85..89] = findWildFruit newW
-                        | n `elem` [90..94] = measles newW
-                        | n `elem` [95..99] = findWildVegetables newW
+                        | n `elem` [0..48]  = noEvent newW
+                        | n `elem` [49..51] = wagonFireCash newW
+                        | n `elem` [52..54] = findOxen newW
+                        | n `elem` [55..57] = wagonFireFood newW
+                        | n `elem` [58..60] = findFood newW
+                        | n `elem` [61..63] = veryLittleWater newW
+                        | n `elem` [64..66] = findCash newW
+                        | n `elem` [67..69] = badWater newW
+                        | n `elem` [70..72] = theftOxen newW
+                        | n `elem` [73..75] = fever newW
+                        | n `elem` [76..78] = lostTrail newW
+                        | n `elem` [79..81] = wrongTrail newW
+                        | n `elem` [82..84] = dysentery newW
+                        | n `elem` [85..87] = cholera newW
+                        | n `elem` [88..90] = killOxen newW
+                        | n `elem` [91..93] = findWildFruit newW
+                        | n `elem` [94..96] = measles newW
+                        | n `elem` [97..99] = findWildVegetables newW
                     in newWorld
 
 -- ********************** End of Random Event Generator **********************
@@ -263,6 +265,20 @@ theftOxen w
                           (newW, n) = generateRandomInt w (numOxen - 1)
                           scaledN = n + 1
                           in newW {oxen = numOxen - scaledN, message = "A thief comes during the night and steals " ++ show scaledN ++ " oxen."}
+
+-- Reduces food by a random number
+wagonFireFood :: World -> World
+wagonFireFood w = let numFood = (food w)
+                      (newW, n) = generateRandomInt w numFood
+                      scaledN = n + 1
+                      in newW {food = numFood - scaledN, message = "A fire in the wagon results in the loss of " ++ show scaledN ++ " lbs of food."}
+
+-- Reduces cash by a random number
+wagonFireCash :: World -> World
+wagonFireCash w = let numCash = (cash w)
+                      (newW, n) = generateRandomInt w (truncate numCash)
+                      scaledN = n + 1
+                      in newW {cash = numCash - (fromIntegral scaledN), message = "A fire in the wagon results in the loss of $" ++ show scaledN ++ " worth of cash."}
 
 -- Whole party loses health due to lack of water
 veryLittleWater :: World -> World
