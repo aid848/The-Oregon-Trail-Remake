@@ -11,7 +11,7 @@ textColor = white
 
 -- top level screen drawer based on world state
 drawScreen :: World -> World -> Picture
-drawScreen World{screenType=""} w = onRouteScreen w w -- for testing, remove or keep for showing error
+drawScreen World{screenType=""} w = settlementScreen w w -- for testing, remove or keep for showing error
 drawScreen World{screenType="Start"} w = startScreen
 drawScreen World{screenType="On route"} w = onRouteScreen w w
 drawScreen World{screenType="Shop"} w = shopScreen w w
@@ -63,7 +63,7 @@ userText w = userInput w
 lineGen :: Float -> Float -> Picture
 lineGen x y = (Polygon [(x/(-2),y/2),(x/(-2),y/(-2)),(x/2,y/(-2)),(x/2,y/2)])
 
--- this kinda looks bad -_-
+-- this kinda looks bad
 sinePolyGen :: Float -> Float -> Float -> Float -> Picture
 sinePolyGen x y n step = Pictures (map (\s -> Translate (0) (s) (Line (zip [0,step..x] (map (\a -> (y/2)*(sin a)) [35,(35+step)..x])))) [0..n] )
 

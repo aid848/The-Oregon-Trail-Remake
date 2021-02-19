@@ -7,7 +7,7 @@ import Map
 data World = World {
     date :: Date,
     partyNames :: [String],
-    partyHealth :: [Int], -- todo decide what is healthy, fair, poor, very poor
+    partyHealth :: [Int], -- 1-25 very poor, 26-50 poor, 51-75 fair, 76 - 100
     partyConditions :: [[String]], -- 0 = dead, 1 = poor, 2 = fair, 3 = good
     food :: Int,
     nextLocation :: Node,
@@ -34,7 +34,7 @@ startingDate = dateCons 1 "March" 1848
 
 -- TODO: check that initialWorld is set to starting values that make sense
 initialWorld :: World
-initialWorld = World startingDate ["A", "B", "C", "D", "E"] [100,100,100,100,100] [[],[],[],[],[]] 0 (buffalo_head) 0 0 0 [] 1 "" 1 10 "" False 0  "textTest" "Cloudy" 42
+initialWorld = World startingDate ["A", "B", "C", "D", "E"] [100,100,100,100,100] [[],[],[],[],[]] 10 (buffalo_head) 0 0 0 [] 1 "" 1 0 "" False 0  "" "Cloudy" 42
 
 
 windowDims :: (Int,Int)
