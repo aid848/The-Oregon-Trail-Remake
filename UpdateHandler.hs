@@ -16,6 +16,7 @@ paceHealthDrain = [0, 1, 2] -- steady = 0 hp/day, strenuous = 1 hp/day, grueling
 -- Conditions
 dysenteryHealthDrain = 5
 choleraHealthDrain = 5
+measlesHealthDrain = 5
 
 -- ********************** End of constants **********************
 
@@ -129,6 +130,19 @@ applyCholera n w = let partyHealths = partyHealth w
                         | otherwise                         = w
                        in newWorld
 
+-- applyMeasles n memberHealth memberConditions w
+-- Takes in a party member number n and the current world, and causes party member n to lose health if they have measles
+-- Returns the updated world
+applyMeasles :: Int -> World -> World
+applyMeasles n w = let partyHealths = partyHealth w
+                       memberHealth = partyHealths!!n
+                       memberConditions = (partyConditions w)!!n
+                       newWorld
+                        | memberHealth <= 0                 = w -- Party member is dead, do nothing
+                        | "measles" `elem` memberConditions = w {partyHealth = replaceNth partyHealths n (memberHealth - measlesHealthDrain)}
+                        | otherwise                         = w
+                       in newWorld
+
 -- ********************** End of update helpers **********************
 
 
@@ -142,11 +156,12 @@ randomEvent w = let (newW, n) = generateRandomInt w 100
                         | n `elem` [30..39] = findFood newW
                         | n `elem` [40..49] = findCash newW
                         | n `elem` [50..59] = theftOxen newW
-                        | n `elem` [60..69] = lostTrail newW
+                        | n `elem` [60..64] = lostTrail newW
+                        | n `elem` [64..69] = wrongTrail newW
                         | n `elem` [70..74] = dysentery newW
                         | n `elem` [75..79] = cholera newW
                         | n `elem` [80..89] = killOxen newW
-                        | n `elem` [90..99] = wrongTrail newW
+                        | n `elem` [90..99] = measles newW
                     in newWorld
 
 -- ********************** End of Random Event Generator **********************
@@ -240,6 +255,19 @@ cholera w = let (newW, n) = generateRandomInt w 5
                     | memberHealth <= 0                 = noEvent newW -- party member is dead, do nothing
                     | "cholera" `elem` memberConditions = noEvent newW -- party member already has cholera, do nothing
                     | otherwise                              = newW {partyConditions = replaceNth oldConditions n ("cholera":memberConditions), message = memberName ++ " has cholera."}
+                in newWorld
+
+-- Gives the "measles" condition to a random party member
+measles :: World -> World
+measles w = let (newW, n) = generateRandomInt w 5
+                memberHealth = (partyHealth newW)!!n
+                oldConditions = (partyConditions newW)
+                memberConditions = oldConditions!!n
+                memberName = (partyNames newW)!!n
+                newWorld 
+                    | memberHealth <= 0                 = noEvent newW -- party member is dead, do nothing
+                    | "measles" `elem` memberConditions = noEvent newW -- party member already has measles, do nothing
+                    | otherwise                              = newW {partyConditions = replaceNth oldConditions n ("measles":memberConditions), message = memberName ++ " has measles."}
                 in newWorld
 
 -- ********************** End of events **********************
