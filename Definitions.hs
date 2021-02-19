@@ -8,7 +8,7 @@ data World = World {
     date :: Date,
     partyNames :: [String],
     partyHealth :: [Int], -- todo decide what is healthy, fair, poor, very poor
-    partyConditions :: [[String]],
+    partyConditions :: [[String]], -- 0 = dead, 1 = poor, 2 = fair, 3 = good
     food :: Int,
     nextLocation :: Node,
     position :: Int,
