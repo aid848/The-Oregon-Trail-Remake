@@ -137,7 +137,10 @@ applyCholera n w = let partyHealths = partyHealth w
 randomEvent :: World -> World
 randomEvent w = let (newW, n) = generateRandomInt w 100
                     newWorld
-                        | n `elem` [0..49]  = noEvent newW
+                        | n `elem` [0..19]  = noEvent newW
+                        | n `elem` [20..29] = findOxen newW
+                        | n `elem` [30..39] = findFood newW
+                        | n `elem` [40..49] = findCash newW
                         | n `elem` [50..59] = theftOxen newW
                         | n `elem` [60..69] = lostTrail newW
                         | n `elem` [70..74] = dysentery newW
@@ -158,6 +161,24 @@ randomEvent w = let (newW, n) = generateRandomInt w 100
 -- Nothing happened
 noEvent :: World -> World
 noEvent w = w {message = ""}
+
+-- Find a random number of oxen between 1 and 5 inclusive
+findOxen :: World -> World
+findOxen w = let (newW, n) = generateRandomInt w 5
+                 numOxen = (oxen newW)
+                 in newW {oxen = numOxen + (n+1), message = "You find an abandoned wagon with " ++ show (n+1) ++ " oxen."}
+
+-- Find a random amount of food between 100 and 300 inclusive
+findFood :: World -> World
+findFood w = let (newW, n) = generateRandomInt w 201
+                 numFood = (food newW)
+                 in newW {food = numFood + (n+100), message = "You find an abandoned wagon with " ++ show (n+100) ++ " lbs of food."}
+
+-- Find a random amount of cash between 100 and 300 inclusive
+findCash :: World -> World
+findCash w = let (newW, n) = generateRandomInt w 201
+                 numCash = (cash newW)
+                 in newW {cash = numCash + (fromIntegral (n+100)), message = "You find an abandoned wagon with $" ++ show (n+100) ++ "."}
 
 -- Lost trail, lose a random number of days between 1 and 3 inclusive
 lostTrail :: World -> World
