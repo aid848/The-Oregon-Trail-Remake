@@ -140,9 +140,10 @@ randomEvent w = let (newW, n) = generateRandomInt w 100
                         | n `elem` [0..49]  = noEvent newW
                         | n `elem` [50..59] = theftOxen newW
                         | n `elem` [60..69] = lostTrail newW
-                        | n `elem` [70..79] = dysentery newW
+                        | n `elem` [70..74] = dysentery newW
+                        | n `elem` [75..79] = cholera newW
                         | n `elem` [80..89] = killOxen newW
-                        | n `elem` [90..99] = cholera newW
+                        | n `elem` [90..99] = wrongTrail newW
                     in newWorld
 
 -- ********************** End of Random Event Generator **********************
@@ -163,6 +164,12 @@ lostTrail :: World -> World
 lostTrail w = let (newW, n) = generateRandomInt w 3
                   newWorld = lostTrailNDays (n+1) newW
                   in newWorld {message = "Lost trail. Lose " ++ show (n+1) ++ " days."}
+
+-- Wrong trail, lose a random number of days between 1 and 3 inclusive
+wrongTrail :: World -> World
+wrongTrail w = let (newW, n) = generateRandomInt w 3
+                   newWorld = lostTrailNDays (n+1) newW
+                   in newWorld {message = "Wrong trail. Lose " ++ show (n+1) ++ " days."}
 
 -- Lost trail for n days
 lostTrailNDays :: Int -> World -> World
