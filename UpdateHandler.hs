@@ -160,8 +160,10 @@ randomEvent w = let (newW, n) = generateRandomInt w 100
                         | n `elem` [64..69] = wrongTrail newW
                         | n `elem` [70..74] = dysentery newW
                         | n `elem` [75..79] = cholera newW
-                        | n `elem` [80..89] = killOxen newW
-                        | n `elem` [90..99] = measles newW
+                        | n `elem` [80..84] = killOxen newW
+                        | n `elem` [85..89] = findWildFruit newW
+                        | n `elem` [90..94] = measles newW
+                        | n `elem` [95..99] = findWildVegetables newW
                     in newWorld
 
 -- ********************** End of Random Event Generator **********************
@@ -194,6 +196,16 @@ findCash :: World -> World
 findCash w = let (newW, n) = generateRandomInt w 201
                  numCash = (cash newW)
                  in newW {cash = numCash + (fromIntegral (n+100)), message = "You find an abandoned wagon with $" ++ show (n+100) ++ "."}
+
+-- Find some wild fruit
+findWildFruit :: World -> World
+findWildFruit w = let numFood = (food w)
+                      in w {food = numFood + 20, message = "Find wild fruit."}
+
+-- Find some wild veggies
+findWildVegetables :: World -> World
+findWildVegetables w = let numFood = (food w)
+                           in w {food = numFood + 20, message = "Find wild vegetables."}
 
 -- Lost trail, lose a random number of days between 1 and 3 inclusive
 lostTrail :: World -> World
