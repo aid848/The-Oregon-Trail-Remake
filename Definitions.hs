@@ -30,7 +30,7 @@ data World = World {
     rngSeed :: Int -- used to generate random numbers 
 } deriving(Show)
 
--- startingShop 
+
 
 startingDate :: Date
 startingDate = dateCons 1 "March" 1848

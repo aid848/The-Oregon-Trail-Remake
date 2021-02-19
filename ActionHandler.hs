@@ -38,7 +38,34 @@ useMedicine w = let temp = read (userInput w) :: Int
                     memberConditions = partyConditions w
                     cured = []
                     in w {partyConditions = replaceNth memberConditions mem cured}
+-- **************************
 
 
--- replaceNth arr n new 
--- Replaces the nth element of arr with new
+
+-- ******* Update Balance, inventory after purchases *******
+-- uses Shop in (currentLocation w)
+updateInvBalPurchase :: World -> World
+updateInvBalPurchase w = let thisShop = (shop (currentLocation w))
+                             invalidReset = shopCons (store thisShop) (items thisShop) []   -- work done
+                             thisNode = currentLocation w                                   -- if invalid purchase,
+                             resetShop = thisNode {shop = invalidReset}                     -- resets selected field
+                             purchases = selected thisShop
+                             cost = getPurchaseTotal purchases
+                             wallet = cash w                --
+                             numFood = food w               --
+                             numOxen = oxen w               --
+                             numClothes = clothing w        --
+                             numMeds = medicine w           -- original values
+                             numParts = parts w             --
+                             newWorld
+                                 | cost > wallet = w {currentLocation = resetShop, message = "Not enough cash! Select fewer items."}
+                                 | otherwise = w {food = numFood + f, clothing = numClothes + c, 
+                                                  medicine = numMeds + m, parts = numParts + p, 
+                                                  cash = wallet - cost, oxen = numOxen + o} where
+                                     f = getFoodTotal purchases
+                                     c = getClothingTotal purchases
+                                     m = getMedicineTotal purchases
+                                     p = getPartsTotal purchases
+                                     o = getOxenTotal purchases
+                            in newWorld
+-- **************************

@@ -34,10 +34,14 @@ updateSelected s item amt price
         stock = stringItUp (selected s) 
 
 
+
+
+
 -- get purchase total to adjust cash balance
 getPurchaseTotal :: [(String, Int, Float)] -> Float
 getPurchaseTotal [] = 0.0
 getPurchaseTotal (h:t) = (extractThird h) + getPurchaseTotal t
+
 
 -- get number of oxen purchased to update oxen in World
 getOxenTotal :: [(String, Int, Float)] -> Int
