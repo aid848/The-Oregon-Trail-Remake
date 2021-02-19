@@ -3,6 +3,7 @@ import Graphics.Gloss
 import Graphics.Gloss.Interface.Pure.Game
 import ScreenHandler
 import Definitions
+import UpdateHandler
 
 
 windowDisplay :: Display
@@ -25,9 +26,12 @@ drawingFunc w = drawScreen w w -- todo fix this to not need the same argument tw
 
 -- A function to handle input events.
 inputHandler :: Event -> World -> World -- todo case analysis here based on world state
-inputHandler (EventKey (SpecialKey KeySpace) Down _ _) w = w {message = "hihi"}
-inputHandler _ w = w 
+inputHandler (EventKey (SpecialKey KeySpace) Down _ _) w = w {screenType = "Inventory"} -- TODO: delete
+inputHandler (EventKey (SpecialKey KeyEnter) Down _ _) w = w {screenType = "On route"} -- TODO: delete
+inputHandler _ w = w
 
 -- A function to step the world one iteration. It is passed the period of time (in seconds) needing to be advanced. 
 updateFunc :: Float -> World -> World 
-updateFunc _ w = w -- todo have set of actions here?
+updateFunc _ w
+  | (screenType w) == "On route" = update w
+  | otherwise                    = w

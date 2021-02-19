@@ -11,7 +11,7 @@ textColor = white
 
 -- top level screen drawer based on world state
 drawScreen :: World -> World -> Picture
-drawScreen World{screenType=""} w = onRouteScreen w w -- for testing, remove or keep for showing error
+drawScreen World{screenType=""} w = settlementScreen w w -- for testing, remove or keep for showing error
 drawScreen World{screenType="Start"} w = startScreen
 drawScreen World{screenType="On route"} w = onRouteScreen w w
 drawScreen World{screenType="Shop"} w = shopScreen w w
@@ -66,7 +66,8 @@ lineGen x y = (Polygon [(x/(-2),y/2),(x/(-2),y/(-2)),(x/2,y/(-2)),(x/2,y/2)])
 partyHealthToWord :: [Int] -> String -- TODO
 partyHealthToWord partyHp = "good"
 
-paceToWord :: Float -> String -- TODO
+-- 1 = steady, 2 = strenuous, 3 = grueling
+paceToWord :: Int -> String -- TODO
 paceToWord val = "steady"
 
 dateText :: World -> String
@@ -208,8 +209,8 @@ shopScreen World{userstage = 1} w = Pictures [shopStaticTextElements,(shopDynami
 
 -- Settlement (user state based on selection number)
 
-
-rationsToWord :: Float -> String -- TODO
+-- 1 = filling, 2 = meager, 3 = bare bones
+rationsToWord :: Int -> String -- TODO
 rationsToWord ra = "filling"
 
 settleName :: World -> Picture
