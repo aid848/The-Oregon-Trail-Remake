@@ -7,8 +7,8 @@ import Date
 
 data Node = Node {
   name :: String,
-  next :: Upcoming,
-  dist :: Int,
+  next :: Upcoming, -- (Node, distance tuples).  Distances indicate distance from THIS node
+  dist :: Int,      -- distance travelled from THIS node, e.g., 0 <= dist <= chosen node in Upcoming
   shop :: Shop
 } deriving(Eq, Show)
 
@@ -79,6 +79,13 @@ type Map = [Node]
 -- showMap (h:t) = show (name h) ++ " " ++ showMap t
 
 
+-- checks to see if we've reached the next node, pass in currentLocation and nextLocation in node
+reachedNext :: Node -> Node -> Bool
+reachedNext current next = let x = dist current
+                               y = dist next
+                               in x == y
+
+
 -- checks to see if next field is Empty
 -- returns True if Empty
 isNextEmpty :: Node -> Bool
@@ -107,13 +114,6 @@ getSecondInNext n = fst (head (tail (upcomingToList (next n))))
 -- returns distance to upcoming node given (next node') where node' is current node
 getDist :: Upcoming -> Int
 getDist (Dests [(n, d)]) = d 
-
--- todo
--- checks to see if we've reached the next node, can select first or second option in Upcoming
--- if select is 1, check first node in next, if 2, check second node in next
--- reachedNext :: Node -> Int -> Bool
--- reachedNext n sel
---     | sel == 1 = checkDistance n (getFirstInNext n)
 
 
 -- returns Upcoming field as list

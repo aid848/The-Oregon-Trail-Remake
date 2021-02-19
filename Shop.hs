@@ -2,8 +2,7 @@ module Shop where
 
 data Shop = Shop {
     store :: String,            -- e.g. "Matt's General Store"
-    items :: [(String, Float)], -- e.g. [("1. Oxen", 160.00), ("2. Food", 300.00)]
-    selected :: [(String, Int, Float)]  -- e.g. [("Oxen", 2, 320.00)]
+    items :: [(String, Float)], -- e.g. [("1. Oxen", 160.00), ("2. Food", 300.00)] 
 } deriving(Show)
 
 instance Eq Shop where
@@ -34,10 +33,14 @@ updateSelected s item amt price
         stock = stringItUp (selected s) 
 
 
+
+
+
 -- get purchase total to adjust cash balance
 getPurchaseTotal :: [(String, Int, Float)] -> Float
 getPurchaseTotal [] = 0.0
 getPurchaseTotal (h:t) = (extractThird h) + getPurchaseTotal t
+
 
 -- get number of oxen purchased to update oxen in World
 getOxenTotal :: [(String, Int, Float)] -> Int

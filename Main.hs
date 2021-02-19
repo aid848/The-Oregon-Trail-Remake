@@ -4,6 +4,7 @@ import Graphics.Gloss.Interface.Pure.Game
 import ScreenHandler
 import Definitions
 import UpdateHandler
+import ActionHandler
 
 
 windowDisplay :: Display
