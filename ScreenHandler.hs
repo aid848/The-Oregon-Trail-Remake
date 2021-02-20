@@ -17,7 +17,6 @@ drawScreen World{screenType="Shop"} w = shopScreen w w
 drawScreen World{screenType="Settlement"} w = settlementScreen w w
 drawScreen World{screenType="River"} w = riverScreen w w
 drawScreen World{screenType="Inventory"} w = inventoryScreen w w
-drawScreen World{screenType="Generic"} w = genericScreen w w
 drawScreen World{screenType="Splash"} w = splashScreen w w
 drawScreen World{screenType=""} w = settlementScreen w w -- for testing, remove or keep for showing error
 
@@ -71,7 +70,7 @@ partyHealthToWord :: [Int] -> String -- TODO
 partyHealthToWord partyHp = "good"
 
 -- 1 = steady, 2 = strenuous, 3 = grueling
-paceToWord :: Int -> String -- TODO
+paceToWord :: Int -> String
 paceToWord val = "steady"
 
 dateText :: World -> String
@@ -93,6 +92,9 @@ landmarkText w = ("Next landmark: "++(show (dist (nextLocation w)))++" miles")
 -- todo add this to world props or something
 milesTraveledText :: World -> String
 milesTraveledText w = ("Miles Traveled: "++"Todo"++" miles")
+
+spaceToContinue :: Picture
+spaceToContinue = textWriter "Press SPACE to continue" "full"
 
 -- retrieve bitmap data for rendering on screen TODO
 -- drawBitmap :: ? -> Picture
@@ -166,6 +168,9 @@ routeWagon = Text "Todo"
 routeRiver :: World -> Picture
 routeRiver w = Text "Todo"
 
+-- message to show user input options
+routePausePrompt :: Picture
+routePausePrompt = Text "TODO black background, white text with saying press enter to size up the situation"
 
 -- (stage 0 = traveling stage, stage 1 = stopped, 2 = stopped dialogue box)
 onRouteScreen :: World -> World -> Picture
@@ -225,8 +230,11 @@ shopScreen World{userstage = 1} w = Pictures [shopStaticTextElements,(shopDynami
 -- Settlement (user state based on selection number)
 
 -- 1 = filling, 2 = meager, 3 = bare bones
-rationsToWord :: Int -> String -- TODO
-rationsToWord ra = "filling"
+rationsToWord :: Int -> String
+rationsToWord ra
+    | ra == 1 = "filling"
+    | ra == 2 = "strenuous"
+    | otherwise = "grueling"
 
 settleName :: World -> Picture
 settleName w = anchorElement "top half text" (textWriter (name (nextLocation w)) "full")
@@ -255,25 +263,103 @@ settleActions :: Picture
 settleActions = Translate (-400) (75) (textWriterFormatted settleActionsText)
 
 settleChoice :: World -> Picture
-settleChoice w = Translate (50) (-325) (textWriter ("What is your choice? "++(userInput w)) "half")
+settleChoice w = Translate (-100) (-325) (textWriter ("What is your choice? "++(userInput w)++"_") "half")
+
+settleItemsList :: Picture
+settleItemsList =  Translate (-175) (200) (textWriterFormatted invItemText)
+
+oxenGui :: World -> Picture
+oxenGui w = Translate (0) (0) (textWriterFormatted [(show (oxen w))])
+
+foodGui :: World -> Picture
+foodGui w = Translate (0) (-50) (textWriterFormatted [(show (food w))])
+
+sparePartsGui :: World -> Picture
+sparePartsGui w = Translate (0) (-100) (textWriterFormatted [(show (parts w))])
+
+clothingGui :: World -> Picture
+clothingGui w = Translate (0) (-150) (textWriterFormatted [(show (clothing w))])
+
+medicineGui :: World -> Picture
+medicineGui w = Translate (0) (-200) (textWriterFormatted [(show (medicine w))])
+
+cashGui :: World -> Picture
+cashGui w = Translate (-20) (-250) (textWriterFormatted ["$"++(show (cash w))]) 
+
+
+settleItemValues :: World -> Picture
+settleItemValues w = Translate (200) (200) (Pictures[oxenGui w,foodGui w,sparePartsGui w, clothingGui w, medicineGui w, cashGui w])
+
+settleSuppliesHeader :: Picture
+settleSuppliesHeader = anchorElement "top half text" (textWriter "Your Supplies" "half")
+
+paceChangeCurrent :: World -> Picture
+paceChangeCurrent w = Translate (-textHeightF) (yDim/2 - textHeightF) (textWriterFormatted ["Change pace","(currently: "++(paceToWord (pace w))++")"])
+
+paceChangeDescription :: Picture
+paceChangeDescription = Translate (-xDim/4) (yDim/4 - textHeightF*3) (textWriterFormatted paceChangeInfoText)
+
+foodChangeCurrent :: World -> Picture
+foodChangeCurrent w =  Translate (-textHeightF*2) (yDim/2 - textHeightF) (textWriterFormatted ["Change food rations","(currently: "++(rationsToWord (rationing w))++")"])
+
+foodInfoDescription :: Picture
+foodInfoDescription = Translate (-xDim/4) (yDim/4) (textWriter foodInfoText "half")
+
+foodChangeDescription :: Picture
+foodChangeDescription = Translate (-xDim/4) (yDim/4 - textHeightF*4) (textWriterFormatted foodChoicesText)
+
+daysToRestInput :: World -> Picture
+daysToRestInput w = Translate (-xDim/4) (20) (textWriter ("How many days would you like to rest?") "full")
+
+blankInput :: World -> Picture
+blankInput w = Translate (-xDim/16) (-40) (textWriter (userText w) "full")
+
+daysToRestDialogue :: World -> Picture
+daysToRestDialogue w = Pictures [routeDialogueBackground,daysToRestInput w, blankInput w]
 
 
 -- River TODO 
 riverScreen World{userstage = 0} w = Color white ( anchorElement "bottom full text" (textWriter "todo" "full"))
 
--- Inventory TODO all the other screens for actions -_-
+-- Inventory TODO put gold bars on pace,rationing
 inventoryActions :: Picture
 inventoryActions = Translate (-400) (75) (textWriterFormatted invActionsText)
 
+-- overview
 inventoryScreen World{userstage = 0} w = Pictures [settleDate w,settleStatusBar w, inventoryActions, settleChoice w]
--- TODO call anti crash handler for unknown userstage
+-- 1 should not appear as it should switch to on route
+-- supplies
+inventoryScreen World{userstage = 2} w = Pictures [settleItemsList,settleSuppliesHeader, settleItemValues w, Translate (-200) (textHeightF-yDim/2) (spaceToContinue)]
+--map TODO
+inventoryScreen World{userstage = 3} w = Pictures [Translate (-200) (textHeightF-yDim/2) (spaceToContinue)]
+-- change pace
+inventoryScreen World{userstage = 4} w = Pictures [paceChangeCurrent w,settleChoice w,paceChangeDescription]
+--change rations
+inventoryScreen World{userstage = 5} w = Pictures [settleChoice w, foodChangeCurrent w,foodChangeDescription, foodInfoDescription]
+-- stop to rest
+inventoryScreen World{userstage = 6} w = Pictures [settleDate w,settleStatusBar w, inventoryActions, daysToRestDialogue w]
+
+-- anti crash for unknown userstage
 inventoryScreen World{userstage = _} w = Pictures [settleDate w,settleStatusBar w, inventoryActions, settleChoice w]
 
 -- TODO all the other screens for actions -_-
 settlementScreen World{userstage = 0} w = Pictures [settleName w, settleDate w,settleStatusBar w, settleActions, settleChoice w]
+-- 1 should not appear as it should switch to on route
+-- supplies
+settlementScreen World{userstage = 2} w = Pictures [settleItemsList,settleSuppliesHeader, settleItemValues w, Translate (-200) (textHeightF-yDim/2) (spaceToContinue)]
+--map TODO
+settlementScreen World{userstage = 3} w = Pictures [Translate (-200) (textHeightF-yDim/2) (spaceToContinue)]
+-- change pace
+settlementScreen World{userstage = 4} w = Pictures [paceChangeCurrent w,settleChoice w,paceChangeDescription]
+--change rations
+settlementScreen World{userstage = 5} w = Pictures [settleChoice w, foodChangeCurrent w,foodChangeDescription, foodInfoDescription]
+-- stop to rest
+settlementScreen World{userstage = 6} w = Pictures [settleName w, settleDate w,settleStatusBar w, settleActions, daysToRestDialogue w]
+-- 7 should not appear as it should switch to shop
+
+-- anti crash for unknown userstage
+settlementScreen World{userstage = _} w = Pictures [settleName w, settleDate w,settleStatusBar w, settleActions, settleChoice w]
 -- settlementScreen World{userstage = 1} w = Pictures [settleName w, settleDate w,settleStatusBar w, settleActions, settleChoice w]
 
--- Generic menu (for changing settings and stuff) TODO remove?
-genericScreen World{userstage = 0} w = Color white ( anchorElement "bottom full text" (textWriter "todo" "full"))
 
 -- ******************* End of screen definitions *******************
