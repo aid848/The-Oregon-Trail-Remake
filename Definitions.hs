@@ -17,7 +17,7 @@ data World = World {
     currentLocation :: Node,        -- Node that we are either in, or in transit from
     milesTravelled :: Int,          -- cumulative distance travelled
     cash :: Float,
-    bill :: Float, -- todo remove and use shop chosen to buy
+    bill :: Float, -- todo remove and use shop chosen to buy  (? Connor doesnt know what this comment means)
     rationing :: Int, -- 1 = filling, 2 = meager, 3 = bare bones
     screenType :: String,
     pace :: Int, -- 1 = steady, 2 = strenuous, 3 = grueling

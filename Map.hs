@@ -25,13 +25,14 @@ instance Eq Upcoming where
 instance Show Upcoming where
     show Empty = "Empty"
     show (Dests [(n, d)]) = show (name n) ++ show d
+    show (Dests [(n, d), (n1,d1)]) = show (name n) ++ " " ++ show d ++ "  " ++ show (name n) ++ " " ++ show d
 
 
 
 
 -- A test Shop
 shop0 :: Shop
-shop0 = shopCons "Matt's General Store" [("1. Oxen", 160.00), ("2. Food", 300.00)] []
+shop0 = shopCons "Matt's General Store" [("1. Oxen", 160.00), ("2. Food", 300.00)]
 
 
 {- 
@@ -79,6 +80,17 @@ type Map = [Node]
 -- showMap (h:t) = show (name h) ++ " " ++ showMap t
 
 
+-- !! for Aidan 
+-- get distance to next landmark
+-- takes in currentLocation and nextLocation nodes from WS
+distToLandmark:: Node -> Node -> Int
+distToLandmark curr nextLoc = let pos = dist curr
+                                  end
+                                      | getFirstInNext curr == nextLoc = getFirstDistInNext curr
+                                      | otherwise = getSecondDistInNext curr
+                                   in end - pos
+
+
 -- checks to see if we've reached the next node, pass in currentLocation and nextLocation in node
 reachedNext :: Node -> Node -> Bool
 reachedNext current next = let x = dist current
@@ -111,9 +123,11 @@ getFirstInNext n = fst (head (upcomingToList (next n)))
 getSecondInNext :: Node -> Node
 getSecondInNext n = fst (head (tail (upcomingToList (next n))))
 
--- returns distance to upcoming node given (next node') where node' is current node
-getDist :: Upcoming -> Int
-getDist (Dests [(n, d)]) = d 
+getFirstDistInNext :: Node -> Int
+getFirstDistInNext n = snd (head (tail (upcomingToList (next n))))
+
+getSecondDistInNext :: Node -> Int
+getSecondDistInNext n = snd (head (tail (upcomingToList (next n))))
 
 
 -- returns Upcoming field as list
