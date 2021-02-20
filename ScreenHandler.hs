@@ -11,15 +11,15 @@ textColor = white
 
 -- top level screen drawer based on world state
 drawScreen :: World -> World -> Picture
-drawScreen World{screenType=""} w = settlementScreen w w -- for testing, remove or keep for showing error
-drawScreen World{screenType="Start"} w = startScreen
+drawScreen World{screenType="Start"} w = startScreen w w
 drawScreen World{screenType="On route"} w = onRouteScreen w w
 drawScreen World{screenType="Shop"} w = shopScreen w w
 drawScreen World{screenType="Settlement"} w = settlementScreen w w
-drawScreen World{screenType="River"} w = riverScreen
+drawScreen World{screenType="River"} w = riverScreen w w
 drawScreen World{screenType="Inventory"} w = inventoryScreen w w
-drawScreen World{screenType="Generic"} w = genericScreen
-drawScreen World{screenType="Splash"} w = splashScreen
+drawScreen World{screenType="Generic"} w = genericScreen w w
+drawScreen World{screenType="Splash"} w = splashScreen w w
+drawScreen World{screenType=""} w = settlementScreen w w -- for testing, remove or keep for showing error
 
 
 -- outputs a Picture of the input text to allow for text wrapping and not drawing off the screen
@@ -102,14 +102,14 @@ milesTraveledText w = ("Miles Traveled: "++"Todo"++" miles")
 -- pattern: array of elements -> picture -> combine into one large picture
 
 -- splash screen todo (if time)
-splashScreen = Color white ( anchorElement "bottom full text" (textWriter "bigTxt" "full"))
+splashScreen World{userstage = 0} w = Color white ( anchorElement "bottom full text" (textWriter "bigTxt" "full"))
 
 -- used to test output
-testScreen = Color white ( anchorElement "bottom full text" (textWriter "bigTxt" "full"))
+testScreen World{userstage = 0} w = Color white ( anchorElement "bottom full text" (textWriter "bigTxt" "full"))
 
 
 -- starting screen todo
-startScreen = Color white ( anchorElement "bottom full text" (textWriter "todo" "full"))
+startScreen World{userstage = 0} w = Color white ( anchorElement "bottom full text" (textWriter "todo" "full"))
 
 -- On route 
 
@@ -259,19 +259,21 @@ settleChoice w = Translate (50) (-325) (textWriter ("What is your choice? "++(us
 
 
 -- River TODO 
-riverScreen = Color white ( anchorElement "bottom full text" (textWriter "todo" "full"))
+riverScreen World{userstage = 0} w = Color white ( anchorElement "bottom full text" (textWriter "todo" "full"))
 
 -- Inventory TODO all the other screens for actions -_-
 inventoryActions :: Picture
 inventoryActions = Translate (-400) (75) (textWriterFormatted invActionsText)
 
 inventoryScreen World{userstage = 0} w = Pictures [settleDate w,settleStatusBar w, inventoryActions, settleChoice w]
+-- TODO call anti crash handler for unknown userstage
+inventoryScreen World{userstage = _} w = Pictures [settleDate w,settleStatusBar w, inventoryActions, settleChoice w]
 
 -- TODO all the other screens for actions -_-
 settlementScreen World{userstage = 0} w = Pictures [settleName w, settleDate w,settleStatusBar w, settleActions, settleChoice w]
 -- settlementScreen World{userstage = 1} w = Pictures [settleName w, settleDate w,settleStatusBar w, settleActions, settleChoice w]
 
 -- Generic menu (for changing settings and stuff) TODO remove?
-genericScreen = Color white ( anchorElement "bottom full text" (textWriter "todo" "full"))
+genericScreen World{userstage = 0} w = Color white ( anchorElement "bottom full text" (textWriter "todo" "full"))
 
 -- ******************* End of screen definitions *******************

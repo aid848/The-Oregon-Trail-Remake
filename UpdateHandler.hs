@@ -204,11 +204,11 @@ randomEvent w = let (newW, n) = generateRandomInt w 100
                         | n `elem` [94..96] = measles newW
                         | n `elem` [97..99] = findWildVegetables newW
                     -- TODO: uncomment
-                    -- newUserstage
-                    --     | (message newWorld == "") = 0
-                    --     | otherwise = 2
-                    -- in newWorld {userstage = newUserstage}
-                    in newWorld
+                    newUserstage
+                        | (message newWorld == "") = 0
+                        | otherwise = 2
+                    in newWorld {userstage = newUserstage}
+                    -- in newWorld
 
 -- ********************** End of Random Event Generator **********************
 
