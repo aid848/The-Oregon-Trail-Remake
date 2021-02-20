@@ -170,8 +170,8 @@ routeRiver w = Text "Todo"
 -- (stage 0 = traveling stage, stage 1 = stopped, 2 = stopped dialogue box)
 onRouteScreen :: World -> World -> Picture
 onRouteScreen World{userstage = 0} w = Pictures[routeNearPlane,routeStatusBar w, routeDialogueBox w,routeFarPlane]
-onRouteScreen World{userstage = 1} w = Pictures[routeNearPlane,routeStatusBar w, routeDialogueBox w,routeFarPlane]
--- onRouteScreen World{userstage = 2} w = Color white (Pictures[routeNearPlane,routeStatusBar w])
+onRouteScreen World{userstage = 1} w = Pictures[routeNearPlane,routeStatusBar w, routeFarPlane]
+onRouteScreen World{userstage = 2} w = Pictures[routeNearPlane,routeStatusBar w, routeDialogueBox w,routeFarPlane]
 
 -- Shop (userstage 0 = main shop menu, 1 = item selected and asking how much to buy and info about it)
 -- TODO stage 1 with item info and amount to buy needed
