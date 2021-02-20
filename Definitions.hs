@@ -9,6 +9,7 @@ data World = World {
     partyNames :: [String],
     partyHealth :: [Int], -- length=5, each party member is one of: 0=dead, [1..25]=very poor, [26..50]=poor, [51..75]=fair, [76..100]=healthy
     partyConditions :: [[String]], -- each member can be one or combination of "cholera", "dysentery" "measles", "fever" or []
+    partyIsDead :: [Bool], -- length=5, each party member is one of True=dead, False=alive
     food :: Int,
     clothing :: Int,
     medicine :: Int,
@@ -38,7 +39,11 @@ startingDate = dateCons 1 "March" 1848
 
 -- TODO: check that initialWorld is set to starting values that make sense
 initialWorld :: World
+<<<<<<< HEAD
 initialWorld = World startingDate ["A", "B", "C", "D", "E"] [100,100,100,100,100] [[],[],[],[],[]] 0 0 0 0 (buffalo_head) (blue_river) 0 0.0 0.0 1 "On route" 1 10 "" False 1  "textTest" "Cloudy" 42 []
+=======
+initialWorld = World startingDate ["A", "B", "C", "D", "E"] [100,100,100,100,100] [[],[],[],[],[]] [False, False, False, False, False] 1000 0 0 0 (buffalo_head) (blue_river) 0 0.0 0.0 1 "" 1 10 "" False 0  "textTest" "Cloudy" 42 []
+>>>>>>> origin/polish-update-func
 
 
 

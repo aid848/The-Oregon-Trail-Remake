@@ -34,5 +34,5 @@ inputHandler _ w = w
 -- A function to step the world one iteration. It is passed the period of time (in seconds) needing to be advanced. 
 updateFunc :: Float -> World -> World 
 updateFunc _ w
-  | (screenType w) == "On route" = update w
-  | otherwise                    = w
+  | (screenType w) == "On route" && (userstage w) == 0 = update w
+  | otherwise                                          = w
