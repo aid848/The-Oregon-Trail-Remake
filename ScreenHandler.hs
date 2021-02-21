@@ -11,8 +11,8 @@ textColor = white
 
 -- top level screen drawer based on world state
 drawScreen :: World -> World -> Picture
-drawScreen World{screenType="Start"} w = startScreen w w -- not started
-drawScreen World{screenType="On route"} w = onRouteScreen w w -- mostly done except for wagon graphics and distances
+drawScreen World{screenType="Start"} w = startScreen w w -- done
+drawScreen World{screenType="On route"} w = onRouteScreen w w -- mostly done except for wagon graphics, size up situation, and distances
 drawScreen World{screenType="Shop"} w = shopScreen w w -- needs sub screens, fix money to have x.xx, set userinput to _
 drawScreen World{screenType="Settlement"} w = settlementScreen w w -- done, except map
 drawScreen World{screenType="River"} w = riverScreen w w -- not started
@@ -85,6 +85,13 @@ healthText w = ("Health: "++(partyHealthToWord(partyHealth w)))
 foodText :: World -> String
 foodText w = ("Food: "++(show (food w))++" pounds")
 
+
+settleChoice :: World -> Picture
+settleChoice w = Translate (-100) (-325) (textWriter ("What is your choice? "++(userInput w)) "half")
+
+choiceGeneric :: String -> World -> Picture
+choiceGeneric q w = (textWriter (q++(userInput w)) "half")
+
 --todo change to remaining distance
 landmarkText :: World -> String
 landmarkText w = ("Next landmark: "++(show (dist (nextLocation w)))++" miles")
@@ -96,6 +103,9 @@ milesTraveledText w = ("Miles Traveled: "++"Todo"++" miles")
 spaceToContinue :: Picture
 spaceToContinue = textWriter "Press SPACE to continue" "full"
 
+enterToContinue :: Picture
+enterToContinue = textWriter "Enter name and press ENTER to continue" "full"
+
 -- retrieve bitmap data for rendering on screen TODO
 -- drawBitmap :: ? -> Picture
 -- drawBitmap = 
@@ -106,29 +116,52 @@ spaceToContinue = textWriter "Press SPACE to continue" "full"
 -- splash screen todo (if time)
 splashScreen World{userstage = 0} w = Color white ( anchorElement "bottom full text" (textWriter "bigTxt" "full"))
 
--- used to test output
-testScreen World{userstage = 0} w = Color white ( anchorElement "bottom full text" (textWriter "bigTxt" "full"))
+introNumberedNames :: Picture
+introNumberedNames = Translate (-xDim/4) (0) (textWriterFormatted oneToFive)
 
+introNames :: Int -> World -> Picture
+introNames i w = Translate (-xDim/6) (0) (textWriterFormatted (take i (partyNames w)))
 
--- starting screen todo
+titleHeader :: Picture
+titleHeader = Translate (-xDim/6) (yDim/2 - textHeightF*2) (Color yellow (arrangeText (foldr (\ x y -> (Scale 0.5 0.5(Text x)):y) [] (splitText "The Oregon Trail" halfTextSpan))))
+
+introWealthText :: Picture
+introWealthText = Translate (-xDim/6) (yDim/2 - textHeightF*4) (textWriter introWealth "half")
+
+introWealthOptions:: Picture
+introWealthOptions = Translate (-xDim/6) (yDim/2 - textHeightF*8) (textWriterFormatted introWealthOptionsText)
+
+introMonths :: Picture
+introMonths = Translate (-xDim/8) (yDim/8) (textWriterFormatted introLocationMonths)
+
+introLocationInfoText :: Picture
+introLocationInfoText = anchorElement "top full text" (textWriter introLocationInfo "full")
+
+introOutro :: World -> Picture
+introOutro  w = Translate (halfTextSpanF - halfX) (0) (textWriter (introOutTextOne++(show (cash w))++introOutTextTwo) "full")
+
+outroWarning :: Picture
+outroWarning = Translate (halfTextSpanF - halfX) (-150) (textWriter introShopWarning "full")
+
+-- starting screen
 -- choose background (wealth)
-startScreen World{userstage = 0} w = blank
--- party leader name TODO
-startScreen World{userstage = 1} w = blank
--- party member 2 name TODO
-startScreen World{userstage = 2} w = blank
--- party member 3 name TODO
-startScreen World{userstage = 3} w = blank
--- party member 4 name TODO
-startScreen World{userstage = 4} w = blank
--- party member 5 name TODO
-startScreen World{userstage = 5} w = blank
--- starting month select (march-july 1948) TODO
-startScreen World{userstage = 6} w = blank
--- info text TODO
-startScreen World{userstage = 7} w = blank
--- anti crash TODO
-startScreen World{userstage = _} w = blank
+startScreen World{userstage = 0} w = Pictures [titleHeader, introWealthOptions, settleChoice w, introWealthText]
+-- party leader name 
+startScreen World{userstage = 1} w = Pictures [titleHeader,Translate (-xDim/4) (0) (choiceGeneric introWagonLeader w),Translate (-xDim/4) (-yDim/2 + textHeightF) enterToContinue]
+-- party member 2 name 
+startScreen World{userstage = 2} w = Pictures [(introNames 1 w),introNumberedNames,titleHeader,Translate (-xDim/6) (-50) (textWriter (userText w) "half"),Translate (-xDim/4) (-yDim/2 + textHeightF) enterToContinue]
+-- party member 3 name 
+startScreen World{userstage = 3} w = Pictures [(introNames 2 w),introNumberedNames,titleHeader,Translate (-xDim/6) (-100) (textWriter (userText w) "half"),Translate (-xDim/4) (-yDim/2 + textHeightF) enterToContinue]
+-- party member 4 name 
+startScreen World{userstage = 4} w = Pictures [(introNames 3 w),introNumberedNames,titleHeader,Translate (-xDim/6) (-150) (textWriter (userText w) "half"),Translate (-xDim/4) (-yDim/2 + textHeightF) enterToContinue]
+-- party member 5 name
+startScreen World{userstage = 5} w = Pictures [(introNames 4 w),introNumberedNames,titleHeader,Translate (-xDim/6) (-200) (textWriter (userText w) "half"),Translate (-xDim/4) (-yDim/2 + textHeightF) enterToContinue]
+-- starting month select (march-july 1948) 
+startScreen World{userstage = 6} w = Pictures[Translate (-xDim/8) (0) (settleChoice w),introMonths, introLocationInfoText ]
+-- info text 
+startScreen World{userstage = 7} w = Pictures [outroWarning,titleHeader,introOutro w,(Translate (-200) (textHeightF-yDim/2) spaceToContinue)]
+-- anti crash 
+startScreen World{userstage = _} w = Pictures [titleHeader, introWealthOptions, settleChoice w, introWealthText]
 
 
 -- On route 
@@ -178,13 +211,13 @@ routeDialogueBackground = Pictures [Color white (lineGen ((xDim*2)/3) 165),Color
 routeDialogueBox :: World -> Picture
 routeDialogueBox w = if (message w) /= "" then Translate (0) (5) (Pictures[routeDialogueBackground, routeMessage w,routeUserInput w]) else blank
 
--- load bitmap
+-- load bitmap TODO
 routeWagon :: Picture
-routeWagon = Text "Todo"
+routeWagon = blank
 
 -- gonna need some world props or something to do the animation of approching river
 routeRiver :: World -> Picture
-routeRiver w = Text "Todo"
+routeRiver w = blank
 
 -- message to show user input options
 routePausePrompt :: Picture
@@ -267,7 +300,6 @@ shopScreen World{userstage = _} w = Pictures [shopStaticTextElements,(shopDynami
 
 -- Settlement (user state based on selection number)
 
--- 1 = filling, 2 = meager, 3 = bare bones
 rationsToWord :: Int -> String
 rationsToWord ra
     | ra == 1 = "filling"
@@ -299,9 +331,6 @@ settleStatusBar w = Translate (0) (175) (Pictures [(color white (lineGen 800 130
 
 settleActions :: Picture
 settleActions = Translate (-400) (75) (textWriterFormatted settleActionsText)
-
-settleChoice :: World -> Picture
-settleChoice w = Translate (-100) (-325) (textWriter ("What is your choice? "++(userInput w)++"_") "half")
 
 settleItemsList :: Picture
 settleItemsList =  Translate (-175) (200) (textWriterFormatted invItemText)

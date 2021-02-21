@@ -62,3 +62,33 @@ foodBareText = "3. bare bones - meals are very small;"
 
 foodChoicesText :: [String]
 foodChoicesText = [foodFillingText, foodMeagerText,foodBareText,"            everyone stays hungry."]
+
+introWealth :: String
+introWealth = "Many kinds of people made the trip to Oregon."
+
+introWealthOptionsText :: [String]
+introWealthOptionsText = ["You may:", "1. Be a banker from Boston", "2. Be a carpenter from Ohio", "3. Be a farmer from Illinois"]
+
+introWagonLeader :: String
+introWagonLeader = "What is the first name of the wagon leader?    "
+
+otherPartyMembers :: String
+otherPartyMembers = "What are the first names of the four other members in your party?"
+
+oneToFive :: [String]
+oneToFive = ["1.","2.","3.","4.","5."]
+
+introLocationInfo :: String
+introLocationInfo = "It is 1848. Your starting place for Oregon is Independence Missouri.  You must decide which month to leave Independence."
+
+introLocationMonths :: [String]
+introLocationMonths = ["1. March","2. April", "3. May", "4. June", "5. July"]
+
+introOutTextOne :: String
+introOutTextOne = "Before leaving Independence you should buy equipment and supplies. youhave $"
+
+introOutTextTwo :: String
+introOutTextTwo = " in cash, but you don't have to spend it all now."
+
+introShopWarning :: String
+introShopWarning = "Make sure to visit the shop before heading out!"
