@@ -12,7 +12,7 @@ textColor = white
 -- top level screen drawer based on world state
 drawScreen :: World -> World -> Picture
 drawScreen World{screenType="Start"} w = startScreen w w -- done
-drawScreen World{screenType="On route"} w = onRouteScreen w w -- mostly done except for wagon graphics, size up situation, and distances
+drawScreen World{screenType="On route"} w = onRouteScreen w w -- mostly done except for wagon graphics, size up situation, and distances, press space to continue on dialogue open
 drawScreen World{screenType="Shop"} w = shopScreen w w -- needs sub screens, fix money to have x.xx, set userinput to _
 drawScreen World{screenType="Settlement"} w = settlementScreen w w -- done, except map
 drawScreen World{screenType="River"} w = riverScreen w w -- not started
@@ -219,11 +219,13 @@ routeWagon = blank
 routeRiver :: World -> Picture
 routeRiver w = blank
 
+
+-- on route screen
+
 -- message to show user input options
 routePausePrompt :: Picture
 routePausePrompt = Text "TODO black background, white text with saying press enter to size up the situation"
 
--- (stage 0 = traveling stage, stage 1 = stopped, 2 = stopped dialogue box)
 onRouteScreen :: World -> World -> Picture
 -- traveling stage
 onRouteScreen World{userstage = 0} w = Pictures[routeNearPlane,routeStatusBar w,routeFarPlane]
@@ -387,18 +389,32 @@ daysToRestDialogue w = Pictures [routeDialogueBackground,daysToRestInput w, blan
 
 -- River
 
--- info TODO
-riverScreen World{userstage = 0} w = blank
--- options TODO
-riverScreen World{userstage = 1} w = blank
--- ford river TODO
-riverScreen World{userstage = 2} w = blank
--- float across TODO
-riverScreen World{userstage = 3} w = blank
--- ferry across TODO
-riverScreen World{userstage = 4} w = blank
--- anti crash TODO
-riverScreen World{userstage = _} w = blank
+riverWidthText :: World -> Picture -- TODO
+riverWidthText w = Translate (-xDim/6) (150) (textWriter ("River width: "++"100"++" feet") "Full")
+riverDepthText :: World -> Picture -- TODO
+riverDepthText w = Translate (-xDim/6) (100) (textWriter ("River depth: "++"6"++" feet") "Full")
+riverOptionsText :: Picture
+riverOptionsText = Translate (halfTextSpanF - halfX/2) (0) (textWriterFormatted riverOptions)
+
+riverGenericMessage :: String -> Picture
+riverGenericMessage txt = anchorElement "bottom full text" (textWriter txt "full")
+
+-- todo width and depth
+riverSituationText :: World -> String
+riverSituationText w = riverInfoOne++"100"++" feet across, and "++"20"++" feet deep in the middle."
+
+-- info
+riverScreen World{userstage = 0} w = Pictures [(riverGenericMessage (riverSituationText w)),settleName w,settleDate w,  Translate (-200) (textHeightF-yDim/2) spaceToContinue]
+-- options
+riverScreen World{userstage = 1} w = Pictures[settleDate w , settleName w,Translate (-xDim/8 + textHeightF/2) ((yDim*2)/7) (textWriter (weatherText w) "half"), riverOptionsText, settleChoice w, riverWidthText w, riverDepthText w]
+-- ford river
+riverScreen World{userstage = 2} w = Pictures[settleDate w , settleName w,(riverGenericMessage (riverFord)),Translate (-200) (textHeightF-yDim/2) spaceToContinue]
+-- float across
+riverScreen World{userstage = 3} w = Pictures[settleDate w , settleName w,(riverGenericMessage (riverFloatInfo)),Translate (-200) (textHeightF-yDim/2) spaceToContinue]
+-- ferry across
+riverScreen World{userstage = 4} w = Pictures[settleDate w , settleName w,(riverGenericMessage (riverFerryInfo)),(settleChoice w)]
+-- anti crash
+riverScreen World{userstage = _} w = Pictures [(riverGenericMessage (riverSituationText w)),settleName w,settleDate w,  Translate (-200) (textHeightF-yDim/2) spaceToContinue]
 
 -- Inventory TODO put gold bars on pace,rationing
 inventoryActions :: Picture

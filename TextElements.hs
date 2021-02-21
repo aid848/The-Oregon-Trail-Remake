@@ -92,3 +92,21 @@ introOutTextTwo = " in cash, but you don't have to spend it all now."
 
 introShopWarning :: String
 introShopWarning = "Make sure to visit the shop before heading out!"
+
+riverOptions :: [String]
+riverOptions = ["You may:", "1. attempt to ford the river", "2. caulk the wagon and float it across", "3. take a ferry across"]
+
+riverInfoOne :: String
+riverInfoOne = "You must cross the river in order to continue. The river at this point is currently "
+
+riverFerryInfo :: String
+riverFerryInfo = "The ferry operator says that he will charge you $5.00 and that you    will have to wait 5 days."
+
+riverFloatInfo :: String
+riverFloatInfo = "You decide to float the wagon across. Your wagon and party make it    across without issue."
+
+riverFord :: String
+riverFord = "You decide to take your wagon across the river. Your wagon and party  make it across without issue."
+
+riverPayment :: String
+riverPayment = "Are you willing to do this?"
