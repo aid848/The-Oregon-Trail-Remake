@@ -11,14 +11,14 @@ textColor = white
 
 -- top level screen drawer based on world state
 drawScreen :: World -> World -> Picture
-drawScreen World{screenType="Start"} w = startScreen w w
-drawScreen World{screenType="On route"} w = onRouteScreen w w
-drawScreen World{screenType="Shop"} w = shopScreen w w
-drawScreen World{screenType="Settlement"} w = settlementScreen w w
-drawScreen World{screenType="River"} w = riverScreen w w
-drawScreen World{screenType="Inventory"} w = inventoryScreen w w
-drawScreen World{screenType="Splash"} w = splashScreen w w
-drawScreen World{screenType=""} w = settlementScreen w w -- for testing, remove or keep for showing error
+drawScreen World{screenType="Start"} w = startScreen w w -- not started
+drawScreen World{screenType="On route"} w = onRouteScreen w w -- mostly done except for wagon graphics and distances
+drawScreen World{screenType="Shop"} w = shopScreen w w -- needs sub screens, fix money to have x.xx, set userinput to _
+drawScreen World{screenType="Settlement"} w = settlementScreen w w -- done, except map
+drawScreen World{screenType="River"} w = riverScreen w w -- not started
+drawScreen World{screenType="Inventory"} w = inventoryScreen w w -- done, except map
+drawScreen World{screenType="Splash"} w = splashScreen w w -- not started
+drawScreen World{screenType=_} w = blank
 
 
 -- outputs a Picture of the input text to allow for text wrapping and not drawing off the screen
@@ -69,7 +69,7 @@ sinePolyGen x y n step = Pictures (map (\s -> Translate (0) (s) (Line (zip [0,st
 partyHealthToWord :: [Int] -> String -- TODO
 partyHealthToWord partyHp = "good"
 
--- 1 = steady, 2 = strenuous, 3 = grueling
+-- 1 = steady, 2 = strenuous, 3 = grueling TODO
 paceToWord :: Int -> String
 paceToWord val = "steady"
 
@@ -111,7 +111,25 @@ testScreen World{userstage = 0} w = Color white ( anchorElement "bottom full tex
 
 
 -- starting screen todo
-startScreen World{userstage = 0} w = Color white ( anchorElement "bottom full text" (textWriter "todo" "full"))
+-- choose background (wealth)
+startScreen World{userstage = 0} w = blank
+-- party leader name TODO
+startScreen World{userstage = 1} w = blank
+-- party member 2 name TODO
+startScreen World{userstage = 2} w = blank
+-- party member 3 name TODO
+startScreen World{userstage = 3} w = blank
+-- party member 4 name TODO
+startScreen World{userstage = 4} w = blank
+-- party member 5 name TODO
+startScreen World{userstage = 5} w = blank
+-- starting month select (march-july 1948) TODO
+startScreen World{userstage = 6} w = blank
+-- info text TODO
+startScreen World{userstage = 7} w = blank
+-- anti crash TODO
+startScreen World{userstage = _} w = blank
+
 
 -- On route 
 
@@ -174,21 +192,22 @@ routePausePrompt = Text "TODO black background, white text with saying press ent
 
 -- (stage 0 = traveling stage, stage 1 = stopped, 2 = stopped dialogue box)
 onRouteScreen :: World -> World -> Picture
-onRouteScreen World{userstage = 0} w = Pictures[routeNearPlane,routeStatusBar w, routeDialogueBox w,routeFarPlane]
+-- traveling stage
+onRouteScreen World{userstage = 0} w = Pictures[routeNearPlane,routeStatusBar w,routeFarPlane]
+-- stopped
 onRouteScreen World{userstage = 1} w = Pictures[routeNearPlane,routeStatusBar w, routeFarPlane]
+-- stopped dialogue box
 onRouteScreen World{userstage = 2} w = Pictures[routeNearPlane,routeStatusBar w, routeDialogueBox w,routeFarPlane]
+-- anti crash
+onRouteScreen World{userstage = _} w = Pictures[routeNearPlane,routeStatusBar w, routeFarPlane]
 
--- Shop (userstage 0 = main shop menu, 1 = item selected and asking how much to buy and info about it)
--- TODO stage 1 with item info and amount to buy needed
--- TODO on shop user stage 0 set userInput to _
--- TODO fix money from d.c to d.cc
--- TODO change bill and prices to amount in shop based on selection
+-- Shop
 
 shopMoneyCount :: World -> Picture
 shopMoneyCount w = Translate (-200) (-140) (textWriter ("Amount you have: $"++(show (cash w))) "half")
 
 showItemSelect :: World -> Picture
-showItemSelect w = Translate (-200) (-205) (textWriter ("Which item would you like to buy? "++((userInput w))) "half")
+showItemSelect w = Translate (-200) (-205) (textWriter ("Which item would you like to buy? _") "half")
 
 shopBill:: World -> Picture
 shopBill w = Translate (125) (-75) (textWriter ("Total bill:  $"++((show (bill w)))) "half")
@@ -216,16 +235,35 @@ shopNameMessage w = (anchorElement "top half text" (textWriter ((store (shop (ne
 shopBars :: Picture
 shopBars = color red (Pictures [Translate (100) (350) (lineGen 700 10) , Translate (100) (235) (lineGen 700 10), Translate (100) (-25) (lineGen 700 10)])
 
+shopItemBars :: Picture
+shopItemBars = color red (Pictures[Translate (0) (0) (lineGen 700 10),Translate (0) (0) (lineGen 700 10) ])
+
 shopStaticTextElements :: Picture
 shopStaticTextElements = Pictures [shopLeaveMessage, shopBars]
 
 shopDynamicElements :: World -> Picture
 shopDynamicElements w = Pictures [shopMoneyCount w,showItemSelect w, shopBill w, shopDate w, shopStockShow w, shopNameMessage w]
 
+shopItemDesc :: String -> Picture
+shopItemDesc txt = textWriter txt "half"
+
+
 
 shopScreen :: World -> World -> Picture
+-- overview
 shopScreen World{userstage = 0} w = Pictures [shopStaticTextElements,(shopDynamicElements w)]
+-- oxen purchase TODO
 shopScreen World{userstage = 1} w = Pictures [shopStaticTextElements,(shopDynamicElements w)]
+-- Food purchase TODO
+shopScreen World{userstage = 2} w = Pictures [shopStaticTextElements,(shopDynamicElements w)]
+-- Spare parts purchase TODO
+shopScreen World{userstage = 3} w = Pictures [shopStaticTextElements,(shopDynamicElements w)]
+-- Clothing purchase TODO
+shopScreen World{userstage = 4} w = Pictures [shopStaticTextElements,(shopDynamicElements w)]
+-- Medicine purchase TODO
+shopScreen World{userstage = 5} w = Pictures [shopStaticTextElements,(shopDynamicElements w)]
+-- anti crash
+shopScreen World{userstage = _} w = Pictures [shopStaticTextElements,(shopDynamicElements w)]
 
 -- Settlement (user state based on selection number)
 
@@ -318,8 +356,20 @@ daysToRestDialogue :: World -> Picture
 daysToRestDialogue w = Pictures [routeDialogueBackground,daysToRestInput w, blankInput w]
 
 
--- River TODO 
-riverScreen World{userstage = 0} w = Color white ( anchorElement "bottom full text" (textWriter "todo" "full"))
+-- River
+
+-- info TODO
+riverScreen World{userstage = 0} w = blank
+-- options TODO
+riverScreen World{userstage = 1} w = blank
+-- ford river TODO
+riverScreen World{userstage = 2} w = blank
+-- float across TODO
+riverScreen World{userstage = 3} w = blank
+-- ferry across TODO
+riverScreen World{userstage = 4} w = blank
+-- anti crash TODO
+riverScreen World{userstage = _} w = blank
 
 -- Inventory TODO put gold bars on pace,rationing
 inventoryActions :: Picture
@@ -342,7 +392,7 @@ inventoryScreen World{userstage = 6} w = Pictures [settleDate w,settleStatusBar 
 -- anti crash for unknown userstage
 inventoryScreen World{userstage = _} w = Pictures [settleDate w,settleStatusBar w, inventoryActions, settleChoice w]
 
--- TODO all the other screens for actions -_-
+-- overview
 settlementScreen World{userstage = 0} w = Pictures [settleName w, settleDate w,settleStatusBar w, settleActions, settleChoice w]
 -- 1 should not appear as it should switch to on route
 -- supplies
@@ -356,10 +406,8 @@ settlementScreen World{userstage = 5} w = Pictures [settleChoice w, foodChangeCu
 -- stop to rest
 settlementScreen World{userstage = 6} w = Pictures [settleName w, settleDate w,settleStatusBar w, settleActions, daysToRestDialogue w]
 -- 7 should not appear as it should switch to shop
-
 -- anti crash for unknown userstage
 settlementScreen World{userstage = _} w = Pictures [settleName w, settleDate w,settleStatusBar w, settleActions, settleChoice w]
--- settlementScreen World{userstage = 1} w = Pictures [settleName w, settleDate w,settleStatusBar w, settleActions, settleChoice w]
 
 
 -- ******************* End of screen definitions *******************

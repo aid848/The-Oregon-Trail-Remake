@@ -39,7 +39,7 @@ startingDate = dateCons 1 "March" 1848
 
 -- TODO: check that initialWorld is set to starting values that make sense
 initialWorld :: World
-initialWorld = World startingDate ["A", "B", "C", "D", "E"] [100,100,100,100,100] [[],[],[],[],[]] [False, False, False, False, False] 1000 0 0 0 (buffalo_head) (blue_river) 0 0.0 0.0 1 "Settlement" 1 10 "" False 0  "" "Cloudy" 42 []
+initialWorld = World startingDate ["A", "B", "C", "D", "E"] [100,100,100,100,100] [[],[],[],[],[]] [False, False, False, False, False] 1000 0 0 0 (buffalo_head) (blue_river) 0 0.0 0.0 1 "Shop" 1 10 "" False 0  "" "Cloudy" 42 []
 
 windowDims :: (Int,Int)
 windowDims = (1280, 720)
