@@ -13,11 +13,12 @@ textColor = white
 drawScreen :: World -> World -> Picture
 drawScreen World{screenType="Start"} w = startScreen w w -- done
 drawScreen World{screenType="On route"} w = onRouteScreen w w -- mostly done except for wagon graphics, size up situation, and distances, press space to continue on dialogue open
-drawScreen World{screenType="Shop"} w = shopScreen w w -- needs sub screens, fix money to have x.xx, set userinput to _
+drawScreen World{screenType="Shop"} w = shopScreen w w -- done, except fix money to have x.xx, set userinput to _
 drawScreen World{screenType="Settlement"} w = settlementScreen w w -- done, except map
-drawScreen World{screenType="River"} w = riverScreen w w -- not started
+drawScreen World{screenType="River"} w = riverScreen w w -- done, except depth and width
 drawScreen World{screenType="Inventory"} w = inventoryScreen w w -- done, except map
-drawScreen World{screenType="Splash"} w = splashScreen w w -- not started
+drawScreen World{screenType="Splash"} w = splashScreen w w -- not started, prob canceled
+drawScreen World{screenType="Game over"} w = gameOver w w -- done (kinda lame)
 drawScreen World{screenType=_} w = blank
 
 
@@ -271,7 +272,7 @@ shopBars :: Picture
 shopBars = color red (Pictures [Translate (100) (350) (lineGen 700 10) , Translate (100) (235) (lineGen 700 10), Translate (100) (-25) (lineGen 700 10)])
 
 shopItemBars :: Picture
-shopItemBars = color red (Pictures[Translate (0) (0) (lineGen 700 10),Translate (0) (0) (lineGen 700 10) ])
+shopItemBars = color red (Pictures[Translate (100) (350) (lineGen 700 10),Translate (100) (235) (lineGen 700 10) ])
 
 shopStaticTextElements :: Picture
 shopStaticTextElements = Pictures [shopLeaveMessage, shopBars]
@@ -282,21 +283,25 @@ shopDynamicElements w = Pictures [shopMoneyCount w,showItemSelect w, shopBill w,
 shopItemDesc :: String -> Picture
 shopItemDesc txt = textWriter txt "half"
 
+shopUnitDialog :: World -> Picture
+shopUnitDialog  w = Translate (-xDim/4) (textHeightF-(yDim/4)) (textWriter ("How many units will you buy? "++(userInput w)) "full")
 
+shopItemInfoText :: String -> Picture
+shopItemInfoText txt = Translate (halfTextSpanF/2 - halfX) (0) (textWriter txt "full")
 
 shopScreen :: World -> World -> Picture
 -- overview
 shopScreen World{userstage = 0} w = Pictures [shopStaticTextElements,(shopDynamicElements w)]
--- oxen purchase TODO
-shopScreen World{userstage = 1} w = Pictures [shopStaticTextElements,(shopDynamicElements w)]
--- Food purchase TODO
-shopScreen World{userstage = 2} w = Pictures [shopStaticTextElements,(shopDynamicElements w)]
--- Spare parts purchase TODO
-shopScreen World{userstage = 3} w = Pictures [shopStaticTextElements,(shopDynamicElements w)]
--- Clothing purchase TODO
-shopScreen World{userstage = 4} w = Pictures [shopStaticTextElements,(shopDynamicElements w)]
--- Medicine purchase TODO
-shopScreen World{userstage = 5} w = Pictures [shopStaticTextElements,(shopDynamicElements w)]
+-- oxen purchase 
+shopScreen World{userstage = 1} w = Pictures [shopItemBars,shopDate w,shopNameMessage w, Translate (-xDim/6) (-(yDim*2)/7) (shopBill w), shopUnitDialog w, shopItemInfoText oxenInfo ]
+-- Food purchase 
+shopScreen World{userstage = 2} w = Pictures [shopItemBars,shopDate w,shopNameMessage w, Translate (-xDim/6) (-(yDim*2)/7) (shopBill w), shopUnitDialog w, shopItemInfoText foodInfo ]
+-- Spare parts purchase 
+shopScreen World{userstage = 3} w = Pictures [shopItemBars,shopDate w,shopNameMessage w, Translate (-xDim/6) (-(yDim*2)/7) (shopBill w), shopUnitDialog w, shopItemInfoText sparePartsInfo ]
+-- Clothing purchase 
+shopScreen World{userstage = 4} w = Pictures [shopItemBars,shopDate w,shopNameMessage w, Translate (-xDim/6) (-(yDim*2)/7) (shopBill w), shopUnitDialog w, shopItemInfoText clothingInfo ]
+-- Medicine purchase
+shopScreen World{userstage = 5} w = Pictures [shopItemBars,shopDate w,shopNameMessage w, Translate (-xDim/6) (-(yDim*2)/7) (shopBill w), shopUnitDialog w, shopItemInfoText medicineInfo ]
 -- anti crash
 shopScreen World{userstage = _} w = Pictures [shopStaticTextElements,(shopDynamicElements w)]
 
@@ -454,5 +459,10 @@ settlementScreen World{userstage = 6} w = Pictures [settleName w, settleDate w,s
 -- anti crash for unknown userstage
 settlementScreen World{userstage = _} w = Pictures [settleName w, settleDate w,settleStatusBar w, settleActions, settleChoice w]
 
+
+gameOverText :: Picture
+gameOverText = Translate (-xDim/3) (0) (Scale 0.3 0.3 (Color red (Text "Game over, you didn't make it to Oregon...")))
+
+gameOver World{userstage = _} w = Pictures[gameOverText, Translate (0) (-yDim/2 + textHeightF) spaceToContinue]
 
 -- ******************* End of screen definitions *******************

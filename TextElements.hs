@@ -110,3 +110,14 @@ riverFord = "You decide to take your wagon across the river. Your wagon and part
 
 riverPayment :: String
 riverPayment = "Are you willing to do this?"
+
+oxenInfo :: String
+oxenInfo = "Oxen are used to pull your wagon. Make sure to have enough in case of any accidents or disease"
+foodInfo :: String
+foodInfo = "You'll need enough food to make it on your trip. Make sure to have    enough to at least make it to the next settlement!"
+sparePartsInfo :: String
+sparePartsInfo = "Your wagon may be damaged on your trip. Having some spare parts for  repairs is important!"
+clothingInfo :: String
+clothingInfo = "Your clothing will wear out on the trip. Having extra sets will keep  you and your family warm and healthy."
+medicineInfo :: String
+medicineInfo = "Staying healthy and fighting off illness will be important for your   trip. Make sure to have enough medicine!"
