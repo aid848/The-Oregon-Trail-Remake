@@ -13,8 +13,8 @@ instance Eq Shop where
 
 -- Shop constructor
 -- pass shop name, shop inventory, selected items
-shopCons :: String -> [(String, Float)] -> [(String, Int, Float)] -> Shop
-shopCons st its slct = Shop {store = st, items = its}
+shopCons :: String -> [(String, Float)] -> Shop
+shopCons st its = Shop {store = st, items = its}
 
 
 
@@ -33,6 +33,12 @@ shopCons st its slct = Shop {store = st, items = its}
 --         stock = stringItUp (cart s) 
 
 
+-- returns price of item given item string
+getItemPrice :: String -> [(String, Float)] -> Float
+getItemPrice _ [] = 0.0
+getItemPrice str (h:t)
+    | (fst h) == str = snd h
+    | otherwise = getItemPrice str t
 
 
 

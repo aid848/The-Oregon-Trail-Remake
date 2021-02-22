@@ -95,11 +95,11 @@ choiceGeneric q w = (textWriter (q++(userInput w)) "half")
 
 --todo change to remaining distance
 landmarkText :: World -> String
-landmarkText w = ("Next landmark: "++(show (dist (nextLocation w)))++" miles")
+-- landmarkText w = ("Next landmark: "++(show (distToLandmark (currentLocation w) (nextLocation w)))++" miles")
+landmarkText w = ("Next landmark: "++"TODO"++" miles")
 
--- todo add this to world props or something
 milesTraveledText :: World -> String
-milesTraveledText w = ("Miles Traveled: "++"Todo"++" miles")
+milesTraveledText w = ("Miles Traveled: "++(show (milesTravelled w))++" miles")
 
 spaceToContinue :: Picture
 spaceToContinue = textWriter "Press SPACE to continue" "full"
