@@ -28,6 +28,7 @@ handleKey1 w = let newWorld
                        | screenType w == "Start" = handleStartNumbers 1 w
 					   | screenType w == "Shop" = handleShopNumbers 1 w
 					   | screenType w == "Inventory" = handleInvNumbers 1 w
+					   | screenType w == "Settlement" = handleSettleNumbers 1 w
                        | otherwise = w
                        in newWorld
 
@@ -36,6 +37,7 @@ handleKey2 w = let newWorld
                        | screenType w == "Start" = handleStartNumbers 2 w
 					   | screenType w == "Shop" = handleShopNumbers 2 w
 					   | screenType w == "Inventory" = handleInvNumbers 2 w
+					   | screenType w == "Settlement" = handleSettleNumbers 2 w
                        | otherwise = w
                        in newWorld
 
@@ -44,6 +46,7 @@ handleKey3 w = let newWorld
                        | screenType w == "Start" = handleStartNumbers 3 w
 					   | screenType w == "Shop" = handleShopNumbers 3 w
 					   | screenType w == "Inventory" = handleInvNumbers 3 w
+					   | screenType w == "Settlement" = handleSettleNumbers 3 w
                        | otherwise = w
                        in newWorld
 
@@ -52,6 +55,7 @@ handleKey4 w = let newWorld
                        | screenType w == "Start" = handleStartNumbers 4 w
 					   | screenType w == "Shop" = handleShopNumbers 4 w
 					   | screenType w == "Inventory" = handleInvNumbers 4 w
+					   | screenType w == "Settlement" = handleSettleNumbers 4 w
                        | otherwise = w
                        in newWorld
 
@@ -60,24 +64,28 @@ handleKey5 w = let newWorld
                        | screenType w == "Start" = handleStartNumbers 5 w
 					   | screenType w == "Shop" = handleShopNumbers 5 w
 					   | screenType w == "Inventory" = handleInvNumbers 5 w
+					   | screenType w == "Settlement" = handleSettleNumbers 5 w
                        | otherwise = w
                        in newWorld
 
 handleKey6 :: World -> World
 handleKey6 w = let newWorld
                        | screenType w == "Inventory" = handleInvNumbers 6 w
+					   | screenType w == "Settlement" = handleSettleNumbers 6 w
 					   | otherwise = w
 					   in newWorld
 
 handleKey7 :: World -> World
 handleKey7 w = let newWorld
                        | screenType w == "Inventory" = handleInvNumbers 7 w
+					   | screenType w == "Settlement" = handleSettleNumbers 7 w
 					   | otherwise = w
 					   in newWorld
 
 handleKey8 :: World -> World
 handleKey8 w = let newWorld
                        | screenType w == "Inventory" = handleInvNumbers 8 w
+					   | screenType w == "Settlement" = handleSettleNumbers 8 w
 					   | otherwise = w
 					   in newWorld
 

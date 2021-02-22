@@ -122,6 +122,9 @@ handleInvNumbers num w = let stage = userstage w
                                  in newWorld
 
 
+handleSettleNumbers :: Int -> World -> World 
+handleSettleNumbers num w = w -- TODO!!
+
 handleGameOverSpace :: World -> World
 handleGameOverSpace w = let newWorld = initialWorld
                             in newWorld

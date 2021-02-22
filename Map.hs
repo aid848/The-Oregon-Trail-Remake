@@ -92,6 +92,15 @@ distToLandmark curr nextLoc = let pos = dist curr
                                       | otherwise = (getSecondDistInNext curr) - pos
                                   in toGo
 
+-- returns list of itemized next node names, of length 1 or 2 
+getBranchNames :: Node -> [String]
+getBranchNames n = let names = []
+                       locs
+                           | not (hasBranch n) = first : names
+                           | otherwise = first : second : names
+                           in locs where
+                               first = "1. " ++ name (fst (head (upcomingToList (next n))))
+                               second = "2. " ++ name (fst (head (tail (upcomingToList (next n)))))
 
 -- checks to see if we've reached the next node, pass in currentLocation and nextLocation in node
 reachedNext :: Node -> Node -> Bool
