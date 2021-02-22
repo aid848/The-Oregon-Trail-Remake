@@ -9,20 +9,67 @@ import Date
 
 -- *************** Constants ***************
 
+wealthOptions = [1600.0, 800.0, 400.0]
+
+dateSelect = ["March", "April", "May", "June", "July"]
+
 restHealthIncreaseVeryPoor = 20
 restHealthIncreasePoor = 15
 restHealhIncreaseFair = 10
 restHealthIncreaseGood = 5
 
+-- *****************************************
+
+--      Screen handlers
+-- Start        - TODO
+-- On route     - TODO
+-- Shop         - TODO
+-- Settlement   - TODO
+-- River        - TODO
+-- Inventory    - TODO
+-- Game over    - TODO
 
 
--- ******************************************
+-- *********** ScreenType - based handler functions for use in KeyHandler.hs ***********
+
+
+handleStartNumbers :: Int -> World -> World
+handleStartNumbers num w = let currStage = userstage w
+                               dateSel = currStage == 6  -- True if input chooses date
+                               newWorld
+                                   | dateSel = w {date = startDate, userstage = 7}
+                                   | currStage == 0 = w {cash = wealth, userstage = 1}
+                                   | otherwise = w
+                               in newWorld where
+                                   month
+                                       | num >= 1 && num <= 5 = dateSelect!!(num - 1)
+                                       | otherwise = "Error"
+                                   startDate = dateCons 1 month 1848
+                                   wealth
+                                       | num >=1 && num <= 3 = wealthOptions!!(num - 1)
+                                       | otherwise = 0
+
+
+handleStartEnter :: World -> World
+handleStartEnter w = let stage = userstage w
+                         newStage = stage + 1
+                         newWorld 
+                             | newStage <= 6 = w {userstage = newStage}
+                             | otherwise = w 
+                        in newWorld
+
+handleStartSpace :: World -> World
+handleStartSpace w = let stage = userstage w
+                         newWorld
+                             | stage == 7 = w {screenType = "Settlement", userstage = 0}
+                             | otherwise = w
+                         in newWorld
 
 
 
 
--- ****************************** Handler Functions ******************************
 
+-- ****************************** Small Handler Functions ****************************
 -- !! TODO: check if use **user_input :: String** as input param?
 -- Set uerInput to rationing
 -- rationing is one of {1, 2, 3}
@@ -148,3 +195,4 @@ handleRestDate 0 d = d
 handleRestDate days d = handleRestDate (days - 1) (updateDate d)
 
 -- **************************
+
