@@ -23,7 +23,7 @@ restHealthIncreaseGood = 5
 --      Screen handlers
 -- Start        - Done
 -- On route     - Done
--- Shop         - TODO
+-- Shop         - Almost done, need to fix purchasing
 -- Settlement   - TODO
 -- River        - TODO
 -- Inventory    - TODO
@@ -81,6 +81,29 @@ handleOnRouteCtl w = let stage = userstage w
                              | otherwise  = w
                              in newWorld
 
+handleShopNumbers :: Int -> World -> World
+handleShopNumbers num w = let stage = userstage w
+                              chooseItem = num >= 1 && num <=5  -- bool to check if we're selecting item
+                              newWorld
+                                  | stage == 0 && chooseItem = w {userstage = num}
+                                  | chooseItem = updateCart num w
+                                  in newWorld
+
+handleShopSpace :: World -> World
+handleShopSpace w = let stage = userstage w
+                        newWorld
+                            | stage == 0 = updateInvBalPurchase w
+                            | otherwise = w
+                            in newWorld
+
+handleShopEnter :: World -> World
+handleShopEnter w = let stage = userstage w
+                        isCartItem = stage >= 1 && stage <= 5  -- bool to check if adding item to cart
+                        newWorld
+                            | isCartItem = w {userstage = 0}
+                            | otherwise = w
+                            in newWorld
+                        
 
 
 
@@ -116,32 +139,32 @@ useMedicine w = let temp = read (userInput w) :: Int
 
 
 
--- ********* Update Cart fields with user input ************
+-- ********* Update Cart fields with key input ************
 
 -- uses updateHelper in Shop.hs
 -- 
 --
--- checks user input (amt), checks user stage for context->item
+-- checks number key pressed (amt), checks user stage for context->item
 -- and shop in currentLocation for price 
-updateCart :: World -> World
-updateCart w = let oldCart = cart w
-                   stage = userstage w
-                   itemStr
-                       | stage == 1 = "Oxen"
-                       | stage == 2 = "Food"
-                       | stage == 3 = "Spare Parts"
-                       | stage == 4 = "Clothing"
-                       | stage == 5 = "Medicine"
-                   storeItems = items (shop (currentLocation w))
-                   price = getItemPrice itemStr storeItems
-                   amt = read (userInput w) :: Int
-                   cost = price * fromIntegral(amt)
-                   stock = stringItUp oldCart
-                   newCart
-                       | oldCart == [] = [(itemStr, amt, cost)]
-                       | itemStr `elem` stock = updateHelper oldCart itemStr amt cost
-                       | otherwise = (itemStr, amt, cost) : oldCart
-                   in w {cart = newCart}
+updateCart :: Int -> World -> World
+updateCart amt w = let oldCart = cart w
+                       stage = userstage w
+                       itemStr
+                           | stage == 1 = "Oxen"
+                           | stage == 2 = "Food"
+                           | stage == 3 = "Spare Parts"
+                           | stage == 4 = "Clothing"
+                           | stage == 5 = "Medicine"
+                       storeItems = items (shop (currentLocation w))
+                       price = getItemPrice itemStr storeItems
+                       cost = price * fromIntegral(amt)
+                       stock = stringItUp oldCart
+                       newCart
+                           | oldCart == [] = [(itemStr, amt, cost)]
+                           | itemStr `elem` stock = updateHelper oldCart itemStr amt cost
+                           | otherwise = (itemStr, amt, cost) : oldCart
+                       newWorld = w {bill = cost, cart = newCart}
+                       in newWorld
 
 
 -- **********************************************************
@@ -162,10 +185,11 @@ updateInvBalPurchase w = let purchases = cart w
                              numMeds = medicine w           -- original values
                              numParts = parts w             --
                              newWorld
-                                 | cost > wallet = w {cart = [], message = "Not enough cash! Try again and select fewer items."}
+                                 | cost > wallet = w {screenType = "Shop", userstage = 0, message = "Not enough cash! Try again and select fewer items.", cart = []}
                                  | otherwise = w {food = numFood + f, clothing = numClothes + c, 
                                                   medicine = numMeds + m, parts = numParts + p, 
-                                                  cash = wallet - cost, oxen = numOxen + o} where
+                                                  cash = wallet - cost, oxen = numOxen + o,
+                                                  screenType = "Settlement", userstage = 0} where
                                      f = getFoodTotal purchases
                                      c = getClothingTotal purchases
                                      m = getMedicineTotal purchases

@@ -33,7 +33,7 @@ instance Show Upcoming where
 
 -- A test Shop
 shop0 :: Shop
-shop0 = shopCons "Matt's General Store" [("1. Oxen", 160.00), ("2. Food", 300.00)]
+shop0 = shopCons "Matt's General Store" [("1. Oxen", 100.00), ("2. Food", 10.00), ("3. Spare Parts", 50.00), ("4. Clothing", 25.00), ("5. Medicine", 30.00)]
 
 
 {- 
