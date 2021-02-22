@@ -12,7 +12,7 @@ textColor = white
 -- top level screen drawer based on world state
 drawScreen :: World -> World -> Picture
 drawScreen World{screenType="Start"} w = startScreen w w -- done
-drawScreen World{screenType="On route"} w = onRouteScreen w w -- mostly done except for wagon graphics, size up situation, and distances, press space to continue on dialogue open
+drawScreen World{screenType="On route"} w = onRouteScreen w w -- mostly done except for wagon graphics, and distances, press space to continue on dialogue open
 drawScreen World{screenType="Shop"} w = shopScreen w w -- done, except fix money to have x.xx, set userinput to _
 drawScreen World{screenType="Settlement"} w = settlementScreen w w -- done, except map
 drawScreen World{screenType="River"} w = riverScreen w w -- done, except depth and width
@@ -168,7 +168,7 @@ startScreen World{userstage = _} w = Pictures [titleHeader, introWealthOptions, 
 -- On route 
 
 routeStatusBackground:: Picture
-routeStatusBackground = Color white (lineGen xDim 275)
+routeStatusBackground = Translate (0) (15) (Color white (lineGen xDim 255))
 
 routeDate:: World -> Picture
 routeDate w = Translate (-halfX/4 + halfTextSpanF/2) (100) (textWriterInverted ("Date: "++(dateText w)) "full")
@@ -225,17 +225,17 @@ routeRiver w = blank
 
 -- message to show user input options
 routePausePrompt :: Picture
-routePausePrompt = Text "TODO black background, white text with saying press enter to size up the situation"
+routePausePrompt = Translate (-xDim/4) (-yDim/2+10) (textWriter "Press space to size up the situation" "full")
 
 onRouteScreen :: World -> World -> Picture
--- traveling stage
-onRouteScreen World{userstage = 0} w = Pictures[routeNearPlane,routeStatusBar w,routeFarPlane]
--- stopped
-onRouteScreen World{userstage = 1} w = Pictures[routeNearPlane,routeStatusBar w, routeFarPlane]
--- stopped dialogue box
-onRouteScreen World{userstage = 2} w = Pictures[routeNearPlane,routeStatusBar w, routeDialogueBox w,routeFarPlane]
+-- traveling stage, space to size up the situation
+onRouteScreen World{userstage = 0} w = Pictures [Translate (0) (30) (Pictures[routeNearPlane,routeStatusBar w,routeFarPlane]), routePausePrompt]
+-- stopped, space to continue
+onRouteScreen World{userstage = 1} w = Pictures [Translate (0) (30) (Pictures[routeNearPlane,routeStatusBar w, routeFarPlane]), Translate (-xDim/6) (-yDim/2+10) spaceToContinue]
+-- stopped dialogue box space to continue
+onRouteScreen World{userstage = 2} w = Pictures [Translate (0) (30) (Pictures[routeNearPlane,routeStatusBar w, routeDialogueBox w,routeFarPlane]), Translate (-xDim/6) (-yDim/2+10) spaceToContinue]
 -- anti crash
-onRouteScreen World{userstage = _} w = Pictures[routeNearPlane,routeStatusBar w, routeFarPlane]
+onRouteScreen World{userstage = _} w = Pictures [Translate (0) (30) (Pictures[routeNearPlane,routeStatusBar w,routeFarPlane]), routePausePrompt]
 
 -- Shop
 
