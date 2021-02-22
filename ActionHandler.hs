@@ -104,7 +104,23 @@ handleShopEnter w = let stage = userstage w
                             | otherwise = w
                             in newWorld
                         
-
+handleInvNumbers :: Int -> World -> World
+handleInvNumbers num w = let stage = userstage w
+                             overview = stage == 0
+                             pace = stage == 4
+                             ration = stage == 5
+                             rest = stage == 6
+                             validNum = num >= 1 && num <= 6
+                             validPaceRation = num >= 1 && num <= 3
+                             newWorld
+                                 | overview && num == 1 = w {screenType = "On route", userstage = 0}
+                                 | overview && validNum = w {userstage = num}
+                                 | pace && validPaceRation = w {pace = num, userstage = 0} 
+                                 | ration && validPaceRation = w {rationing = num, userstage = 0}
+                                 | rest  = (restRestoreHealth num w) {userstage = 0}
+                                 | otherwise = w
+                                 in newWorld
+                             
 
 
 -- ****************************** Small Handler Functions ****************************
@@ -202,13 +218,12 @@ updateInvBalPurchase w = let purchases = cart w
 -- ******** Restore health with rest *********
 -- assumes number of days to rest is in userInput :: String
 
-restRestoreHealth :: World -> World
-restRestoreHealth w = let days = read (userInput w) :: Int
-                          members = partyHealth w
-                          newHealth = restHealth days members
-                          newDate = handleRestDate days (date w)
-                          newWorld = w {date = newDate, partyHealth = newHealth}
-                          in newWorld 
+restRestoreHealth :: Int -> World -> World
+restRestoreHealth days w = let members = partyHealth w
+                               newHealth = restHealth days members
+                               newDate = handleRestDate days (date w)
+                               newWorld = w {date = newDate, partyHealth = newHealth}
+                               in newWorld 
 
 restHealth :: Int -> [Int] -> [Int]
 restHealth 0 lst = lst
