@@ -26,8 +26,8 @@ restHealthIncreaseGood = 5
 -- Shop         - Almost done, need to fix purchasing
 -- Settlement   - TODO
 -- River        - TODO
--- Inventory    - TODO
--- Game over    - TODO
+-- Inventory    - Done
+-- Game over    - Done
 
 
 -- *********** ScreenType - based handler functions for use in KeyHandler.hs ***********
@@ -120,8 +120,11 @@ handleInvNumbers num w = let stage = userstage w
                                  | rest  = (restRestoreHealth num w) {userstage = 0}
                                  | otherwise = w
                                  in newWorld
-                             
 
+
+handleGameOverSpace :: World -> World
+handleGameOverSpace w = let newWorld = initialWorld
+                            in newWorld
 
 -- ****************************** Small Handler Functions ****************************
 -- !! TODO: check if use **user_input :: String** as input param?
