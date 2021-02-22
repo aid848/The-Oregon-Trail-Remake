@@ -12,7 +12,7 @@ textColor = white
 -- top level screen drawer based on world state
 drawScreen :: World -> World -> Picture
 drawScreen World{screenType="Start"} w = startScreen w w -- done
-drawScreen World{screenType="On route"} w = onRouteScreen w w -- mostly done except for wagon graphics, and distances, press space to continue on dialogue open
+drawScreen World{screenType="On route"} w = onRouteScreen w w -- mostly done except for wagon graphics, and distances, partyHealthToWord, paceToWord
 drawScreen World{screenType="Shop"} w = shopScreen w w -- done, except fix money to have x.xx, set userinput to _
 drawScreen World{screenType="Settlement"} w = settlementScreen w w -- done, except map
 drawScreen World{screenType="River"} w = riverScreen w w -- done, except depth and width
@@ -67,12 +67,21 @@ lineGen x y = (Polygon [(x/(-2),y/2),(x/(-2),y/(-2)),(x/2,y/(-2)),(x/2,y/2)])
 sinePolyGen :: Float -> Float -> Float -> Float -> Picture
 sinePolyGen x y n step = Pictures (map (\s -> Translate (0) (s) (Line (zip [0,step..x] (map (\a -> (y/2)*(sin a)) [35,(35+step)..x])))) [0..n] )
 
-partyHealthToWord :: [Int] -> String -- TODO
-partyHealthToWord partyHp = "good"
+averageInt :: [Int] -> Int -> Int
+averageInt lst len = (foldr (+) 0 lst) `div` len
 
--- 1 = steady, 2 = strenuous, 3 = grueling TODO
+partyHealthToWord :: [Int] -> String
+partyHealthToWord partyHp
+    | (averageInt partyHp 5) > 75 = "good"
+    | (averageInt partyHp 5) > 50 = "fair"
+    | (averageInt partyHp 5) > 25 = "poor"
+    | otherwise = "very poor"
+
 paceToWord :: Int -> String
-paceToWord val = "steady"
+paceToWord val
+    |val == 1 = "steady"
+    |val == 2 = "strenuous"
+    |otherwise = "grueling"
 
 dateText :: World -> String
 dateText w = (month (date w))++" "++(show (day (date w)))++", "++(show (year (date w)))
@@ -95,8 +104,8 @@ choiceGeneric q w = (textWriter (q++(userInput w)) "half")
 
 --todo change to remaining distance
 landmarkText :: World -> String
--- landmarkText w = ("Next landmark: "++(show (distToLandmark (currentLocation w) (nextLocation w)))++" miles")
-landmarkText w = ("Next landmark: "++"TODO"++" miles")
+landmarkText w = ("Next landmark: "++(show (distToLandmark (currentLocation w) (nextLocation w)))++" miles")
+-- landmarkText w = ("Next landmark: "++"TODO"++" miles")
 
 milesTraveledText :: World -> String
 milesTraveledText w = ("Miles Traveled: "++(show (milesTravelled w))++" miles")
