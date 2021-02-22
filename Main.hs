@@ -34,6 +34,8 @@ inputHandler (EventKey (Char '4')  Down _ _) w = handleKey4 w
 inputHandler (EventKey (Char '5')  Down _ _) w = handleKey5 w
 inputHandler (EventKey (SpecialKey KeySpace) Down _ _) w = handleSpaceKey w
 inputHandler (EventKey (SpecialKey KeyEnter) Down _ _) w = handleEnterKey w
+inputHandler (EventKey (SpecialKey KeyCtrlL) Down _ _) w = handleCtlKey w
+inputHandler (EventKey (SpecialKey KeyCtrlR) Down _ _) w = handleCtlKey w
 inputHandler _ w =  w
 
 -- A function to step the world one iteration. It is passed the period of time (in seconds) needing to be advanced. 

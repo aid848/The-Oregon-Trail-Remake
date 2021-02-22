@@ -15,7 +15,7 @@ dateSelect = ["March", "April", "May", "June", "July"]
 
 restHealthIncreaseVeryPoor = 20
 restHealthIncreasePoor = 15
-restHealhIncreaseFair = 10
+restHealthIncreaseFair = 10
 restHealthIncreaseGood = 5
 
 -- *****************************************
@@ -201,7 +201,7 @@ heal i
     | i == 0 = 0
     | i `elem` [1..25] = i + restHealthIncreaseVeryPoor
     | i `elem` [26..50] = i + restHealthIncreasePoor
-    | i `elem` [51..75] = i + restHealhIncreaseFair
+    | i `elem` [51..75] = i + restHealthIncreaseFair
     | i `elem` [76..100] = i + restHealthIncreaseGood
     | otherwise = 100
 

@@ -50,5 +50,5 @@ handleKey5 w = let newWorld
 handleCtlKey :: World -> World
 handleCtlKey w = let newWorld
                          | screenType w == "On route" = handleOnRouteCtl w
-						 | otherwise w
-						 in neWorld
+						 | otherwise = w
+						 in newWorld
