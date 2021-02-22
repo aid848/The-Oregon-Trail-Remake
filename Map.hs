@@ -13,6 +13,7 @@ data Node = Node {
 } deriving(Eq, Show)
 
 
+
 -- map nodes ahead on the trail: list of (name, distance) tuples or Empty
 data Upcoming = Empty
             | Dests [(Node, Int)]
@@ -85,10 +86,11 @@ type Map = [Node]
 -- takes in currentLocation and nextLocation nodes from WS
 distToLandmark:: Node -> Node -> Int
 distToLandmark curr nextLoc = let pos = dist curr
-                                  end
-                                      | getFirstInNext curr == nextLoc = getFirstDistInNext curr
-                                      | otherwise = getSecondDistInNext curr
-                                   in end - pos
+                                  toGo
+                                      | (name curr) == (name nextLoc) = 0
+                                      | (name nextLoc) == (name (getFirstInNext curr)) = (getFirstDistInNext curr) - pos
+                                      | otherwise = (getSecondDistInNext curr) - pos
+                                  in toGo
 
 
 -- checks to see if we've reached the next node, pass in currentLocation and nextLocation in node
@@ -124,7 +126,7 @@ getSecondInNext :: Node -> Node
 getSecondInNext n = fst (head (tail (upcomingToList (next n))))
 
 getFirstDistInNext :: Node -> Int
-getFirstDistInNext n = snd (head (tail (upcomingToList (next n))))
+getFirstDistInNext n = snd (head (upcomingToList (next n)))
 
 getSecondDistInNext :: Node -> Int
 getSecondDistInNext n = snd (head (tail (upcomingToList (next n))))
