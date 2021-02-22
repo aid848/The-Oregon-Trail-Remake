@@ -12,6 +12,7 @@ rationingHealthDrain = [3, 2, 1, 0] -- indexed by food consumed. 0 food = 3 hp/d
 
 -- Pace
 paceHealthDrain = [0, 1, 2] -- steady = 0 hp/day, strenuous = 1 hp/day, grueling = 2hp/day
+paceDistanceGain = [20, 30, 40] -- steady = 20 miles/day, strenuous = 30 miles/day, grueling = 40 miles/day
 
 -- Conditions
 dysenteryHealthDrain = 5
@@ -34,9 +35,22 @@ snakeBiteHealthDrain = 5
 --   - (Possibly) generate a random event
 -- Returns the updated world
 update :: World -> World
-update w = let newW = (randomEvent (applyPaceRationingConditions w))
-               oldDate = date newW
-               in newW {date = updateDate oldDate}
+update w = let partyHealths = (partyHealth w)
+               partyDeaths = (partyIsDead w)
+               names = (partyNames w) 
+               newWorld
+                | (partyHealths!!0 <= 0) && (not (partyDeaths!!0)) = w {partyIsDead = replaceNth partyDeaths 0 True, message = names!!0 ++ " has died."}
+                | (partyHealths!!1 <= 0) && (not (partyDeaths!!1)) = w {partyIsDead = replaceNth partyDeaths 1 True, message = names!!1 ++ " has died."}
+                | (partyHealths!!2 <= 0) && (not (partyDeaths!!2)) = w {partyIsDead = replaceNth partyDeaths 2 True, message = names!!2 ++ " has died."}
+                | (partyHealths!!3 <= 0) && (not (partyDeaths!!3)) = w {partyIsDead = replaceNth partyDeaths 3 True, message = names!!3 ++ " has died."}
+                | (partyHealths!!4 <= 0) && (not (partyDeaths!!4)) = w {partyIsDead = replaceNth partyDeaths 4 True, message = names!!4 ++ " has died."}
+                | otherwise                                      = let newW = (randomEvent (applyPaceRationingConditions w))
+                                                                       oldDate = date newW
+                                                                       oldMilesTravelled = milesTravelled newW
+                                                                       pacing = pace newW
+                                                                       distanceGain = paceDistanceGain!!(pacing - 1)
+                                                                       in newW {date = updateDate oldDate, milesTravelled = oldMilesTravelled + distanceGain}
+               in newWorld
 
 -- ********************** End of update **********************
 
@@ -189,7 +203,12 @@ randomEvent w = let (newW, n) = generateRandomInt w 100
                         | n `elem` [91..93] = findWildFruit newW
                         | n `elem` [94..96] = measles newW
                         | n `elem` [97..99] = findWildVegetables newW
-                    in newWorld
+                    -- TODO: uncomment
+                    newUserstage
+                        | (message newWorld == "") = 0
+                        | otherwise = 2
+                    in newWorld {userstage = newUserstage}
+                    -- in newWorld
 
 -- ********************** End of Random Event Generator **********************
 

@@ -16,7 +16,9 @@ restHealthIncreaseGood = 5
 
 
 
---- ***************
+-- ******************************************
+
+
 
 
 -- ****************************** Handler Functions ******************************
@@ -50,14 +52,46 @@ useMedicine w = let temp = read (userInput w) :: Int
 
 
 
+
+
+-- ********* Update Cart fields with user input ************
+
+-- uses updateHelper in Shop.hs
+-- 
+--
+-- checks user input (amt), checks user stage for context->item
+-- and shop in currentLocation for price 
+updateCart :: World -> World
+updateCart w = let oldCart = cart w
+                   stage = userstage w
+                   itemStr
+                       | stage == 1 = "Oxen"
+                       | stage == 2 = "Food"
+                       | stage == 3 = "Spare Parts"
+                       | stage == 4 = "Clothing"
+                       | stage == 5 = "Medicine"
+                   storeItems = items (shop (currentLocation w))
+                   price = getItemPrice itemStr storeItems
+                   amt = read (userInput w) :: Int
+                   cost = price * fromIntegral(amt)
+                   stock = stringItUp oldCart
+                   newCart
+                       | oldCart == [] = [(itemStr, amt, cost)]
+                       | itemStr `elem` stock = updateHelper oldCart itemStr amt cost
+                       | otherwise = (itemStr, amt, cost) : oldCart
+                   in w {cart = newCart}
+
+
+-- **********************************************************
+
+
+
+
+
 -- ******* Update Balance, inventory after purchases *******
 -- uses Shop in (currentLocation w)
 updateInvBalPurchase :: World -> World
-updateInvBalPurchase w = let thisShop = (shop (currentLocation w))
-                             invalidReset = shopCons (store thisShop) (items thisShop) []   -- work done
-                             thisNode = currentLocation w                                   -- if invalid purchase,
-                             resetShop = thisNode {shop = invalidReset}                     -- resets selected field
-                             purchases = [] -- TODO change
+updateInvBalPurchase w = let purchases = cart w 
                              cost = getPurchaseTotal purchases
                              wallet = cash w                --
                              numFood = food w               --
@@ -66,7 +100,7 @@ updateInvBalPurchase w = let thisShop = (shop (currentLocation w))
                              numMeds = medicine w           -- original values
                              numParts = parts w             --
                              newWorld
-                                 | cost > wallet = w {currentLocation = resetShop, message = "Not enough cash! Select fewer items."}
+                                 | cost > wallet = w {cart = [], message = "Not enough cash! Try again and select fewer items."}
                                  | otherwise = w {food = numFood + f, clothing = numClothes + c, 
                                                   medicine = numMeds + m, parts = numParts + p, 
                                                   cash = wallet - cost, oxen = numOxen + o} where

@@ -9,6 +9,7 @@ data World = World {
     partyNames :: [String],
     partyHealth :: [Int], -- length=5, each party member is one of: 0=dead, [1..25]=very poor, [26..50]=poor, [51..75]=fair, [76..100]=healthy
     partyConditions :: [[String]], -- each member can be one or combination of "cholera", "dysentery" "measles", "fever" or []
+    partyIsDead :: [Bool], -- length=5, each party member is one of True=dead, False=alive
     food :: Int,
     clothing :: Int,
     medicine :: Int,
@@ -17,7 +18,7 @@ data World = World {
     currentLocation :: Node,        -- Node that we are either in, or in transit from
     milesTravelled :: Int,          -- cumulative distance travelled
     cash :: Float,
-    bill :: Float, -- todo remove and use shop chosen to buy
+    bill :: Float,
     rationing :: Int, -- 1 = filling, 2 = meager, 3 = bare bones
     screenType :: String,
     pace :: Int, -- 1 = steady, 2 = strenuous, 3 = grueling
@@ -38,9 +39,7 @@ startingDate = dateCons 1 "March" 1848
 
 -- TODO: check that initialWorld is set to starting values that make sense
 initialWorld :: World
-initialWorld = World startingDate ["A", "B", "C", "D", "E"] [100,100,100,100,100] [[],[],[],[],[]] 0 0 0 0 (buffalo_head) (blue_river) 0 0.0 0.0 1 "" 1 10 "" False 0  "textTest" "Cloudy" 42 []
-
-
+initialWorld = World startingDate ["A", "B", "C", "D", "E"] [100,100,100,100,100] [[],[],[],[],[]] [False, False, False, False, False] 1000 0 0 0 (buffalo_head) (blue_river) 0 0.0 0.0 1 "On route" 1 10 "" False 0  "test" "Cloudy" 42 []
 
 windowDims :: (Int,Int)
 windowDims = (1280, 720)
