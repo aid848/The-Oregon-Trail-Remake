@@ -13,7 +13,9 @@ handleEnterKey w = if screenType w == "Start"
 handleSpaceKey :: World -> World
 handleSpaceKey w = if screenType w == "Start"
                       then handleStartSpace w
-                      else w
+                      else if screenType w == "On route"
+						  then handleOnRouteSpace w
+						  else w
 
 handleKey1 :: World -> World 
 handleKey1 w = let newWorld
@@ -44,3 +46,9 @@ handleKey5 w = let newWorld
                        | screenType w == "Start" = handleStartNumbers 5 w
                        | otherwise = w
                        in newWorld
+
+handleCtlKey :: World -> World
+handleCtlKey w = let newWorld
+                         | screenType w == "On route" = handleOnRouteCtl w
+						 | otherwise w
+						 in neWorld

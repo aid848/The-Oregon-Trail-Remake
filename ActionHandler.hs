@@ -21,8 +21,8 @@ restHealthIncreaseGood = 5
 -- *****************************************
 
 --      Screen handlers
--- Start        - TODO
--- On route     - TODO
+-- Start        - Done
+-- On route     - Done
 -- Shop         - TODO
 -- Settlement   - TODO
 -- River        - TODO
@@ -65,6 +65,21 @@ handleStartSpace w = let stage = userstage w
                              | otherwise = w
                          in newWorld
 
+handleOnRouteSpace :: World -> World
+handleOnRouteSpace w = let stage = userstage w
+                           newWorld
+                               | stage == 0 = w {screenType = "Inventory", userstage = 0}
+                               | stage == 1 = w {userstage = 0}
+                               | stage == 2 = w {userstage = 0}
+                               | otherwise = w
+                            in newWorld
+
+handleOnRouteCtl :: World -> World
+handleOnRouteCtl w = let stage = userstage w
+                         newWorld
+                             | stage == 0 = w {userstage = 1}
+                             | otherwise  = w
+                             in newWorld
 
 
 
