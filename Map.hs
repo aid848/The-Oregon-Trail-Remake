@@ -19,7 +19,7 @@ data Upcoming = Empty
             | Dests [(Node, Int)]
 
 instance Eq Upcoming where 
-    Dests [(n1, i1)] == Empty = False
+    Dests (h:t) == Empty = False
     Empty ==  Empty = True
     Dests [(n1, i1)] == Dests [(n2, i2)] = n1 == n2
 
@@ -140,4 +140,4 @@ upcomingToList u
 
 -- helper to extract list from Upcoming
 upcomingToListHelper :: Upcoming -> [(Node, Int)]
-upcomingToListHelper (Dests [(n, d)]) = [(n, d)]
+upcomingToListHelper (Dests (h:t)) = (h:t)
