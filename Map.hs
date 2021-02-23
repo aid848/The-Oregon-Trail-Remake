@@ -33,7 +33,7 @@ instance Show Upcoming where
 
 -- A test Shop
 shop0 :: Shop
-shop0 = shopCons "Matt's General Store" [("1. Oxen", 160.00), ("2. Food", 300.00)]
+shop0 = shopCons "Matt's General Store" [("1. Oxen", 100.00), ("2. Food", 10.00), ("3. Spare Parts", 50.00), ("4. Clothing", 25.00), ("5. Medicine", 30.00)]
 
 
 {- 
@@ -57,19 +57,19 @@ gold_gulch :: Node
 gold_gulch = Node {name = "Denver", next = Empty, dist = 0, shop = shop0}
 
 wandering_brook :: Node
-wandering_brook = Node {name = "Wandering Brook", next = Dests [(gold_gulch, 15)], dist = 0, shop=shop0}
+wandering_brook = Node {name = "Wandering Brook", next = Dests [(gold_gulch, 20)], dist = 0, shop=shop0}
 
 salmon_run :: Node
-salmon_run = Node {name = "Salmon Run", next = Dests [(gold_gulch, 50), (wandering_brook, 33)], dist = 0, shop = shop0}
+salmon_run = Node {name = "Salmon Run", next = Dests [(gold_gulch, 50), (wandering_brook, 30)], dist = 0, shop = shop0}
 
 red_ridge :: Node
-red_ridge = Node {name = "Red Ridge", next = Dests [(gold_gulch, 41)], dist = 0, shop = shop0}
+red_ridge = Node {name = "Red Ridge", next = Dests [(gold_gulch, 40)], dist = 0, shop = shop0}
 
 blue_river :: Node
-blue_river = Node {name = "Blue River", next = Dests [(salmon_run, 13), (red_ridge, 30)], dist = 0, shop = shop0}
+blue_river = Node {name = "Blue River", next = Dests [(salmon_run, 30), (red_ridge, 50)], dist = 0, shop = shop0}
 
 buffalo_head :: Node
-buffalo_head = Node {name = "Buffalo Head", next = Dests [(blue_river, 22)], dist = 0, shop = shop0}
+buffalo_head = Node {name = "Buffalo Head", next = Dests [(blue_river, 40)], dist = 0, shop = shop0}
 
 
 -- a map is a list of nodes
@@ -92,6 +92,15 @@ distToLandmark curr nextLoc = let pos = dist curr
                                       | otherwise = (getSecondDistInNext curr) - pos
                                   in toGo
 
+-- returns list of itemized next node names, of length 1 or 2 
+getBranchNames :: Node -> [String]
+getBranchNames n = let names = []
+                       locs
+                           | not (hasBranch n) = first : names
+                           | otherwise = first : second : names
+                           in locs where
+                               first = "1. " ++ name (fst (head (upcomingToList (next n))))
+                               second = "2. " ++ name (fst (head (tail (upcomingToList (next n)))))
 
 -- checks to see if we've reached the next node, pass in currentLocation and nextLocation in node
 reachedNext :: Node -> Node -> Bool

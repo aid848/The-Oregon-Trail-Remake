@@ -37,7 +37,7 @@ shopCons st its = Shop {store = st, items = its}
 getItemPrice :: String -> [(String, Float)] -> Float
 getItemPrice _ [] = 0.0
 getItemPrice str (h:t)
-    | (fst h) == str = snd h
+    | tail (tail (tail (fst h))) == str = snd h
     | otherwise = getItemPrice str t
 
 
@@ -52,35 +52,35 @@ getPurchaseTotal (h:t) = (extractThird h) + getPurchaseTotal t
 getOxenTotal :: [(String, Int, Float)] -> Int
 getOxenTotal [] = 0
 getOxenTotal (h:t)
-    | (extractFirst h) == "Oxen" = 1 + getOxenTotal t
+    | (extractFirst h) == "Oxen" = (extractSecond h) + getOxenTotal t
     | otherwise = getOxenTotal t
 
 -- get amount of food purchased to update food in World
 getFoodTotal :: [(String, Int, Float)] -> Int
 getFoodTotal [] = 0
 getFoodTotal (h:t)
-    | (extractFirst h) == "Food" = 1 + getFoodTotal t
+    | (extractFirst h) == "Food" = (extractSecond h) + getFoodTotal t
     | otherwise = getFoodTotal t
 
 -- get medicine amt purchased to update medicine in World
 getMedicineTotal :: [(String, Int, Float)] -> Int
 getMedicineTotal [] = 0
 getMedicineTotal (h:t)
-    | (extractFirst h) == "Medicine" = 1 + getMedicineTotal t
+    | (extractFirst h) == "Medicine" = (extractSecond h) + getMedicineTotal t
     | otherwise = getMedicineTotal t
 
 -- get clothing amt purchased to update clothign in World
 getClothingTotal :: [(String, Int, Float)] -> Int
 getClothingTotal [] = 0
 getClothingTotal (h:t)
-    | (extractFirst h) == "Clothing" = 1 + getClothingTotal t
+    | (extractFirst h) == "Clothing" = (extractSecond h) + getClothingTotal t
     | otherwise = getClothingTotal t
 
 -- get spare parts purchased to update parts in World
 getPartsTotal :: [(String, Int, Float)] -> Int
 getPartsTotal [] = 0
 getPartsTotal (h:t)
-    | (extractFirst h) == "Spare Parts" = 1 + getPartsTotal t
+    | (extractFirst h) == "Spare Parts" = (extractSecond h) + getPartsTotal t
     | otherwise = getPartsTotal t
 
 
