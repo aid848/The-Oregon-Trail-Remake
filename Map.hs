@@ -57,19 +57,19 @@ gold_gulch :: Node
 gold_gulch = Node {name = "Denver", next = Empty, dist = 0, shop = shop0}
 
 wandering_brook :: Node
-wandering_brook = Node {name = "Wandering Brook", next = Dests [(gold_gulch, 15)], dist = 0, shop=shop0}
+wandering_brook = Node {name = "Wandering Brook", next = Dests [(gold_gulch, 20)], dist = 0, shop=shop0}
 
 salmon_run :: Node
-salmon_run = Node {name = "Salmon Run", next = Dests [(gold_gulch, 50), (wandering_brook, 33)], dist = 0, shop = shop0}
+salmon_run = Node {name = "Salmon Run", next = Dests [(gold_gulch, 50), (wandering_brook, 30)], dist = 0, shop = shop0}
 
 red_ridge :: Node
-red_ridge = Node {name = "Red Ridge", next = Dests [(gold_gulch, 41)], dist = 0, shop = shop0}
+red_ridge = Node {name = "Red Ridge", next = Dests [(gold_gulch, 40)], dist = 0, shop = shop0}
 
 blue_river :: Node
-blue_river = Node {name = "Blue River", next = Dests [(salmon_run, 13), (red_ridge, 30)], dist = 0, shop = shop0}
+blue_river = Node {name = "Blue River", next = Dests [(salmon_run, 30), (red_ridge, 50)], dist = 0, shop = shop0}
 
 buffalo_head :: Node
-buffalo_head = Node {name = "Buffalo Head", next = Dests [(blue_river, 22)], dist = 0, shop = shop0}
+buffalo_head = Node {name = "Buffalo Head", next = Dests [(blue_river, 40)], dist = 0, shop = shop0}
 
 
 -- a map is a list of nodes

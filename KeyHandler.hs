@@ -21,7 +21,11 @@ handleSpaceKey w = if screenType w == "Start"
 							  then handleShopSpace w
 							  else if screenType w == "Game over"
 								  then handleGameOverSpace w
-								  else w
+								  else if screenType w == "Inventory"
+									  then handleInvSpace w
+									  else if screenType w == "Settlement"
+										  then handleSettleSpace w
+										  else w
 
 handleKey1 :: World -> World 
 handleKey1 w = let newWorld

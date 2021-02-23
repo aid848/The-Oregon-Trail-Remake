@@ -24,7 +24,7 @@ restHealthIncreaseGood = 5
 -- Start        - Done
 -- On route     - Done
 -- Shop         - Almost done, need to fix purchasing
--- Settlement   - TODO
+-- Settlement   - Done
 -- River        - TODO
 -- Inventory    - Done
 -- Game over    - Done
@@ -121,9 +121,48 @@ handleInvNumbers num w = let stage = userstage w
                                  | otherwise = w
                                  in newWorld
 
+handleInvSpace :: World -> World 
+handleInvSpace w = let stage = userstage w
+                       check = stage == 2 || stage == 3
+                       newWorld
+                           | check = w {userstage = 0}
+                           | otherwise = w
+                           in newWorld
+
 
 handleSettleNumbers :: Int -> World -> World 
-handleSettleNumbers num w = w -- TODO!!
+handleSettleNumbers num w = let stage = userstage w
+                                overview = stage == 0
+                                pace = stage == 4
+                                ration = stage == 5
+                                rest = stage == 6
+                                validNum = num >= 1 && num <= 7
+                                validPaceRation = num >= 1 && num <= 3
+                                selectBranch = overview && hasBranch (currentLocation w) && num == 8  -- bool to check if branch option
+                                noBranch = getFirstInNext (currentLocation w)
+                                newWorld
+                                    | overview && num == 1 && not (hasBranch (currentLocation w)) = w {nextLocation = noBranch, screenType = "On route", userstage = 0}
+                                    | overview && num == 1 = w {screenType = "On route", userstage = 0}
+                                    | overview && num == 7 = w {screenType = "Shop", userstage = 0}
+                                    | selectBranch = w {userstage = 8}
+                                    | stage == 8 = w {nextLocation = nextLoc}
+                                    | overview && validNum = w {userstage = num}
+                                    | pace && validPaceRation = w {pace = num, userstage = 0} 
+                                    | ration && validPaceRation = w {rationing = num, userstage = 0}
+                                    | rest  = (restRestoreHealth num w) {userstage = 0}
+                                    | otherwise = w
+                                    in newWorld where
+                                        nextLoc
+                                            | num == 1 = getFirstInNext (currentLocation w)
+                                            | num == 2 = getSecondInNext (currentLocation w)
+
+handleSettleSpace :: World -> World 
+handleSettleSpace w = let stage = userstage w
+                          check = stage == 2 || stage == 3
+                          newWorld
+                              | check = w {userstage = 0}
+                              | otherwise = w
+                              in newWorld
 
 handleGameOverSpace :: World -> World
 handleGameOverSpace w = let newWorld = initialWorld
@@ -211,7 +250,7 @@ updateInvBalPurchase w = let purchases = cart w
                                  | otherwise = w {food = numFood + f, clothing = numClothes + c, 
                                                   medicine = numMeds + m, parts = numParts + p, 
                                                   cash = wallet - cost, oxen = numOxen + o,
-                                                  screenType = "Settlement", userstage = 0} where
+                                                  screenType = "Inventory", userstage = 0} where
                                      f = getFoodTotal purchases
                                      c = getClothingTotal purchases
                                      m = getMedicineTotal purchases
@@ -238,7 +277,7 @@ restHealth days lst = let first = lst!!0
                           third = lst!!2
                           fourth = lst!!3
                           fifth = lst!!4
-                          newLst = (heal first):(heal secnd):(heal third):(heal fourth):[]
+                          newLst = (heal first):(heal secnd):(heal third):(heal fourth):(heal fifth):[]
                           in restHealth (days - 1) newLst
 
 heal :: Int -> Int
