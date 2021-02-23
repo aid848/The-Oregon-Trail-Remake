@@ -25,7 +25,7 @@ restHealthIncreaseGood = 5
 -- On route     - Done
 -- Shop         - Almost done, need to fix purchasing
 -- Settlement   - Done
--- River        - TODO
+-- River        - Done except for "y" ferry option
 -- Inventory    - Done
 -- Game over    - Done
 
@@ -163,6 +163,35 @@ handleSettleSpace w = let stage = userstage w
                               | check = w {userstage = 0}
                               | otherwise = w
                               in newWorld
+
+handleRiverNumbers :: Int -> World -> World 
+handleRiverNumbers num w = let stage = userstage w
+                               ifOptions = stage == 1
+                               validNum = num >= 1 && num <= 3
+                               newWorld
+                                   | ifOptions = w {userstage = num+1}
+                                   | otherwise = w
+                                   in newWorld
+
+handleRiverSpace :: World -> World 
+handleRiverSpace w = let stage = userstage w
+                         overview = stage == 0
+                         riverOptions = stage == 2 || stage == 3
+                         newWorld
+                             | overview = w {userstage = 1}
+                             | riverOptions = w {screenType = "On route", userstage = 0}
+                             | otherwise = w
+                             in newWorld
+
+handleRiverChar :: Char -> World -> World 
+handleRiverChar char w = let stage = userstage w
+                             ferry = stage == 4
+                             yes = char == 'y'
+                             newWorld
+                                 | ferry && yes = w {screenType = "On route", userstage = 0} -- TODO!!! update cash and date?
+                                 | ferry && not yes = w {userstage = 1}
+                                 | otherwise = w
+                                 in newWorld
 
 handleGameOverSpace :: World -> World
 handleGameOverSpace w = let newWorld = initialWorld
