@@ -400,6 +400,11 @@ blankInput w = Translate (-xDim/16) (-40) (textWriter (userText w) "full")
 daysToRestDialogue :: World -> Picture
 daysToRestDialogue w = Pictures [routeDialogueBackground,daysToRestInput w, blankInput w]
 
+branchDialogueInput :: World -> Picture
+branchDialogueInput w = Translate (-xDim/4) (40) (textWriterFormatted (["Which way will you go?"]++(getBranchNames (currentLocation w))))
+
+branchDialogue :: World -> Picture
+branchDialogue w = Pictures [routeDialogueBackground,branchDialogueInput w, blankInput w]
 
 -- River
 
@@ -465,8 +470,10 @@ settlementScreen World{userstage = 5} w = Pictures [settleChoice w, foodChangeCu
 -- stop to rest
 settlementScreen World{userstage = 6} w = Pictures [settleName w, settleDate w,settleStatusBar w, settleActions, daysToRestDialogue w]
 -- 7 should not appear as it should switch to shop
+-- branch select
+settlementScreen World{userstage = 8} w = Pictures [settleName w, settleDate w,settleStatusBar w, settleActions, branchDialogue w]
 -- anti crash for unknown userstage
-settlementScreen World{userstage = _} w = Pictures [settleName w, settleDate w,settleStatusBar w, settleActions, settleChoice w]
+settlementScreen World{userstage = _} w = Pictures [settleItemsList,settleSuppliesHeader, settleItemValues w, Translate (-200) (textHeightF-yDim/2) (spaceToContinue)]
 
 
 gameOverText :: Picture
