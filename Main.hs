@@ -12,14 +12,11 @@ windowDisplay = InWindow "Window" windowDims zoomDims
 
 
 main :: IO ()
-main = play
-  windowDisplay -- Display mode. 
-  black -- Background color. 
-  1 -- Number of simulation steps to take for each second of real time. (fps?)
-  initialWorld
-  drawingFunc
-  inputHandler
-  updateFunc
+main = do
+  shopguy <- loadBMP "shop.bmp"
+  wagon <- loadBMP "wagon.bmp"
+  map <- loadBMP "map.bmp"
+  play windowDisplay black 1 (initialWorld [shopguy,wagon,map]) drawingFunc inputHandler updateFunc
     
 
 drawingFunc :: World -> Picture -- A function to convert the world a picture.

@@ -194,7 +194,7 @@ handleRiverChar char w = let stage = userstage w
                                  in newWorld
 
 handleGameOverSpace :: World -> World
-handleGameOverSpace w = let newWorld = initialWorld
+handleGameOverSpace w = let newWorld = (nWorld w)
                             in newWorld
 
 -- ****************************** Small Handler Functions ****************************
