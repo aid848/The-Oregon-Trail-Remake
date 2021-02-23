@@ -21,7 +21,13 @@ handleSpaceKey w = if screenType w == "Start"
 							  then handleShopSpace w
 							  else if screenType w == "Game over"
 								  then handleGameOverSpace w
-								  else w
+								  else if screenType w == "Inventory"
+									  then handleInvSpace w
+									  else if screenType w == "Settlement"
+										  then handleSettleSpace w
+										  else if screenType w == "River"
+											  then handleRiverSpace w
+											  else w
 
 handleKey1 :: World -> World 
 handleKey1 w = let newWorld
@@ -29,6 +35,7 @@ handleKey1 w = let newWorld
 					   | screenType w == "Shop" = handleShopNumbers 1 w
 					   | screenType w == "Inventory" = handleInvNumbers 1 w
 					   | screenType w == "Settlement" = handleSettleNumbers 1 w
+					   | screenType w == "River" = handleRiverNumbers 1 w
                        | otherwise = w
                        in newWorld
 
@@ -38,6 +45,7 @@ handleKey2 w = let newWorld
 					   | screenType w == "Shop" = handleShopNumbers 2 w
 					   | screenType w == "Inventory" = handleInvNumbers 2 w
 					   | screenType w == "Settlement" = handleSettleNumbers 2 w
+					   | screenType w == "River" = handleRiverNumbers 2 w
                        | otherwise = w
                        in newWorld
 
@@ -47,6 +55,7 @@ handleKey3 w = let newWorld
 					   | screenType w == "Shop" = handleShopNumbers 3 w
 					   | screenType w == "Inventory" = handleInvNumbers 3 w
 					   | screenType w == "Settlement" = handleSettleNumbers 3 w
+					   | screenType w == "River" = handleRiverNumbers 3 w
                        | otherwise = w
                        in newWorld
 
@@ -100,3 +109,15 @@ handleCtlKey w = let newWorld
                          | screenType w == "On route" = handleOnRouteCtl w
 						 | otherwise = w
 						 in newWorld
+
+handleCharY :: World -> World 
+handleCharY w = let newWorld
+                        | screenType w == "River" = handleRiverChar 'y' w
+						| otherwise = w
+						in newWorld
+
+handleCharN :: World -> World 
+handleCharN w = let newWorld
+                        | screenType w == "River" = handleRiverChar 'n' w
+						| otherwise = w
+						in newWorld
