@@ -33,7 +33,6 @@ data World = World {
 } deriving(Show)
 
 
-
 startingDate :: Date
 startingDate = dateCons 1 "March" 1848
 
