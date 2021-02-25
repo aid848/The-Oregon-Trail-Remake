@@ -41,11 +41,12 @@ update w = let partyHealths = (partyHealth w)
                names = (partyNames w)
                distToNextLandmark = (distToLandmark (currentLocation w) (nextLocation w))
                newWorld
-                | (partyHealths!!0 <= 0) && (not (partyDeaths!!0)) = w {partyIsDead = replaceNth partyDeaths 0 True, message = names!!0 ++ " has died."}
-                | (partyHealths!!1 <= 0) && (not (partyDeaths!!1)) = w {partyIsDead = replaceNth partyDeaths 1 True, message = names!!1 ++ " has died."}
-                | (partyHealths!!2 <= 0) && (not (partyDeaths!!2)) = w {partyIsDead = replaceNth partyDeaths 2 True, message = names!!2 ++ " has died."}
-                | (partyHealths!!3 <= 0) && (not (partyDeaths!!3)) = w {partyIsDead = replaceNth partyDeaths 3 True, message = names!!3 ++ " has died."}
-                | (partyHealths!!4 <= 0) && (not (partyDeaths!!4)) = w {partyIsDead = replaceNth partyDeaths 4 True, message = names!!4 ++ " has died."}
+                | all (==True) partyDeaths                         = w {screenType = "Game over"}
+                | (partyHealths!!0 <= 0) && (not (partyDeaths!!0)) = w {partyIsDead = replaceNth partyDeaths 0 True, message = names!!0 ++ " has died.", userstage = 2}
+                | (partyHealths!!1 <= 0) && (not (partyDeaths!!1)) = w {partyIsDead = replaceNth partyDeaths 1 True, message = names!!1 ++ " has died.", userstage = 2}
+                | (partyHealths!!2 <= 0) && (not (partyDeaths!!2)) = w {partyIsDead = replaceNth partyDeaths 2 True, message = names!!2 ++ " has died.", userstage = 2}
+                | (partyHealths!!3 <= 0) && (not (partyDeaths!!3)) = w {partyIsDead = replaceNth partyDeaths 3 True, message = names!!3 ++ " has died.", userstage = 2}
+                | (partyHealths!!4 <= 0) && (not (partyDeaths!!4)) = w {partyIsDead = replaceNth partyDeaths 4 True, message = names!!4 ++ " has died.", userstage = 2}
                 | distToNextLandmark <= 0                          = let newCurr = (nextLocation w)
                                                                          newWorld
                                                                             | (isNextEmpty newCurr) = w {screenType = "Win"}
