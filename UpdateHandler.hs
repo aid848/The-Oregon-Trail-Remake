@@ -3,6 +3,7 @@ module UpdateHandler where
 import Definitions
 import Date
 import Helpers
+import Map
 
 -- ********************** Constants **********************
 
@@ -37,19 +38,29 @@ snakeBiteHealthDrain = 5
 update :: World -> World
 update w = let partyHealths = (partyHealth w)
                partyDeaths = (partyIsDead w)
-               names = (partyNames w) 
+               names = (partyNames w)
+               distToNextLandmark = (distToLandmark (currentLocation w) (nextLocation w))
                newWorld
-                | (partyHealths!!0 <= 0) && (not (partyDeaths!!0)) = w {partyIsDead = replaceNth partyDeaths 0 True, message = names!!0 ++ " has died."}
-                | (partyHealths!!1 <= 0) && (not (partyDeaths!!1)) = w {partyIsDead = replaceNth partyDeaths 1 True, message = names!!1 ++ " has died."}
-                | (partyHealths!!2 <= 0) && (not (partyDeaths!!2)) = w {partyIsDead = replaceNth partyDeaths 2 True, message = names!!2 ++ " has died."}
-                | (partyHealths!!3 <= 0) && (not (partyDeaths!!3)) = w {partyIsDead = replaceNth partyDeaths 3 True, message = names!!3 ++ " has died."}
-                | (partyHealths!!4 <= 0) && (not (partyDeaths!!4)) = w {partyIsDead = replaceNth partyDeaths 4 True, message = names!!4 ++ " has died."}
-                | otherwise                                      = let newW = (randomEvent (applyPaceRationingConditions w))
-                                                                       oldDate = date newW
-                                                                       oldMilesTravelled = milesTravelled newW
-                                                                       pacing = pace newW
-                                                                       distanceGain = paceDistanceGain!!(pacing - 1)
-                                                                       in newW {date = updateDate oldDate, milesTravelled = oldMilesTravelled + distanceGain}
+                | all (==True) partyDeaths                         = w {screenType = "Game over"}
+                | (partyHealths!!0 <= 0) && (not (partyDeaths!!0)) = w {partyIsDead = replaceNth partyDeaths 0 True, message = names!!0 ++ " has died.", userstage = 2}
+                | (partyHealths!!1 <= 0) && (not (partyDeaths!!1)) = w {partyIsDead = replaceNth partyDeaths 1 True, message = names!!1 ++ " has died.", userstage = 2}
+                | (partyHealths!!2 <= 0) && (not (partyDeaths!!2)) = w {partyIsDead = replaceNth partyDeaths 2 True, message = names!!2 ++ " has died.", userstage = 2}
+                | (partyHealths!!3 <= 0) && (not (partyDeaths!!3)) = w {partyIsDead = replaceNth partyDeaths 3 True, message = names!!3 ++ " has died.", userstage = 2}
+                | (partyHealths!!4 <= 0) && (not (partyDeaths!!4)) = w {partyIsDead = replaceNth partyDeaths 4 True, message = names!!4 ++ " has died.", userstage = 2}
+                | distToNextLandmark <= 0                          = let newCurr = (nextLocation w)
+                                                                         newWorld
+                                                                            | (isNextEmpty newCurr) = w {screenType = "Win"}
+                                                                            | (hasBranch newCurr)   = w {screenType = "Settlement", userstage = 8, currentLocation = newCurr}
+                                                                            | otherwise             = w {screenType = "Settlement", userstage = 0, currentLocation = newCurr, nextLocation = (getFirstInNext newCurr)}
+                                                                         in newWorld
+                | otherwise                                        = let newW = (randomEvent (applyPaceRationingConditions w))
+                                                                         oldDate = date newW
+                                                                         oldMilesTravelled = milesTravelled newW
+                                                                         pacing = pace newW
+                                                                         distanceGain = min (paceDistanceGain!!(pacing - 1)) distToNextLandmark
+                                                                         oldDist = dist (currentLocation w)
+                                                                         newCurr = (currentLocation w) {dist = oldDist + distanceGain}
+                                                                         in newW {date = updateDate oldDate, milesTravelled = oldMilesTravelled + distanceGain, currentLocation = newCurr}
                in newWorld
 
 -- ********************** End of update **********************
@@ -184,7 +195,13 @@ applyFever n w = let partyHealths = partyHealth w
 randomEvent :: World -> World
 randomEvent w = let (newW, n) = generateRandomInt w 100
                     newWorld
-                        | n `elem` [0..45]  = noEvent newW
+                        | n `elem` [0..27]  = noEvent newW
+                        | n `elem` [28..30] = theftCash newW
+                        | n `elem` [31..33] = theftFood newW
+                        | n `elem` [34..36] = theftParts newW
+                        | n `elem` [37..39] = theftClothing newW
+                        | n `elem` [40..42] = wagonFireClothing newW
+                        | n `elem` [43..45] = wagonDamage newW
                         | n `elem` [46..48] = snakeBite newW
                         | n `elem` [49..51] = wagonFireCash newW
                         | n `elem` [52..54] = findOxen newW
@@ -203,12 +220,10 @@ randomEvent w = let (newW, n) = generateRandomInt w 100
                         | n `elem` [91..93] = findWildFruit newW
                         | n `elem` [94..96] = measles newW
                         | n `elem` [97..99] = findWildVegetables newW
-                    -- TODO: uncomment
                     newUserstage
                         | (message newWorld == "") = 0
                         | otherwise = 2
                     in newWorld {userstage = newUserstage}
-                    -- in newWorld
 
 -- ********************** End of Random Event Generator **********************
 
@@ -288,6 +303,43 @@ theftOxen w
                           in newW {oxen = numOxen - scaledN, message = "A thief comes during the night and steals " ++ show scaledN ++ " oxen."}
 
 -- Reduces food by a random number
+theftFood :: World -> World
+theftFood w
+    | (food w) == 0 = noEvent w -- there is no food to steal, do nothing
+    | otherwise     = let numFood = (food w)
+                          (newW, n) = generateRandomInt w numFood
+                          scaledN = n + 1
+                          in newW {food = numFood - scaledN, message = "A thief comes during the night and steals " ++ show scaledN ++ " lbs of food."}
+
+
+-- Reduces cash by a random number
+theftCash :: World -> World
+theftCash w
+    | (cash w) < 1.0 = noEvent w -- there is no cash to steal, do nothing
+    | otherwise      = let numCash = (cash w)
+                           (newW, n) = generateRandomInt w (truncate numCash)
+                           scaledN = n + 1
+                           in newW {cash = numCash - (fromIntegral scaledN), message = "A thief comes during the night and steals $" ++ show scaledN ++ " worth of cash."}
+
+-- Reduces clothing by a random number
+theftClothing :: World -> World
+theftClothing w 
+    | (clothing w) == 0 = noEvent w -- there is no clothing to steal, do nothing
+    | otherwise         = let numClothing = (clothing w)
+                              (newW, n) = generateRandomInt w numClothing
+                              scaledN = n + 1
+                              in newW {clothing = numClothing - scaledN, message = "A thief comes during the night and steals " ++ show scaledN ++ " sets of clothing."}
+
+-- Reduces parts by a random number
+theftParts :: World -> World
+theftParts w 
+    | (parts w) == 0 = noEvent w -- there are no parts to steal, do nothing
+    | otherwise      = let numParts = (parts w)
+                           (newW, n) = generateRandomInt w numParts
+                           scaledN = n + 1
+                           in newW {parts = numParts - scaledN, message = "A thief comes during the night and steals " ++ show scaledN ++ " spare parts."}
+
+-- Reduces food by a random number
 wagonFireFood :: World -> World
 wagonFireFood w 
     | (food w) == 0 = noEvent w -- there is no food to burn, do nothing
@@ -304,6 +356,24 @@ wagonFireCash w
                            (newW, n) = generateRandomInt w (truncate numCash)
                            scaledN = n + 1
                            in newW {cash = numCash - (fromIntegral scaledN), message = "A fire in the wagon results in the loss of $" ++ show scaledN ++ " worth of cash."}
+
+-- Reduces clothing by a random number
+wagonFireClothing :: World -> World
+wagonFireClothing w 
+    | (clothing w) == 0 = noEvent w -- there is no clothing to burn, do nothing
+    | otherwise     = let numClothing = (clothing w)
+                          (newW, n) = generateRandomInt w numClothing
+                          scaledN = n + 1
+                          in newW {clothing = numClothing - scaledN, message = "A fire in the wagon results in the loss of " ++ show scaledN ++ " sets of clothing."}
+
+-- Reduces spare parts by 1 if there are any. If there aren't any, lose 1-3 days
+wagonDamage :: World -> World
+wagonDamage w = let numParts = (parts w)
+                    (newW, n) = generateRandomInt w 3
+                    newWorld
+                        | numParts > 0 = newW {parts = numParts - 1, message = "Your wagon broke, but thankfully you had spare parts."}
+                        | otherwise    = (lostTrailNDays (n+1) w) {message = "Your wagon broke, and you have no spare parts. Lose " ++ show (n+1) ++ " days."}
+                    in newWorld
 
 -- Whole party loses health due to lack of water
 veryLittleWater :: World -> World
@@ -333,9 +403,11 @@ dysentery w = let (newW, n) = generateRandomInt w 5
                   oldConditions = (partyConditions newW)
                   memberConditions = oldConditions!!n
                   memberName = (partyNames newW)!!n
+                  numMedicine = (medicine newW)
                   newWorld 
                     | memberHealth <= 0                   = noEvent newW -- party member is dead, do nothing
                     | "dysentery" `elem` memberConditions = noEvent newW -- party member already has dysentery, do nothing
+                    | numMedicine > 0                     = newW {medicine = numMedicine - 1, message = memberName ++ " got dysentery, but thankfully you had medicine."}
                     | otherwise                           = newW {partyConditions = replaceNth oldConditions n ("dysentery":memberConditions), message = memberName ++ " has dysentery."}
                   in newWorld
 
@@ -346,9 +418,11 @@ cholera w = let (newW, n) = generateRandomInt w 5
                 oldConditions = (partyConditions newW)
                 memberConditions = oldConditions!!n
                 memberName = (partyNames newW)!!n
+                numMedicine = (medicine newW)
                 newWorld 
                     | memberHealth <= 0                 = noEvent newW -- party member is dead, do nothing
                     | "cholera" `elem` memberConditions = noEvent newW -- party member already has cholera, do nothing
+                    | numMedicine > 0                   = newW {medicine = numMedicine - 1, message = memberName ++ " got cholera, but thankfully you had medicine."}
                     | otherwise                         = newW {partyConditions = replaceNth oldConditions n ("cholera":memberConditions), message = memberName ++ " has cholera."}
                 in newWorld
 
@@ -359,9 +433,11 @@ measles w = let (newW, n) = generateRandomInt w 5
                 oldConditions = (partyConditions newW)
                 memberConditions = oldConditions!!n
                 memberName = (partyNames newW)!!n
+                numMedicine = (medicine newW)
                 newWorld 
                     | memberHealth <= 0                 = noEvent newW -- party member is dead, do nothing
                     | "measles" `elem` memberConditions = noEvent newW -- party member already has measles, do nothing
+                    | numMedicine > 0                   = newW {medicine = numMedicine - 1, message = memberName ++ " got measles, but thankfully you had medicine."}
                     | otherwise                         = newW {partyConditions = replaceNth oldConditions n ("measles":memberConditions), message = memberName ++ " has measles."}
                 in newWorld
 
@@ -372,9 +448,11 @@ fever w = let (newW, n) = generateRandomInt w 5
               oldConditions = (partyConditions newW)
               memberConditions = oldConditions!!n
               memberName = (partyNames newW)!!n
+              numMedicine = (medicine newW)
               newWorld 
                 | memberHealth <= 0               = noEvent newW -- party member is dead, do nothing
                 | "fever" `elem` memberConditions = noEvent newW -- party member already has fever, do nothing
+                | numMedicine > 0                 = newW {medicine = numMedicine - 1, message = memberName ++ " got a fever, but thankfully you had medicine."}
                 | otherwise                       = newW {partyConditions = replaceNth oldConditions n ("fever":memberConditions), message = memberName ++ " has a fever."}
               in newWorld
 
