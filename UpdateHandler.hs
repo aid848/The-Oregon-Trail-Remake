@@ -403,9 +403,11 @@ dysentery w = let (newW, n) = generateRandomInt w 5
                   oldConditions = (partyConditions newW)
                   memberConditions = oldConditions!!n
                   memberName = (partyNames newW)!!n
+                  numMedicine = (medicine newW)
                   newWorld 
                     | memberHealth <= 0                   = noEvent newW -- party member is dead, do nothing
                     | "dysentery" `elem` memberConditions = noEvent newW -- party member already has dysentery, do nothing
+                    | numMedicine > 0                     = newW {medicine = numMedicine - 1, message = memberName ++ " got dysentery, but thankfully you had medicine."}
                     | otherwise                           = newW {partyConditions = replaceNth oldConditions n ("dysentery":memberConditions), message = memberName ++ " has dysentery."}
                   in newWorld
 
@@ -416,9 +418,11 @@ cholera w = let (newW, n) = generateRandomInt w 5
                 oldConditions = (partyConditions newW)
                 memberConditions = oldConditions!!n
                 memberName = (partyNames newW)!!n
+                numMedicine = (medicine newW)
                 newWorld 
                     | memberHealth <= 0                 = noEvent newW -- party member is dead, do nothing
                     | "cholera" `elem` memberConditions = noEvent newW -- party member already has cholera, do nothing
+                    | numMedicine > 0                   = newW {medicine = numMedicine - 1, message = memberName ++ " got cholera, but thankfully you had medicine."}
                     | otherwise                         = newW {partyConditions = replaceNth oldConditions n ("cholera":memberConditions), message = memberName ++ " has cholera."}
                 in newWorld
 
@@ -429,9 +433,11 @@ measles w = let (newW, n) = generateRandomInt w 5
                 oldConditions = (partyConditions newW)
                 memberConditions = oldConditions!!n
                 memberName = (partyNames newW)!!n
+                numMedicine = (medicine newW)
                 newWorld 
                     | memberHealth <= 0                 = noEvent newW -- party member is dead, do nothing
                     | "measles" `elem` memberConditions = noEvent newW -- party member already has measles, do nothing
+                    | numMedicine > 0                   = newW {medicine = numMedicine - 1, message = memberName ++ " got measles, but thankfully you had medicine."}
                     | otherwise                         = newW {partyConditions = replaceNth oldConditions n ("measles":memberConditions), message = memberName ++ " has measles."}
                 in newWorld
 
@@ -442,9 +448,11 @@ fever w = let (newW, n) = generateRandomInt w 5
               oldConditions = (partyConditions newW)
               memberConditions = oldConditions!!n
               memberName = (partyNames newW)!!n
+              numMedicine = (medicine newW)
               newWorld 
                 | memberHealth <= 0               = noEvent newW -- party member is dead, do nothing
                 | "fever" `elem` memberConditions = noEvent newW -- party member already has fever, do nothing
+                | numMedicine > 0                 = newW {medicine = numMedicine - 1, message = memberName ++ " got a fever, but thankfully you had medicine."}
                 | otherwise                       = newW {partyConditions = replaceNth oldConditions n ("fever":memberConditions), message = memberName ++ " has a fever."}
               in newWorld
 
