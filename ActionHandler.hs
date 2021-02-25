@@ -58,10 +58,12 @@ handleStartEnter w = let stage = userstage w
                              | otherwise = w 
                         in newWorld
 
+-- Starts the game by changing screenType to "Settlement" and initializing the rngSeed
 handleStartSpace :: World -> World
 handleStartSpace w = let stage = userstage w
+                         seed = hashNames (partyNames w)
                          newWorld
-                             | stage == 7 = w {screenType = "Settlement", userstage = 0}
+                             | stage == 7 = w {screenType = "Settlement", userstage = 0, rngSeed = seed}
                              | otherwise = w
                          in newWorld
 
