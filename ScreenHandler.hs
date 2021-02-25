@@ -422,9 +422,9 @@ branchDialogue w = Pictures [routeDialogueBackground,branchDialogueInput w, blan
 -- River
 
 riverWidthText :: World -> Picture -- TODO
-riverWidthText w = Translate (-xDim/6) (150) (textWriter ("River width: "++"100"++" feet") "Full")
+riverWidthText w = Translate (-xDim/6) (150) (textWriter ("River width: "++(show (width (currentLocation w)))++" feet") "Full")
 riverDepthText :: World -> Picture -- TODO
-riverDepthText w = Translate (-xDim/6) (100) (textWriter ("River depth: "++"6"++" feet") "Full")
+riverDepthText w = Translate (-xDim/6) (100) (textWriter ("River depth: "++(show (depth (currentLocation w)))++" feet") "Full")
 riverOptionsText :: Picture
 riverOptionsText = Translate (halfTextSpanF - halfX/2) (0) (textWriterFormatted riverOptions)
 
@@ -433,7 +433,7 @@ riverGenericMessage txt = anchorElement "bottom full text" (textWriter txt "full
 
 -- todo width and depth
 riverSituationText :: World -> String
-riverSituationText w = riverInfoOne++"100"++" feet across, and "++"20"++" feet deep in the middle."
+riverSituationText w = riverInfoOne++(show (width (currentLocation w)))++" feet across, and "++(show (depth (currentLocation w)))++" feet deep in the middle."
 
 riverYNmsg :: Picture
 riverYNmsg = Translate (320) (-325) (textWriter "(y/n)" "half")
