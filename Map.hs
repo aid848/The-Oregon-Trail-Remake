@@ -7,6 +7,9 @@ import Date
 
 data Node = Node {
   name :: String,
+  river :: Bool,    -- True if river
+  depth :: Int,     -- - river params
+  width :: Int,     -- -
   next :: Upcoming, -- (Node, distance tuples).  Distances indicate distance from THIS node
   dist :: Int,      -- distance travelled from THIS node, e.g., 0 <= dist <= chosen node in Upcoming
   shop :: Shop
@@ -54,22 +57,22 @@ date0 :: Date
 date0 = dateCons 1 "Feburary" 1848
 
 gold_gulch :: Node
-gold_gulch = Node {name = "Denver", next = Empty, dist = 0, shop = shop0}
+gold_gulch = Node {name = "Denver", river = False, depth = 0, width = 0, next = Empty, dist = 0, shop = shop0}
 
 wandering_brook :: Node
-wandering_brook = Node {name = "Wandering Brook", next = Dests [(gold_gulch, 20)], dist = 0, shop=shop0}
+wandering_brook = Node {name = "Wandering Brook", river = True, depth = 9, width = 300, next = Dests [(gold_gulch, 20)], dist = 0, shop=shop0}
 
 salmon_run :: Node
-salmon_run = Node {name = "Salmon Run", next = Dests [(gold_gulch, 50), (wandering_brook, 30)], dist = 0, shop = shop0}
+salmon_run = Node {name = "Salmon Run", river = False, depth = 0, width = 0, next = Dests [(gold_gulch, 50), (wandering_brook, 30)], dist = 0, shop = shop0}
 
 red_ridge :: Node
-red_ridge = Node {name = "Red Ridge", next = Dests [(gold_gulch, 40)], dist = 0, shop = shop0}
+red_ridge = Node {name = "Red Ridge", river = False, depth = 0, width = 0, next = Dests [(gold_gulch, 40)], dist = 0, shop = shop0}
 
 blue_river :: Node
-blue_river = Node {name = "Blue River", next = Dests [(salmon_run, 30), (red_ridge, 50)], dist = 0, shop = shop0}
+blue_river = Node {name = "Blue River", river = True, depth = 50, width = 200, next = Dests [(salmon_run, 30), (red_ridge, 50)], dist = 0, shop = shop0}
 
 buffalo_head :: Node
-buffalo_head = Node {name = "Buffalo Head", next = Dests [(blue_river, 40)], dist = 0, shop = shop0}
+buffalo_head = Node {name = "Buffalo Head", river = False, depth = 0, width = 0, next = Dests [(blue_river, 40)], dist = 0, shop = shop0}
 
 
 -- a map is a list of nodes
@@ -79,6 +82,11 @@ type Map = [Node]
 -- showMap :: Map -> String
 -- showMap [] = " "
 -- showMap (h:t) = show (name h) ++ " " ++ showMap t
+
+
+checkRiver :: Node -> Bool
+checkRiver n = river n
+
 
 
 -- !! for Aidan 
