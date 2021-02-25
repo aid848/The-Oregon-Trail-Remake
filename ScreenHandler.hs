@@ -323,7 +323,7 @@ rationsToWord ra
     | otherwise = "grueling"
 
 settleName :: World -> Picture
-settleName w = anchorElement "top half text" (textWriter (name (nextLocation w)) "full")
+settleName w = anchorElement "top half text" (textWriter (name (currentLocation w)) "full")
 
 
 settleDate :: World -> Picture

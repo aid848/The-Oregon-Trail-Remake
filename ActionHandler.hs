@@ -147,7 +147,7 @@ handleSettleNumbers num w = let stage = userstage w
                                     | overview && num == 1 = w {screenType = "On route", userstage = 0}
                                     | overview && num == 7 = w {screenType = "Shop", userstage = 0}
                                     | selectBranch = w {userstage = 8}
-                                    | stage == 8 = w {nextLocation = nextLoc}
+                                    | stage == 8 = w {nextLocation = nextLoc, userstage = 0}
                                     | overview && validNum = w {userstage = num}
                                     | pace && validPaceRation = w {pace = num, userstage = 0} 
                                     | ration && validPaceRation = w {rationing = num, userstage = 0}
