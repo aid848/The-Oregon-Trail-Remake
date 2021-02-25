@@ -3,6 +3,7 @@ module UpdateHandler where
 import Definitions
 import Date
 import Helpers
+import Map
 
 -- ********************** Constants **********************
 
@@ -37,19 +38,23 @@ snakeBiteHealthDrain = 5
 update :: World -> World
 update w = let partyHealths = (partyHealth w)
                partyDeaths = (partyIsDead w)
-               names = (partyNames w) 
+               names = (partyNames w)
+               distToNextLandmark = (distToLandmark (currentLocation w) (nextLocation w))
                newWorld
                 | (partyHealths!!0 <= 0) && (not (partyDeaths!!0)) = w {partyIsDead = replaceNth partyDeaths 0 True, message = names!!0 ++ " has died."}
                 | (partyHealths!!1 <= 0) && (not (partyDeaths!!1)) = w {partyIsDead = replaceNth partyDeaths 1 True, message = names!!1 ++ " has died."}
                 | (partyHealths!!2 <= 0) && (not (partyDeaths!!2)) = w {partyIsDead = replaceNth partyDeaths 2 True, message = names!!2 ++ " has died."}
                 | (partyHealths!!3 <= 0) && (not (partyDeaths!!3)) = w {partyIsDead = replaceNth partyDeaths 3 True, message = names!!3 ++ " has died."}
                 | (partyHealths!!4 <= 0) && (not (partyDeaths!!4)) = w {partyIsDead = replaceNth partyDeaths 4 True, message = names!!4 ++ " has died."}
+                | distToNextLandmark <= 0                          = w {screenType = "Settlement", userstage = 0}
                 | otherwise                                      = let newW = (randomEvent (applyPaceRationingConditions w))
                                                                        oldDate = date newW
                                                                        oldMilesTravelled = milesTravelled newW
                                                                        pacing = pace newW
-                                                                       distanceGain = paceDistanceGain!!(pacing - 1)
-                                                                       in newW {date = updateDate oldDate, milesTravelled = oldMilesTravelled + distanceGain}
+                                                                       distanceGain = min (paceDistanceGain!!(pacing - 1)) distToNextLandmark
+                                                                       oldDist = dist (currentLocation w)
+                                                                       newCurr = (currentLocation w) {dist = oldDist + distanceGain}
+                                                                       in newW {date = updateDate oldDate, milesTravelled = oldMilesTravelled + distanceGain, currentLocation = newCurr}
                in newWorld
 
 -- ********************** End of update **********************
