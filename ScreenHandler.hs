@@ -309,7 +309,7 @@ shopItemInfoText :: String -> Picture
 shopItemInfoText txt = Translate (halfTextSpanF/2 - halfX) (0) (textWriter txt "full")
 
 shopDialogueBox :: World -> Picture
-shopDialogueBox w = if (message w) /= "" then Translate (0) (5) (Pictures[routeDialogueBackground, routeMessage w,Translate (-xDim/4) (-50) (spaceToContinue)]) else blank
+shopDialogueBox w = if (message w) /= "" then Translate (0) (5) (Pictures[routeDialogueBackground, routeMessage w,Translate (0) (-50) (spaceToContinue)]) else blank
 
 shopScreen :: World -> World -> Picture
 -- overview
