@@ -47,6 +47,7 @@ initialWorld i = World startingDate ["", "", "", "", ""] [100,100,100,100,100] [
 nWorld :: World -> World
 nWorld w = World startingDate ["", "", "", "", ""] [100,100,100,100,100] [[],[],[],[],[]] [False, False, False, False, False] 0 0 0 0 buffalo_head independence  0 0.0 0.0 0.0 1 "Start" 1 0 "" False 0  "" "Cloudy" 42 [] (imgs w)
 
+
 windowDims :: (Int,Int)
 windowDims = (1280, 720)
 
