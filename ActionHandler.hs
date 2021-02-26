@@ -106,8 +106,11 @@ handleShopNumbers num w = let stage = userstage w
 
 handleShopSpace :: World -> World
 handleShopSpace w = let stage = userstage w
+                        overview = stage == 0
+                        hasMessage = message w /= ""
                         newWorld
-                            | stage == 0 = updateInvBalPurchase w
+                            | overview = updateInvBalPurchase w
+                            | overview && hasMessage = w {message ="", userstage = 0}
                             | otherwise = w
                             in newWorld
 
