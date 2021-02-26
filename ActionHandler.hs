@@ -67,10 +67,16 @@ handleStartSpace w = let stage = userstage w
                              | otherwise = w
                          in newWorld
 
+handleOnRouteEnter :: World -> World 
+handleOnRouteEnter w = let stage = userstage w
+                           newWorld
+                               | stage == 0 = w {screenType = "Inventory", userstage = 0}
+                               | otherwise = w
+                               in newWorld
+
 handleOnRouteSpace :: World -> World
 handleOnRouteSpace w = let stage = userstage w
                            newWorld
-                               | stage == 0 = w {screenType = "Inventory", userstage = 0}
                                | stage == 1 = w {userstage = 0}
                                | stage == 2 = w {userstage = 0}
                                | otherwise = w
@@ -130,6 +136,7 @@ handleInvNumbers num w = let stage = userstage w
                              pace = stage == 4
                              ration = stage == 5
                              rest = stage == 6
+                             restDays = userInput w ++ show num
                              validNum = num >= 1 && num <= 6
                              validPaceRation = num >= 1 && num <= 3
                              newWorld
@@ -137,9 +144,18 @@ handleInvNumbers num w = let stage = userstage w
                                  | overview && validNum = w {userstage = num}
                                  | pace && validPaceRation = w {pace = num, userstage = 0} 
                                  | ration && validPaceRation = w {rationing = num, userstage = 0}
-                                 | rest  = (restRestoreHealth num w) {userstage = 0}
+                                 | rest  = w {userInput = restDays}
                                  | otherwise = w
                                  in newWorld
+
+handleInvEnter :: World -> World 
+handleInvEnter w = let stage = userstage w
+                       rest = stage == 6
+                       restDays = read (userInput w) :: Int
+                       newWorld
+                           | rest  = (restRestoreHealth restDays w) {userInput ="", userstage = 0}
+                           | otherwise = w
+                           in newWorld
 
 handleInvSpace :: World -> World 
 handleInvSpace w = let stage = userstage w
@@ -156,6 +172,7 @@ handleSettleNumbers num w = let stage = userstage w
                                 pace = stage == 4
                                 ration = stage == 5
                                 rest = stage == 6
+                                restDays = userInput w ++ show num
                                 validNum = num >= 1 && num <= 7
                                 validPaceRation = num >= 1 && num <= 3
                                 selectBranch = overview && hasBranch (currentLocation w) && num == 8  -- bool to check if branch option
@@ -169,13 +186,22 @@ handleSettleNumbers num w = let stage = userstage w
                                     | overview && validNum = w {userstage = num}
                                     | pace && validPaceRation = w {pace = num, userstage = 0} 
                                     | ration && validPaceRation = w {rationing = num, userstage = 0}
-                                    | rest  = (restRestoreHealth num w) {userstage = 0}
+                                    | rest = w {userInput = restDays}
                                     | otherwise = w
                                     in newWorld where
                                         nextLoc
                                             | num == 1 = getFirstInNext (currentLocation w)
                                             | num == 2 = getSecondInNext (currentLocation w)
                                             | otherwise = getFirstInNext (currentLocation w)
+
+handleSettleEnter :: World -> World 
+handleSettleEnter w = let stage = userstage w
+                          rest = stage == 6
+                          restDays = read (userInput w) :: Int
+                          newWorld
+                              | rest  = (restRestoreHealth restDays w) {userInput ="", userstage = 0}
+                              | otherwise = w
+                              in newWorld
 
 handleSettleSpace :: World -> World 
 handleSettleSpace w = let stage = userstage w

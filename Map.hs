@@ -60,7 +60,6 @@ gold_gulch :: Node
 gold_gulch = Node {name = "Denver", river = False, depth = 0, width = 0, next = Empty, dist = 0, shop = shop0}
 
 wandering_brook :: Node
-
 wandering_brook = Node {name = "Wandering Brook", river = True, depth = 9, width = 300, next = Dests [(gold_gulch, 175)], dist = 0, shop=shop0}
 
 salmon_run :: Node

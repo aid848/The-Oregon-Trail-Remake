@@ -10,7 +10,14 @@ handleEnterKey w = if screenType w == "Start"
                       then handleStartEnter w
                       else if screenType w == "Shop"
 						  then handleShopEnter w
-						  else w
+						  else if screenType w == "Settlement"
+							  then handleSettleEnter w
+							  else if screenType w == "Inventory"
+								  then handleInvEnter w
+								  else if screenType w == "On route"
+									  then handleOnRouteEnter w
+									  else w
+
 
 handleSpaceKey :: World -> World
 handleSpaceKey w = if screenType w == "Start"
@@ -32,6 +39,7 @@ handleSpaceKey w = if screenType w == "Start"
 handleKey0 :: World -> World 
 handleKey0 w = let newWorld
 					   | screenType w == "Shop" = handleShopNumbers 0 w
+					   | screenType w == "Settlement" = handleSettleNumbers 0 w
 					   | otherwise  = w
 					   in newWorld
 
@@ -110,6 +118,7 @@ handleKey8 w = let newWorld
 handleKey9 :: World -> World
 handleKey9 w = let newWorld
                        | screenType w == "Inventory" = handleInvNumbers 9 w
+					   | screenType w == "Settlement" = handleSettleNumbers 9 w
 					   | screenType w == "Shop" = handleShopNumbers 9 w
 					   | otherwise = w
 					   in newWorld
