@@ -111,8 +111,8 @@ handleShopSpace w = let stage = userstage w
                         overview = stage == 0
                         hasMessage = message w /= ""
                         newWorld
-                            | overview = updateInvBalPurchase w
                             | overview && hasMessage = w {message ="", userstage = 0}
+                            | overview = updateInvBalPurchase w
                             | otherwise = w
                             in newWorld
 

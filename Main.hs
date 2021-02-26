@@ -25,6 +25,7 @@ drawingFunc w = drawScreen w w  -- todo fix this to not need the same argument t
 
 -- A function to handle input events.
 inputHandler :: Event -> World -> World -- todo case analysis here based on world state
+inputHandler (EventKey (Char '0')  Down _ _) w = handleKey0 w
 inputHandler (EventKey (Char '1')  Down _ _) w = handleKey1 w
 inputHandler (EventKey (Char '2')  Down _ _) w = handleKey2 w
 inputHandler (EventKey (Char '3')  Down _ _) w = handleKey3 w
