@@ -255,8 +255,10 @@ handleRiverChar :: Char -> World -> World
 handleRiverChar char w = let stage = userstage w
                              ferry = stage == 4
                              yes = char == 'Y'
+                             hasCash = (cash w) >= riverFerryPrice
                              newWorld
-                                 | ferry && yes = w {date = newDate, cash = newCash, screenType = "On route", userstage = 0} 
+                                 | ferry && hasCash && yes = w {date = newDate, cash = newCash, screenType = "On route", userstage = 0}
+                                 | ferry && not hasCash && yes = w {userstage = 0}
                                  | ferry && not yes = w {userstage = 1}
                                  | otherwise = w
                                  in newWorld where
