@@ -251,6 +251,7 @@ handleRiverSpace w = let stage = userstage w
                              | otherwise = w
                              in newWorld
 
+-- TODO: check cash
 handleRiverChar :: Char -> World -> World 
 handleRiverChar char w = let stage = userstage w
                              ferry = stage == 4

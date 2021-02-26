@@ -2,9 +2,6 @@ module Map where
 import Shop
 import Date
 
--- TODO: showing current distance, distance remaining, check reached next destination
---         - implement after discussion on location of distance values
-
 data Node = Node {
   name :: String,
   river :: Bool,    -- True if river

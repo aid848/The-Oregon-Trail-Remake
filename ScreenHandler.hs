@@ -9,7 +9,7 @@ import Map
 
 textColor = white
 
--- top level screen drawer based on world state TODO refactor
+-- top level screen drawer based on world state
 drawScreen :: World -> World -> Picture
 drawScreen World{screenType="Start"} w = startScreen w w -- done
 drawScreen World{screenType="On route"} w = onRouteScreen w w -- mostly done except for wagon graphics, and distances, partyHealthToWord, paceToWord
@@ -17,7 +17,6 @@ drawScreen World{screenType="Shop"} w = shopScreen w w -- done, except fix money
 drawScreen World{screenType="Settlement"} w = settlementScreen w w -- done, except map
 drawScreen World{screenType="River"} w = riverScreen w w -- done, except depth and width
 drawScreen World{screenType="Inventory"} w = inventoryScreen w w -- done, except map
-drawScreen World{screenType="Splash"} w = splashScreen w w -- not started, prob canceled
 drawScreen World{screenType="Game over"} w = gameOver w w -- done (kinda lame)
 drawScreen World{screenType="Win"} w = win w w -- done (kinda lame)
 drawScreen World{screenType=_} w = blank
@@ -33,7 +32,6 @@ textWriterInverted :: String -> String -> Picture
 textWriterInverted str "full" = Color black (arrangeText (foldr (\ x y -> (Scale 0.25 0.25(Text x)):y) [] (splitText str fullTextSpan)))
 textWriterInverted str _ = Color black (arrangeText (foldr (\ x y -> (Scale 0.25 0.25(Text x)):y) [] (splitText str halfTextSpan)))
 
---todo have another textWriter for none automatic string splitting for static elements like menus
 textWriterFormatted :: [String] -> Picture
 textWriterFormatted arr = Color white (arrangeText (foldr (\ x y -> (Scale 0.25 0.25(Text x)):y) [] arr))
 
@@ -43,7 +41,6 @@ arrangeText :: [Picture] -> Picture
 arrangeText lst = Pictures (map (\(x,y) ->  Translate (0) (-50*y) (x) ) (zip lst [0..]))
 
 
--- todo cut out spaces at the edges and add hyphen to words that will be split into different lines
 -- splits text into sub strings due to limited screen space
 splitText :: String -> Int -> [String]
 splitText [] _ = []
@@ -68,6 +65,7 @@ lineGen x y = (Polygon [(x/(-2),y/2),(x/(-2),y/(-2)),(x/2,y/(-2)),(x/2,y/2)])
 sinePolyGen :: Float -> Float -> Float -> Float -> Picture
 sinePolyGen x y n step = Pictures (map (\s -> Translate (0) (s) (Line (zip [0,step..x] (map (\a -> (y/2)*(sin a)) [35,(35+step)..x])))) [0..n] )
 
+-- TODO don't count dead people
 averageInt :: [Int] -> Int -> Int
 averageInt lst len = (foldr (+) 0 lst) `div` len
 
@@ -103,10 +101,8 @@ settleChoice w = Translate (-100) (-325) (textWriter ("What is your choice? "++(
 choiceGeneric :: String -> World -> Picture
 choiceGeneric q w = (textWriter (q++(userInput w)) "half")
 
---todo change to remaining distance
 landmarkText :: World -> String
 landmarkText w = ("Next landmark: "++(show (distToLandmark (currentLocation w) (nextLocation w)))++" miles")
--- landmarkText w = ("Next landmark: "++"TODO"++" miles")
 
 milesTraveledText :: World -> String
 milesTraveledText w = ("Miles Traveled: "++(show (milesTravelled w))++" miles")
@@ -117,15 +113,8 @@ spaceToContinue = textWriter "Press SPACE to continue" "full"
 enterToContinue :: Picture
 enterToContinue = textWriter "Enter name and press ENTER to continue" "full"
 
--- retrieve bitmap data for rendering on screen TODO
--- drawBitmap :: ? -> Picture
--- drawBitmap = 
-
 -- ********************** Screen definitions **********************
 -- pattern: array of elements -> picture -> combine into one large picture
-
--- splash screen todo (if time)
-splashScreen World{userstage = 0} w = Color white ( anchorElement "bottom full text" (textWriter "bigTxt" "full"))
 
 introNumberedNames :: Picture
 introNumberedNames = Translate (-xDim/4) (0) (textWriterFormatted oneToFive)
@@ -421,9 +410,9 @@ branchDialogue w = Pictures [routeDialogueBackground,branchDialogueInput w, blan
 
 -- River
 
-riverWidthText :: World -> Picture -- TODO
+riverWidthText :: World -> Picture
 riverWidthText w = Translate (-xDim/6) (150) (textWriter ("River width: "++(show (width (currentLocation w)))++" feet") "Full")
-riverDepthText :: World -> Picture -- TODO
+riverDepthText :: World -> Picture
 riverDepthText w = Translate (-xDim/6) (100) (textWriter ("River depth: "++(show (depth (currentLocation w)))++" feet") "Full")
 riverOptionsText :: Picture
 riverOptionsText = Translate (halfTextSpanF - halfX/2) (0) (textWriterFormatted riverOptions)
@@ -431,7 +420,6 @@ riverOptionsText = Translate (halfTextSpanF - halfX/2) (0) (textWriterFormatted 
 riverGenericMessage :: String -> Picture
 riverGenericMessage txt = anchorElement "bottom full text" (textWriter txt "full")
 
--- todo width and depth
 riverSituationText :: World -> String
 riverSituationText w = riverInfoOne++(show (width (currentLocation w)))++" feet across, and "++(show (depth (currentLocation w)))++" feet deep in the middle."
 
@@ -451,7 +439,7 @@ riverScreen World{userstage = 4} w = Pictures[settleDate w , settleName w,(river
 -- anti crash
 riverScreen World{userstage = _} w = Pictures [(riverGenericMessage (riverSituationText w)),settleName w,settleDate w,  Translate (-200) (textHeightF-yDim/2) spaceToContinue]
 
--- Inventory TODO put gold bars on pace,rationing
+-- Inventory
 inventoryActions :: Picture
 inventoryActions = Translate (-400) (75) (textWriterFormatted invActionsText)
 

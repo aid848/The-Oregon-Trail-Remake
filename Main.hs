@@ -21,10 +21,10 @@ main = do
     
 
 drawingFunc :: World -> Picture -- A function to convert the world a picture.
-drawingFunc w = drawScreen w w  -- todo fix this to not need the same argument twice 
+drawingFunc w = drawScreen w w
 
 -- A function to handle input events.
-inputHandler :: Event -> World -> World -- todo case analysis here based on world state
+inputHandler :: Event -> World -> World
 inputHandler (EventKey (Char '0')  Down _ _) w = handleKey0 w
 inputHandler (EventKey (Char '1')  Down _ _) w = handleKey1 w
 inputHandler (EventKey (Char '2')  Down _ _) w = handleKey2 w
