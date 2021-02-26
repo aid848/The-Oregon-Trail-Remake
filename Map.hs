@@ -60,6 +60,7 @@ gold_gulch :: Node
 gold_gulch = Node {name = "Denver", river = False, depth = 0, width = 0, next = Empty, dist = 0, shop = shop0}
 
 wandering_brook :: Node
+
 wandering_brook = Node {name = "Wandering Brook", river = True, depth = 9, width = 300, next = Dests [(gold_gulch, 175)], dist = 0, shop=shop0}
 
 salmon_run :: Node
@@ -73,6 +74,7 @@ blue_river = Node {name = "Blue River", river = True, depth = 50, width = 200, n
 
 buffalo_head :: Node
 buffalo_head = Node {name = "Buffalo Head", river = False, depth = 0, width = 0, next = Dests [(blue_river, 400)], dist = 0, shop = shop0}
+
 
 
 -- a map is a list of nodes

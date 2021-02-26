@@ -1,4 +1,6 @@
 module Definitions where
+import Graphics.Gloss
+import Graphics.Gloss.Interface.Pure.Game
 import Date
 import Map
 
@@ -29,17 +31,20 @@ data World = World {
     message :: String,
     weather :: String,
     rngSeed :: Int, -- used to generate random numbers 
-    cart :: [(String, Int, Float)]  -- e.g. [("Oxen", 2, 320.00)]
+    cart :: [(String, Int, Float)],  -- e.g. [("Oxen", 2, 320.00)]
+    imgs :: [Picture]
 } deriving(Show)
-
 
 
 startingDate :: Date
 startingDate = dateCons 1 "March" 1848
 
--- TODO: check that initialWorld is set to starting values that make sense
-initialWorld :: World
-initialWorld = World startingDate ["A", "B", "C", "D", "E"] [100,100,100,100,100] [[],[],[],[],[]] [False, False, False, False, False] 0 0 0 0 (buffalo_head) (blue_river) 0 0.0 0.0 1 "Start" 1 0 "" False 0  "test" "Cloudy" 42 []
+-- TODO: check that initialWorld is set to starting values that make sense blue_river
+initialWorld :: [Picture] -> World
+initialWorld i = World startingDate ["A", "B", "C", "D", "E"] [100,100,100,100,100] [[],[],[],[],[]] [False, False, False, False, False] 0 0 0 0 (buffalo_head) (blue_river) 0 0.0 0.0 1 "Start" 1 0 "" False 0  "" "Cloudy" 42 [] i
+
+nWorld :: World -> World
+nWorld w = World startingDate ["A", "B", "C", "D", "E"] [100,100,100,100,100] [[],[],[],[],[]] [False, False, False, False, False] 0 0 0 0 (buffalo_head) (blue_river) 0 0.0 0.0 1 "Start" 1 0 "" False 0  "" "Cloudy" 42 [] (imgs w)
 
 windowDims :: (Int,Int)
 windowDims = (1280, 720)

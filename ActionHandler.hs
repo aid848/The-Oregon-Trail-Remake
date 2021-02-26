@@ -58,10 +58,12 @@ handleStartEnter w = let stage = userstage w
                              | otherwise = w 
                         in newWorld
 
+-- Starts the game by changing screenType to "Settlement" and initializing the rngSeed
 handleStartSpace :: World -> World
 handleStartSpace w = let stage = userstage w
+                         seed = hashNames (partyNames w)
                          newWorld
-                             | stage == 7 = w {screenType = "Settlement", userstage = 0}
+                             | stage == 7 = w {screenType = "Settlement", userstage = 0, rngSeed = seed}
                              | otherwise = w
                          in newWorld
 
@@ -163,7 +165,7 @@ handleSettleNumbers num w = let stage = userstage w
                                     | overview && num == 1 = w {screenType = "On route", userstage = 0}
                                     | overview && num == 7 = w {screenType = "Shop", userstage = 0}
                                     | selectBranch = w {userstage = 8}
-                                    | stage == 8 = w {nextLocation = nextLoc}
+                                    | stage == 8 = w {nextLocation = nextLoc, userstage = 0}
                                     | overview && validNum = w {userstage = num}
                                     | pace && validPaceRation = w {pace = num, userstage = 0} 
                                     | ration && validPaceRation = w {rationing = num, userstage = 0}
@@ -213,7 +215,7 @@ handleRiverChar char w = let stage = userstage w
                                  in newWorld
 
 handleGameOverSpace :: World -> World
-handleGameOverSpace w = let newWorld = initialWorld
+handleGameOverSpace w = let newWorld = (nWorld w)
                             in newWorld
 
 -- ****************************** Small Handler Functions ****************************

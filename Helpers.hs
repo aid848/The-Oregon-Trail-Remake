@@ -22,4 +22,14 @@ replaceNth [] _ new = []
 replaceNth (h:t) 0 new = new:t
 replaceNth (h:t) n new = h:(replaceNth t (n-1) new)
 
+-- hashName name
+-- Hashes the given String name to an Int
+hashName :: String -> Int
+hashName name = ((sum (map fromEnum name)) * 54151) `mod` 2^32
+
+-- hashNames names
+-- Hashes the given [String] names to an Int
+hashNames :: [String] -> Int
+hashNames names = (sum (map hashName names)) `mod` 2^32
+
 -- ********************** End of Helpers **********************
