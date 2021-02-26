@@ -65,14 +65,14 @@ lineGen x y = (Polygon [(x/(-2),y/2),(x/(-2),y/(-2)),(x/2,y/(-2)),(x/2,y/2)])
 sinePolyGen :: Float -> Float -> Float -> Float -> Picture
 sinePolyGen x y n step = Pictures (map (\s -> Translate (0) (s) (Line (zip [0,step..x] (map (\a -> (y/2)*(sin a)) [35,(35+step)..x])))) [0..n] )
 
-averageInt :: [Int] -> Int -> Int
-averageInt lst len = (foldr (+) 0 lst) `div` len
+averageInt :: [Int] -> Int
+averageInt lst = (foldr (+) 0 lst) `div` (foldr (\x y -> if x>0 then 1+y else y) 0 lst)
 
 partyHealthToWord :: [Int] -> String
 partyHealthToWord partyHp
-    | (averageInt partyHp 5) > 75 = "good"
-    | (averageInt partyHp 5) > 50 = "fair"
-    | (averageInt partyHp 5) > 25 = "poor"
+    | (averageInt partyHp) > 75 = "good"
+    | (averageInt partyHp) > 50 = "fair"
+    | (averageInt partyHp) > 25 = "poor"
     | otherwise = "very poor"
 
 paceToWord :: Int -> String
