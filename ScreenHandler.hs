@@ -68,7 +68,6 @@ lineGen x y = (Polygon [(x/(-2),y/2),(x/(-2),y/(-2)),(x/2,y/(-2)),(x/2,y/2)])
 sinePolyGen :: Float -> Float -> Float -> Float -> Picture
 sinePolyGen x y n step = Pictures (map (\s -> Translate (0) (s) (Line (zip [0,step..x] (map (\a -> (y/2)*(sin a)) [35,(35+step)..x])))) [0..n] )
 
--- todo
 averageInt :: [Int] -> Int
 averageInt lst = (foldr (+) 0 lst) `div` (foldr (\x y -> if x>0 then 1+y else y) 0 lst)
 
