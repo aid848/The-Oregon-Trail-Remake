@@ -5,38 +5,43 @@ import ActionHandler
 
 
 -- ****************************** Top-level Key Handler Functions ******************************
-handleEnterKey :: World -> World
-handleEnterKey w = if screenType w == "Start"
-                      then handleStartEnter w
-                      else if screenType w == "Shop"
-						  then handleShopEnter w
-						  else if screenType w == "Settlement"
-							  then handleSettleEnter w
-							  else if screenType w == "Inventory"
-								  then handleInvEnter w
-								  else if screenType w == "On route"
-									  then handleOnRouteEnter w
-									  else w
 
+-- ========  Start of non-alpha-numeric keys  ========
+handleEnterKey :: World -> World
+handleEnterKey w = let screen = screenType w
+                       newWorld
+                           | screen == "Start" = handleStartEnter w
+                           | screen == "Shop" = handleShopEnter w
+						   | screen == "Settlement" = handleSettleEnter w
+						   | screen == "Inventory" = handleInvEnter w
+						   | screen == "On route" = handleOnRouteEnter w
+						   | otherwise = w
+						   in newWorld
 
 handleSpaceKey :: World -> World
-handleSpaceKey w = if screenType w == "Start"
-                      then handleStartSpace w
-                      else if screenType w == "On route"
-						  then handleOnRouteSpace w
-						  else if screenType w == "Shop"
-							  then handleShopSpace w
-							  else if screenType w == "Game over"
-								  then handleGameOverSpace w
-								  else if screenType w == "Inventory"
-									  then handleInvSpace w
-									  else if screenType w == "Settlement"
-										  then handleSettleSpace w
-										  else if screenType w == "River"
-											  then handleRiverSpace w
-											  else if screenType w == "Win"
-												  then handleWinSpace w
-												  else w
+handleSpaceKey w = let screen = screenType w
+                       newWorld
+					   | screen == "Start" = handleStartSpace w
+					   | screen == "On route" = handleOnRouteSpace w
+					   | screen == "Shop" = handleShopSpace w
+					   | screen == "Game over" = handleGameOverSpace w
+					   | screen == "Inventory" = handleInvSpace w
+					   | screen == "Settlement" = handleSettleSpace w
+					   | screen == "River" = handleRiverSpace w
+					   | screen == "Win" = handleWinSpace w
+					   | otherwise = w
+					   in newWorld
+
+handleCtlKey :: World -> World
+handleCtlKey w = let newWorld
+                         | screenType w == "On route" = handleOnRouteCtl w
+						 | otherwise = w
+						 in newWorld
+
+-- ========  End of non-alpha-numeric keys  ========
+
+
+-- ========  Start of alpha-numeric keys  ========
 
 handleKey0 :: World -> World 
 handleKey0 w = let newWorld
@@ -126,26 +131,6 @@ handleKey9 w = let newWorld
 					   | otherwise = w
 					   in newWorld
 
-handleCtlKey :: World -> World
-handleCtlKey w = let newWorld
-                         | screenType w == "On route" = handleOnRouteCtl w
-						 | otherwise = w
-						 in newWorld
-
-handleCharY :: World -> World 
-handleCharY w = let newWorld
-                        | screenType w == "River" = handleRiverChar 'Y' w
-						| screenType w == "Start" = handleStartChar "Y" w
-						| otherwise = w
-						in newWorld
-
-handleCharN :: World -> World 
-handleCharN w = let newWorld
-                        | screenType w == "River" = handleRiverChar 'N' w
-						| screenType w == "Start" = handleStartChar "N" w
-						| otherwise = w
-						in newWorld
-
 handleCharA :: World -> World 
 handleCharA w = let newWorld
                         | screenType w == "Start" = handleStartChar "A" w
@@ -224,6 +209,13 @@ handleCharM w = let newWorld
 						| otherwise = w
 						in newWorld
 
+handleCharN :: World -> World 
+handleCharN w = let newWorld
+                        | screenType w == "River" = handleRiverChar 'N' w
+						| screenType w == "Start" = handleStartChar "N" w
+						| otherwise = w
+						in newWorld
+						
 handleCharO :: World -> World 
 handleCharO w = let newWorld
                         | screenType w == "Start" = handleStartChar "O" w
@@ -281,6 +273,14 @@ handleCharV w = let newWorld
 handleCharX :: World -> World 
 handleCharX w = let newWorld
                         | screenType w == "Start" = handleStartChar "X" w
+						| otherwise = w
+						in newWorld
+
+
+handleCharY :: World -> World 
+handleCharY w = let newWorld
+                        | screenType w == "River" = handleRiverChar 'Y' w
+						| screenType w == "Start" = handleStartChar "Y" w
 						| otherwise = w
 						in newWorld
 

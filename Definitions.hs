@@ -42,11 +42,10 @@ startingDate = dateCons 1 "March" 1848
 
 -- TODO: check that initialWorld is set to starting values that make sense blue_river
 initialWorld :: [Picture] -> World
-initialWorld i = World startingDate ["", "", "", "", ""] [100,100,100,100,100] [[],[],[],[],[]] [False, False, False, False, False] 0 0 0 0 buffalo_head independence  0 0.0 0.0 0.0 1 "Start" 1 0 "" False 0  "" "Cloudy" 42 [] i
+initialWorld i = World startingDate ["", "", "", "", ""] [100,100,100,100,100] [[],[],[],[],[]] [False, False, False, False, False] 0 0 0 0 fortKearney independence  0 0.0 0.0 0.0 1 "Start" 1 0 "" False 0  "" "Cloudy" 42 [] i
 
 nWorld :: World -> World
-nWorld w = World startingDate ["", "", "", "", ""] [100,100,100,100,100] [[],[],[],[],[]] [False, False, False, False, False] 0 0 0 0 buffalo_head independence  0 0.0 0.0 0.0 1 "Start" 1 0 "" False 0  "" "Cloudy" 42 [] (imgs w)
-
+nWorld w = World startingDate ["", "", "", "", ""] [100,100,100,100,100] [[],[],[],[],[]] [False, False, False, False, False] 0 0 0 0 fortKearney independence  0 0.0 0.0 0.0 1 "Start" 1 0 "" False 0  "" "Cloudy" 42 [] (imgs w)
 
 windowDims :: (Int,Int)
 windowDims = (1280, 720)
