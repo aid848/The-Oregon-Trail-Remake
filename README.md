@@ -8,6 +8,7 @@ A remake of the popular MECC computer game, The Oregon Trail, written in Haskell
 
 ### Linux/Mac:
 Run commands inside of unzipped directory
+##### Note: If running macOS Big Sur (v 11.x) you'll need to disable Security Integrity Protection :(
 ```
 chmod +x ./main
 ```
