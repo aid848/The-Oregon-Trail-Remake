@@ -68,8 +68,10 @@ handleStartEnter w = let stage = userstage w
                          stageIdx = validateStage stage
                          name = userInput w
                          names = replaceNth (partyNames w) stageIdx name
+                         notSet = null name
                          newWorld 
-                             | validStage && chooseName = w {partyNames = names, userInput = "", userstage = newStage}
+                             | validStage && chooseName && not notSet = w {partyNames = names, userInput = "", userstage = newStage}
+                             | chooseName && notSet = w
                              | otherwise = w 
                         in newWorld where
                             validateStage s
