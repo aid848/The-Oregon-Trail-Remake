@@ -6,7 +6,7 @@ data Date = Date {
     year :: Int
 } deriving(Show)
 
--- Data Constructor
+-- Date Constructor
 dateCons :: Int -> String -> Int -> Date
 dateCons d m y = Date {day = d, month = m, year = y}
 

@@ -9,6 +9,12 @@ A remake of the popular MECC computer game, The Oregon Trail, written in Haskell
 ```
 cabal install gloss
 ```
+or if that doesn't work
+
+```
+cabal install gloss --lib
+```
+then 
 
 ```
 ghc Main
