@@ -87,6 +87,7 @@ handleShopNumbers num w = let stage = userstage w
                               newWorld
                                   | stage == 0 && chooseItem = w {userstage = num}
                                   | chooseItem = updateCart num w
+                                  | otherwise = w
                                   in newWorld
 
 handleShopSpace :: World -> World
@@ -279,7 +280,7 @@ updateInvBalPurchase w = let purchases = cart w
                                  | otherwise = w {food = numFood + f, clothing = numClothes + c, 
                                                   medicine = numMeds + m, parts = numParts + p, 
                                                   cash = wallet - cost, oxen = numOxen + o,
-                                                  screenType = "Settlement", userstage = 0} where
+                                                  screenType = "Settlement", userInput = "",userstage = 0} where
                                      f = getFoodTotal purchases
                                      c = getClothingTotal purchases
                                      m = getMedicineTotal purchases
@@ -311,7 +312,7 @@ restHealth days lst = let first = lst!!0
 
 heal :: Int -> Int
 heal i
-    | i == 0 = 0
+    | i <= 0 = 0
     | i `elem` [1..25] = i + restHealthIncreaseVeryPoor
     | i `elem` [26..50] = i + restHealthIncreasePoor
     | i `elem` [51..75] = i + restHealthIncreaseFair
