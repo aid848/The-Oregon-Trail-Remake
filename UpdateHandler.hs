@@ -51,8 +51,9 @@ update w = let partyHealths = (partyHealth w)
                                                                          newWorld
                                                                             | (isNextEmpty newCurr) = w {screenType = "Win"}
                                                                             | (checkRiver newCurr)  = w {screenType = "River", userstage = 0, currentLocation = newCurr} -- Assumes rivers cannot have branches
-                                                                            | (hasBranch newCurr)   = w {screenType = "Settlement", userstage = 8, currentLocation = newCurr}
-                                                                            | otherwise             = w {screenType = "Settlement", userstage = 0, currentLocation = newCurr, nextLocation = (getFirstInNext newCurr)}
+                                                                            | (hasBranch newCurr)   = w {screenType = "Settlement", message ="", userstage = 8, currentLocation = newCurr}
+                                                                            | otherwise             = w {screenType = "Settlement", message ="", userstage = 0, currentLocation = newCurr, nextLocation = (getFirstInNext newCurr)}
+
                                                                          in newWorld
                 | otherwise                                        = let newW = (randomEvent (applyPaceRationingConditions w))
                                                                          oldDate = date newW
