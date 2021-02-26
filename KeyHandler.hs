@@ -34,7 +34,9 @@ handleSpaceKey w = if screenType w == "Start"
 										  then handleSettleSpace w
 										  else if screenType w == "River"
 											  then handleRiverSpace w
-											  else w
+											  else if screenType w == "Win"
+												  then handleWinSpace w
+												  else w
 
 handleKey0 :: World -> World 
 handleKey0 w = let newWorld

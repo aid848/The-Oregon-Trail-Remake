@@ -9,15 +9,25 @@ import Date
 
 -- *************** Constants ***************
 
+wealthOptions :: [Float]
 wealthOptions = [1600.0, 800.0, 400.0]
 
+dateSelect :: [[Char]]
 dateSelect = ["March", "April", "May", "June", "July"]
 
+restHealthIncreaseVeryPoor :: Int
 restHealthIncreaseVeryPoor = 20
+restHealthIncreasePoor :: Int
 restHealthIncreasePoor = 15
+restHealthIncreaseFair :: Int
 restHealthIncreaseFair = 10
+restHealthIncreaseGood :: Int
 restHealthIncreaseGood = 5
 
+riverFerryPrice :: Float
+riverFerryPrice = 10.00
+riverFerryDaysCost :: Int
+riverFerryDaysCost = 3
 -- *****************************************
 
 --      Screen handlers
@@ -35,19 +45,19 @@ restHealthIncreaseGood = 5
 
 handleStartNumbers :: Int -> World -> World
 handleStartNumbers num w = let currStage = userstage w
+                               chooseWealth = currStage == 0 && num >=1 && num <= 3
                                dateSel = currStage == 6  -- True if input chooses date
                                newWorld
                                    | dateSel = w {date = startDate, userstage = 7}
-                                   | currStage == 0 = w {cash = wealth, userstage = 1}
+                                   | chooseWealth = w {cash = wealth, userstage = 1}
                                    | otherwise = w
                                in newWorld where
                                    month
                                        | num >= 1 && num <= 5 = dateSelect!!(num - 1)
                                        | otherwise = "Error"
                                    startDate = dateCons 1 month 1848
-                                   wealth
-                                       | num >=1 && num <= 3 = wealthOptions!!(num - 1)
-                                       | otherwise = 0
+                                   wealth= wealthOptions!!(num - 1)
+                                       
 
 
 handleStartEnter :: World -> World
@@ -92,7 +102,6 @@ handleOnRouteCtl w = let stage = userstage w
 handleShopNumbers :: Int -> World -> World
 handleShopNumbers num w = let stage = userstage w
                               overview = stage == 0
-                              oldBill = bill w
                               item
                                  | stage == 1 = "Oxen"
                                  | stage == 2 = "Food"
@@ -106,7 +115,7 @@ handleShopNumbers num w = let stage = userstage w
                               chooseItemFromOver = num >= 1 && num <=5  -- bool to check if we're selecting item page
                               newWorld
                                   | overview && chooseItemFromOver = w {userInput = "", userstage = num}
-                                  | inputAmount = w {bill = oldBill + newBill, userInput = newInput}
+                                  | inputAmount = w {buildBill = newBill,  userInput = newInput}
                                   | otherwise = w
                                   in newWorld
                                       
@@ -124,9 +133,11 @@ handleShopSpace w = let stage = userstage w
 
 handleShopEnter :: World -> World
 handleShopEnter w = let stage = userstage w
+                        oldBuildBill = buildBill w
+                        oldBill = bill w
                         isCartItem = stage >= 1 && stage <= 5  -- bool to check if adding item to cart
                         newWorld
-                            | isCartItem = updateCart w
+                            | isCartItem = (updateCart w) {userInput ="", bill = oldBill + oldBuildBill}
                             | otherwise = w
                             in newWorld
                         
@@ -235,14 +246,22 @@ handleRiverChar char w = let stage = userstage w
                              ferry = stage == 4
                              yes = char == 'y'
                              newWorld
-                                 | ferry && yes = w {screenType = "On route", userstage = 0} -- TODO!!! update cash and date?
+                                 | ferry && yes = w {date = newDate, cash = newCash, screenType = "On route", userstage = 0} 
                                  | ferry && not yes = w {userstage = 1}
                                  | otherwise = w
-                                 in newWorld
+                                 in newWorld where
+                                     newDate = handleRestDate riverFerryDaysCost (date w)
+                                     newCash = cash w - riverFerryPrice
+
+
 
 handleGameOverSpace :: World -> World
-handleGameOverSpace w = let newWorld = (nWorld w)
+handleGameOverSpace w = let newWorld = nWorld w
                             in newWorld
+
+handleWinSpace :: World -> World 
+handleWinSpace w = let newWorld = nWorld w
+                       in newWorld
 
 -- ****************************** Small Handler Functions ****************************
 -- !! TODO: check if use **user_input :: String** as input param?
@@ -323,10 +342,10 @@ updateInvBalPurchase w = let purchases = cart w
                              numMeds = medicine w           -- original values
                              numParts = parts w             --
                              newWorld
-                                 | cost > wallet = w {screenType = "Shop", bill = 0.0, userstage = 0, userInput = "", message = "Not enough cash! Try again and select fewer items.", cart = []}
+                                 | cost > wallet = w {screenType = "Shop", buildBill =0.0, bill = 0.0, userstage = 0, userInput = "", message = "Not enough cash! Try again and select fewer items.", cart = []}
                                  | otherwise = w {food = numFood + f, clothing = numClothes + c, 
                                                   medicine = numMeds + m, parts = numParts + p,
-                                                  cash = wallet - cost, oxen = numOxen + o, bill = 0.0,
+                                                  cash = wallet - cost, oxen = numOxen + o, buildBill = 0.0, bill = 0.0,
                                                   screenType = "Settlement", userInput = "",userstage = 0} where
                                      f = getFoodTotal purchases
                                      c = getClothingTotal purchases

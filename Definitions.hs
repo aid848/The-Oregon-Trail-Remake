@@ -20,6 +20,7 @@ data World = World {
     currentLocation :: Node,        -- Node that we are either in, or in transit from
     milesTravelled :: Int,          -- cumulative distance travelled
     cash :: Float,
+    buildBill :: Float,
     bill :: Float,
     rationing :: Int, -- 1 = filling, 2 = meager, 3 = bare bones
     screenType :: String,
@@ -41,10 +42,10 @@ startingDate = dateCons 1 "March" 1848
 
 -- TODO: check that initialWorld is set to starting values that make sense blue_river
 initialWorld :: [Picture] -> World
-initialWorld i = World startingDate ["A", "B", "C", "D", "E"] [100,100,100,100,100] [[],[],[],[],[]] [False, False, False, False, False] 0 0 0 0 (buffalo_head) (blue_river) 0 0.0 0.0 1 "Start" 1 0 "" False 0  "" "Cloudy" 42 [] i
+initialWorld i = World startingDate ["A", "B", "C", "D", "E"] [100,100,100,100,100] [[],[],[],[],[]] [False, False, False, False, False] 0 0 0 0 (buffalo_head) (blue_river) 0 0.0 0.0 0.0 1 "Start" 1 0 "" False 0  "" "Cloudy" 42 [] i
 
 nWorld :: World -> World
-nWorld w = World startingDate ["A", "B", "C", "D", "E"] [100,100,100,100,100] [[],[],[],[],[]] [False, False, False, False, False] 0 0 0 0 (buffalo_head) (blue_river) 0 0.0 0.0 1 "Start" 1 0 "" False 0  "" "Cloudy" 42 [] (imgs w)
+nWorld w = World startingDate ["A", "B", "C", "D", "E"] [100,100,100,100,100] [[],[],[],[],[]] [False, False, False, False, False] 0 0 0 0 (buffalo_head) (blue_river) 0 0.0 0.0 0.0 1 "Start" 1 0 "" False 0  "" "Cloudy" 42 [] (imgs w)
 
 windowDims :: (Int,Int)
 windowDims = (1280, 720)
