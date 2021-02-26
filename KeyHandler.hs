@@ -42,6 +42,7 @@ handleKey0 :: World -> World
 handleKey0 w = let newWorld
 					   | screenType w == "Shop" = handleShopNumbers 0 w
 					   | screenType w == "Settlement" = handleSettleNumbers 0 w
+					   | screenType w == "Inventory" = handleInvNumbers 0 w
 					   | otherwise  = w
 					   in newWorld
 
