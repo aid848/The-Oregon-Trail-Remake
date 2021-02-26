@@ -133,12 +133,159 @@ handleCtlKey w = let newWorld
 
 handleCharY :: World -> World 
 handleCharY w = let newWorld
-                        | screenType w == "River" = handleRiverChar 'y' w
+                        | screenType w == "River" = handleRiverChar 'Y' w
+						| screenType w == "Start" = handleStartChar "Y" w
 						| otherwise = w
 						in newWorld
 
 handleCharN :: World -> World 
 handleCharN w = let newWorld
-                        | screenType w == "River" = handleRiverChar 'n' w
+                        | screenType w == "River" = handleRiverChar 'N' w
+						| screenType w == "Start" = handleStartChar "N" w
 						| otherwise = w
 						in newWorld
+
+handleCharA :: World -> World 
+handleCharA w = let newWorld
+                        | screenType w == "Start" = handleStartChar "A" w
+						| otherwise = w
+						in newWorld
+
+handleCharB :: World -> World 
+handleCharB w = let newWorld
+                        | screenType w == "Start" = handleStartChar "B" w
+						| otherwise = w
+						in newWorld
+
+handleCharC :: World -> World 
+handleCharC w = let newWorld
+                        | screenType w == "Start" = handleStartChar "C" w
+						| otherwise = w
+						in newWorld
+
+handleCharD :: World -> World 
+handleCharD w = let newWorld
+                        | screenType w == "Start" = handleStartChar "D" w
+						| otherwise = w
+						in newWorld
+
+handleCharE :: World -> World 
+handleCharE w = let newWorld
+                        | screenType w == "Start" = handleStartChar "E" w
+						| otherwise = w
+						in newWorld
+
+handleCharF :: World -> World 
+handleCharF w = let newWorld
+                        | screenType w == "Start" = handleStartChar "F" w
+						| otherwise = w
+						in newWorld
+
+handleCharG :: World -> World 
+handleCharG w = let newWorld
+                        | screenType w == "Start" = handleStartChar "G" w
+						| otherwise = w
+						in newWorld
+
+handleCharH :: World -> World 
+handleCharH w = let newWorld
+                        | screenType w == "Start" = handleStartChar "H" w
+						| otherwise = w
+						in newWorld
+
+handleCharI :: World -> World 
+handleCharI w = let newWorld
+                        | screenType w == "Start" = handleStartChar "I" w
+						| otherwise = w
+						in newWorld
+
+handleCharJ :: World -> World 
+handleCharJ w = let newWorld
+                        | screenType w == "Start" = handleStartChar "J" w
+						| otherwise = w
+						in newWorld
+
+handleCharK :: World -> World 
+handleCharK w = let newWorld
+                        | screenType w == "Start" = handleStartChar "K" w
+						| otherwise = w
+						in newWorld
+
+handleCharL :: World -> World 
+handleCharL w = let newWorld
+                        | screenType w == "Start" = handleStartChar "L" w
+						| otherwise = w
+						in newWorld
+
+handleCharM :: World -> World 
+handleCharM w = let newWorld
+                        | screenType w == "Start" = handleStartChar "M" w
+						| otherwise = w
+						in newWorld
+
+handleCharO :: World -> World 
+handleCharO w = let newWorld
+                        | screenType w == "Start" = handleStartChar "O" w
+						| otherwise = w
+						in newWorld
+
+handleCharP :: World -> World 
+handleCharP w = let newWorld
+                        | screenType w == "Start" = handleStartChar "P" w
+						| otherwise = w
+						in newWorld
+
+handleCharQ :: World -> World 
+handleCharQ w = let newWorld
+                        | screenType w == "Start" = handleStartChar "Q" w
+						| otherwise = w
+						in newWorld
+
+handleCharR :: World -> World 
+handleCharR w = let newWorld
+                        | screenType w == "Start" = handleStartChar "R" w
+						| otherwise = w
+						in newWorld
+
+handleCharS :: World -> World 
+handleCharS w = let newWorld
+                        | screenType w == "Start" = handleStartChar "S" w
+						| otherwise = w
+						in newWorld
+
+handleCharT :: World -> World 
+handleCharT w = let newWorld
+                        | screenType w == "Start" = handleStartChar "T" w
+						| otherwise = w
+						in newWorld
+
+handleCharU :: World -> World 
+handleCharU w = let newWorld
+                        | screenType w == "Start" = handleStartChar "U" w
+						| otherwise = w
+						in newWorld
+
+handleCharW :: World -> World 
+handleCharW w = let newWorld
+                        | screenType w == "Start" = handleStartChar "W" w
+						| otherwise = w
+						in newWorld
+
+handleCharV :: World -> World 
+handleCharV w = let newWorld
+                        | screenType w == "Start" = handleStartChar "V" w
+						| otherwise = w
+						in newWorld
+
+handleCharX :: World -> World 
+handleCharX w = let newWorld
+                        | screenType w == "Start" = handleStartChar "X" w
+						| otherwise = w
+						in newWorld
+
+handleCharZ :: World -> World 
+handleCharZ w = let newWorld
+                        | screenType w == "Start" = handleStartChar "Z" w
+						| otherwise = w
+						in newWorld
+

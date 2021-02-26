@@ -42,6 +42,14 @@ riverFerryDaysCost = 3
 
 -- *********** ScreenType - based handler functions for use in KeyHandler.hs ***********
 
+handleStartChar :: [Char] -> World -> World 
+handleStartChar letter w = let stage = userstage w
+                               newName = userInput w ++ letter
+                               chooseName = stage >= 1 && stage <= 5
+                               newWorld
+                                   | chooseName = w {userInput = newName}
+                                   | otherwise = w
+                                   in newWorld
 
 handleStartNumbers :: Int -> World -> World
 handleStartNumbers num w = let currStage = userstage w
@@ -63,10 +71,18 @@ handleStartNumbers num w = let currStage = userstage w
 handleStartEnter :: World -> World
 handleStartEnter w = let stage = userstage w
                          newStage = stage + 1
+                         validStage = newStage <= 6 
+                         chooseName = stage >= 1 && stage <= 5
+                         stageIdx = validateStage stage
+                         name = userInput w
+                         names = replaceNth (partyNames w) stageIdx name
                          newWorld 
-                             | newStage <= 6 = w {userstage = newStage}
+                             | validStage && chooseName = w {partyNames = names, userInput = "", userstage = newStage}
                              | otherwise = w 
-                        in newWorld
+                        in newWorld where
+                            validateStage s
+                                | s >= 1 && s <= 5 = s - 1
+                                | otherwise = 0
 
 -- Starts the game by changing screenType to "Settlement" and initializing the rngSeed
 handleStartSpace :: World -> World
@@ -244,7 +260,7 @@ handleRiverSpace w = let stage = userstage w
 handleRiverChar :: Char -> World -> World 
 handleRiverChar char w = let stage = userstage w
                              ferry = stage == 4
-                             yes = char == 'y'
+                             yes = char == 'Y'
                              newWorld
                                  | ferry && yes = w {date = newDate, cash = newCash, screenType = "On route", userstage = 0} 
                                  | ferry && not yes = w {userstage = 1}
