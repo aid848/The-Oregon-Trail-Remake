@@ -151,8 +151,10 @@ handleShopEnter :: World -> World
 handleShopEnter w = let stage = userstage w
                         oldBuildBill = buildBill w
                         oldBill = bill w
+                        inputEmpty = null(userInput w)
                         isCartItem = stage >= 1 && stage <= 5  -- bool to check if adding item to cart
                         newWorld
+                            | isCartItem && inputEmpty = w
                             | isCartItem = (updateCart w) {userInput ="", bill = oldBill + oldBuildBill}
                             | otherwise = w
                             in newWorld
