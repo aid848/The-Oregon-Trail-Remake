@@ -13,7 +13,7 @@ rationingHealthDrain = [3, 2, 1, 0] -- indexed by food consumed. 0 food = 3 hp/d
 
 -- Pace
 paceHealthDrain = [0, 1, 2] -- steady = 0 hp/day, strenuous = 1 hp/day, grueling = 2hp/day
-paceDistanceGain = [20, 30, 40] -- steady = 20 miles/day, strenuous = 30 miles/day, grueling = 40 miles/day
+paceDistanceGain = [21, 31, 41] -- steady = 20 miles/day, strenuous = 30 miles/day, grueling = 40 miles/day
 
 -- Conditions
 dysenteryHealthDrain = 5

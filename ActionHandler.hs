@@ -196,7 +196,7 @@ handleRiverChar char w = let stage = userstage w
                                  in newWorld
 
 handleGameOverSpace :: World -> World
-handleGameOverSpace w = let newWorld = initialWorld
+handleGameOverSpace w = let newWorld = (nWorld w)
                             in newWorld
 
 -- ****************************** Small Handler Functions ****************************
@@ -281,7 +281,7 @@ updateInvBalPurchase w = let purchases = cart w
                                  | otherwise = w {food = numFood + f, clothing = numClothes + c, 
                                                   medicine = numMeds + m, parts = numParts + p, 
                                                   cash = wallet - cost, oxen = numOxen + o,
-                                                  screenType = "Inventory", userstage = 0} where
+                                                  screenType = "Settlement", userstage = 0} where
                                      f = getFoodTotal purchases
                                      c = getClothingTotal purchases
                                      m = getMedicineTotal purchases

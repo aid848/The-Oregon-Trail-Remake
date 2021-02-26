@@ -81,6 +81,7 @@ handleKey6 :: World -> World
 handleKey6 w = let newWorld
                        | screenType w == "Inventory" = handleInvNumbers 6 w
 					   | screenType w == "Settlement" = handleSettleNumbers 6 w
+					   | screenType w == "Shop" = handleShopNumbers 6 w
 					   | otherwise = w
 					   in newWorld
 
@@ -88,6 +89,7 @@ handleKey7 :: World -> World
 handleKey7 w = let newWorld
                        | screenType w == "Inventory" = handleInvNumbers 7 w
 					   | screenType w == "Settlement" = handleSettleNumbers 7 w
+					   | screenType w == "Shop" = handleShopNumbers 7 w
 					   | otherwise = w
 					   in newWorld
 
@@ -95,12 +97,14 @@ handleKey8 :: World -> World
 handleKey8 w = let newWorld
                        | screenType w == "Inventory" = handleInvNumbers 8 w
 					   | screenType w == "Settlement" = handleSettleNumbers 8 w
+					   | screenType w == "Shop" = handleShopNumbers 8 w
 					   | otherwise = w
 					   in newWorld
 
 handleKey9 :: World -> World
 handleKey9 w = let newWorld
                        | screenType w == "Inventory" = handleInvNumbers 9 w
+					   | screenType w == "Shop" = handleShopNumbers 9 w
 					   | otherwise = w
 					   in newWorld
 
