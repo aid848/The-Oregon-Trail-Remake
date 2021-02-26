@@ -52,50 +52,64 @@ independence-----150----buffalo head---400---blue river-----90-----salmon run   
                                                                     --------220------ red ridge ------ 100 ------                            --------------310------ pesky pass----41
 -}
 
--- A test Date
-date0 :: Date
-date0 = dateCons 1 "Feburary" 1848
+-- Node Constructor
+-- nodeCons name river depth width Upcoming dist shop
+nodeCons :: String -> Bool -> Int -> Int -> Upcoming -> Int -> Shop -> Node
+nodeCons n riv d w u dis s = Node {name = n, river = riv, depth = d, width = w, next = u, dist = dis, shop = s}
 
-victory_village :: Node
-victory_village = Node {name = "Victory Village", river = False, depth = 0, width = 0, next = Empty, dist = 0, shop = shop0}
 
-white_willow :: Node
-white_willow = Node {name = "White Willow", river = False, depth = 0, width = 0, next = Dests [(victory_village, 96)], dist = 0, shop = shop0}
-
-pesky_pass :: Node
-pesky_pass = Node {name = "Pesky Pass", river = False, depth = 0, width = 0, next = Dests [(victory_village, 41)], dist = 0, shop = shop0}
-
-purple_canyon :: Node
-purple_canyon = Node {name = "Purple Canyon", river = False, depth = 0, width = 0, next = Dests [(pesky_pass, 310), (white_willow, 208)], dist = 0, shop = shop0}
-
-rushing_rapids :: Node
-rushing_rapids = Node {name = "Rushing Rapids", river = True, depth = 29, width = 86, next = Dests [(purple_canyon, 150)], dist = 0, shop = shop0}
-
-gold_gulch :: Node
-gold_gulch = Node {name = "Gold Gulch", river = False, depth = 0, width = 0, next = Dests [(rushing_rapids, 90)], dist = 0, shop = shop0}
-
-red_ridge :: Node
-red_ridge = Node {name = "Red Ridge", river = False, depth = 0, width = 0, next = Dests [(rushing_rapids, 100)], dist = 0, shop = shop0}
-
-wandering_brook :: Node
-wandering_brook = Node {name = "Wandering Brook", river = True, depth = 9, width = 300, next = Dests [(gold_gulch, 175)], dist = 0, shop=shop0}
-
-salmon_run :: Node
-salmon_run = Node {name = "Salmon Run", river = False, depth = 0, width = 0, next = Dests [(red_ridge, 220), (wandering_brook, 300)], dist = 0, shop = shop0}
-
-blue_river :: Node
-blue_river = Node {name = "Blue River", river = True, depth = 50, width = 200, next = Dests [(salmon_run, 90)], dist = 0, shop = shop0}
-
-buffalo_head :: Node
-buffalo_head = Node {name = "Buffalo Head", river = False, depth = 0, width = 0, next = Dests [(blue_river, 400)], dist = 0, shop = shop0}
-
+-- Oregon Trail Map Nodes:
 independence :: Node
-independence = Node {name = "Independence", river = False, depth = 0, width = 0, next = Dests [(buffalo_head, 150)], dist = 0, shop = shop0}
+independence = nodeCons "Independence" False 0 0 (Dests [(fortKearney, 150)]) 0 shop0
 
+fortKearney :: Node
+fortKearney = nodeCons "Fort Kearney" False 0 0 (Dests [(riverOfDoubt, 98)]) 0 shop0
+
+riverOfDoubt :: Node
+riverOfDoubt = nodeCons "River of Doubt" True 25 501 (Dests [(laramie, 85)]) 0 shop0
+
+laramie :: Node
+laramie = nodeCons "Laramie" False 0 0 (Dests [(rushingRapids, 195)]) 0 shop0
+
+rushingRapids :: Node
+rushingRapids = nodeCons "Rushing Rapids" True 18 350 (Dests [(southPass, 300)]) 0 shop0
+
+southPass :: Node
+southPass = nodeCons "South Pass" False 0 0 (Dests [(sodaSprings, 220), (fortBridger, 289)]) 0 shop0
+
+sodaSprings :: Node
+sodaSprings = nodeCons "Soda Springs" False 0 0 (Dests [(fortHall, 109)]) 0 shop0
+
+fortBridger :: Node
+fortBridger = nodeCons "Fort Bridger" False 0 0 (Dests [(fortHall, 130)]) 0 shop0
+
+fortHall :: Node
+fortHall = nodeCons "Fort Hall" False 0 0 (Dests [(rockyRiver, 280)]) 0 shop0
+
+rockyRiver :: Node
+rockyRiver = nodeCons "Rocky River" True 36 190 (Dests [(fortBoise, 392)]) 0 shop0
+
+fortBoise :: Node
+fortBoise = nodeCons "Fort Boise" False 0 0 (Dests [(fortWallaWalla, 175), (blueMountain, 206)]) 0 shop0
+
+fortWallaWalla :: Node
+fortWallaWalla = nodeCons "Fort Walla Walla" False 0 0 (Dests [(blackRiver, 120)]) 0 shop0
+
+blueMountain :: Node
+blueMountain = nodeCons "Blue Mountain" False 0 0 (Dests [(redRiver, 160)]) 0 shop0
+
+blackRiver :: Node
+blackRiver = nodeCons "Black River" True 84 100 (Dests [(oregonCity, 290)]) 0 shop0
+
+redRiver :: Node
+redRiver = nodeCons "Red River" True 8 250 (Dests [(oregonCity, 304)]) 0 shop0
+
+oregonCity :: Node
+oregonCity = nodeCons "Oregon City" False 0 0 Empty 0 shop0
 
 
 -- a map is a list of nodes
-type Map = [Node]
+-- type Map = [Node]
 
 -- test function showing node names in map
 -- showMap :: Map -> String
