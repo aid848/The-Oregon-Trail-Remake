@@ -17,22 +17,6 @@ shopCons :: String -> [(String, Float)] -> Shop
 shopCons st its = Shop {store = st, items = its}
 
 
-
--- Update selected items to purchase
--- Handles cases: - selected is empty 
---                - selected is non-empty and does not contain item
---                - selected is non-empty and does contain item
---
--- updateSelected(shop, item, #item, item price)
--- updateSelected :: Shop -> String -> Int -> Float-> Shop
--- updateSelected s item amt price
---     | (selected s) == [] = s {cart = [(item, amt, price)]}
---     | item `elem` stock = s {cart = (updateHelper (cart s) item amt price)} 
---     | otherwise = s {cart = (item, amt, price):(cart s)}
---     where 
---         stock = stringItUp (cart s) 
-
-
 -- returns price of item given item string
 getItemPrice :: String -> [(String, Float)] -> Float
 getItemPrice _ [] = 0.0
@@ -45,42 +29,42 @@ getItemPrice str (h:t)
 -- get purchase total to adjust cash balance
 getPurchaseTotal :: [(String, Int, Float)] -> Float
 getPurchaseTotal [] = 0.0
-getPurchaseTotal (h:t) = (extractThird h) + getPurchaseTotal t
+getPurchaseTotal (h:t) = extractThird h + getPurchaseTotal t
 
 
 -- get number of oxen purchased to update oxen in World
 getOxenTotal :: [(String, Int, Float)] -> Int
 getOxenTotal [] = 0
 getOxenTotal (h:t)
-    | (extractFirst h) == "Oxen" = (extractSecond h) + getOxenTotal t
+    | extractFirst h == "Oxen" = extractSecond h + getOxenTotal t
     | otherwise = getOxenTotal t
 
 -- get amount of food purchased to update food in World
 getFoodTotal :: [(String, Int, Float)] -> Int
 getFoodTotal [] = 0
 getFoodTotal (h:t)
-    | (extractFirst h) == "Food" = (extractSecond h) + getFoodTotal t
+    | extractFirst h == "Food" = extractSecond h + getFoodTotal t
     | otherwise = getFoodTotal t
 
 -- get medicine amt purchased to update medicine in World
 getMedicineTotal :: [(String, Int, Float)] -> Int
 getMedicineTotal [] = 0
 getMedicineTotal (h:t)
-    | (extractFirst h) == "Medicine" = (extractSecond h) + getMedicineTotal t
+    | extractFirst h == "Medicine" = extractSecond h + getMedicineTotal t
     | otherwise = getMedicineTotal t
 
 -- get clothing amt purchased to update clothign in World
 getClothingTotal :: [(String, Int, Float)] -> Int
 getClothingTotal [] = 0
 getClothingTotal (h:t)
-    | (extractFirst h) == "Clothing" = (extractSecond h) + getClothingTotal t
+    | extractFirst h == "Clothing" = extractSecond h + getClothingTotal t
     | otherwise = getClothingTotal t
 
 -- get spare parts purchased to update parts in World
 getPartsTotal :: [(String, Int, Float)] -> Int
 getPartsTotal [] = 0
 getPartsTotal (h:t)
-    | (extractFirst h) == "Spare Parts" = (extractSecond h) + getPartsTotal t
+    | extractFirst h == "Spare Parts" = extractSecond h + getPartsTotal t
     | otherwise = getPartsTotal t
 
 

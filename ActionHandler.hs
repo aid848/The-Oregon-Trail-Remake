@@ -30,14 +30,6 @@ riverFerryDaysCost :: Int
 riverFerryDaysCost = 3
 -- *****************************************
 
---      Screen handlers
--- Start        - Done
--- On route     - Done
--- Shop         - Almost done, need to fix purchasing
--- Settlement   - Done
--- River        - Done except for "y" ferry option
--- Inventory    - Done
--- Game over    - Done
 
 
 -- *********** ScreenType - based handler functions for use in KeyHandler.hs ***********
@@ -282,15 +274,14 @@ handleWinSpace w = let newWorld = nWorld w
                        in newWorld
 
 -- ****************************** Small Handler Functions ****************************
--- !! TODO: check if use **user_input :: String** as input param?
--- Set uerInput to rationing
+
+-- Set userInput to rationing
 -- rationing is one of {1, 2, 3}
 setRation :: World -> World
 setRation w = let r = read (userInput w) :: Int
                   in w {rationing = r}
 
 
--- !! TODO: check if take user_input :: String as input param?
 -- Set userInput to pace
 -- pace is one of {1, 2, 3}
 setPace :: World -> World
@@ -298,7 +289,6 @@ setPace w = let p = read (userInput w) :: Int
                 in w {pace = p}
 
 
--- ****** Use Medicine *******
 -- Assumes userInput is in [1..5] corresponding to party member that uses the medicine
 -- Cures all ailments 
 useMedicine :: World -> World
@@ -307,17 +297,14 @@ useMedicine w = let temp = read (userInput w) :: Int
                     memberConditions = partyConditions w
                     cured = []
                     in w {partyConditions = replaceNth memberConditions mem cured}
--- **************************
 
 
 
 
 
--- ********* Update Cart fields with key input ************
 
--- uses updateHelper in Shop.hs
--- 
---
+-- ********* Shop Helpers ************
+
 -- checks userInput(amt), checks user stage for context->item
 -- and shop in currentLocation for price 
 updateCart :: World -> World
@@ -342,14 +329,6 @@ updateCart w = let oldCart = cart w
                    in newWorld
 
 
--- **********************************************************
-
-
-
-
-
--- ******* Update Balance, inventory after purchases *******
--- uses Shop in (currentLocation w)
 updateInvBalPurchase :: World -> World
 updateInvBalPurchase w = let purchases = cart w 
                              cost = getPurchaseTotal purchases
@@ -371,11 +350,10 @@ updateInvBalPurchase w = let purchases = cart w
                                      p = getPartsTotal purchases
                                      o = getOxenTotal purchases
                             in newWorld
--- **************************
+-- **********************************************************
 
 
--- ******** Restore health with rest *********
--- assumes number of days to rest is in userInput :: String
+
 
 restRestoreHealth :: Int -> World -> World
 restRestoreHealth days w = let members = partyHealth w
@@ -406,6 +384,3 @@ heal i
 handleRestDate :: Int -> Date -> Date
 handleRestDate 0 d = d
 handleRestDate days d = handleRestDate (days - 1) (updateDate d)
-
--- **************************
-

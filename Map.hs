@@ -140,14 +140,14 @@ reachedNext current next = let x = dist current
 -- returns True if Empty
 isNextEmpty :: Node -> Bool
 isNextEmpty n
-    | upcomingToList (next n) == [] = True
+    | null (upcomingToList (next n))= True
     | otherwise = False
 
 -- checks to see if node's next field contains a branch (two tuples)
 -- returns True if branch
 hasBranch :: Node -> Bool
 hasBranch n
-    | tail (upcomingToList (next n)) == [] = False
+    | null (tail (upcomingToList (next n))) = False
     | otherwise = True
 
 
@@ -176,4 +176,4 @@ upcomingToList u
 
 -- helper to extract list from Upcoming
 upcomingToListHelper :: Upcoming -> [(Node, Int)]
-upcomingToListHelper (Dests (h:t)) = (h:t)
+upcomingToListHelper (Dests (h:t)) = h : t
