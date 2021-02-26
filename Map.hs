@@ -40,39 +40,57 @@ shop0 = shopCons "Matt's General Store" [("1. Oxen", 100.00), ("2. Food", 10.00)
 
 
 {- 
-define a short test path:
-
-											---33----- wandering brook
-											|						|
-											|						15
-											|						|
-buffalo head---22---blue river-----13-----salmon run-----50----- gold gulch
-						|											|
-						|											|
-						--------30------ red ridge ------ 41 ------
+define a map:
+                                                                                                                                            ---------208------ white willow ------
+                                                                    ---300----- wandering brook                                             |                                    |
+                                                                    |						|                                               185                                  |
+                                                                    |						175                                             |                                   96
+                                                                    |						|                                               |                                    |
+independence-----150----buffalo head---400---blue river-----90-----salmon run              gold gulch ---90----rushing rapids -----150---- purple canyon                       victory village
+                                                                    |											|                           |                                      |
+                                                                    |											|                           |                                      |
+                                                                    --------220------ red ridge ------ 100 ------                            --------------310------ pesky pass----41
 -}
 
 -- A test Date
 date0 :: Date
 date0 = dateCons 1 "Feburary" 1848
 
+victory_village :: Node
+victory_village = Node {name = "Victory Village", river = False, depth = 0, width = 0, next = Empty, dist = 0, shop = shop0}
+
+white_willow :: Node
+white_willow = Node {name = "White Willow", river = False, depth = 0, width = 0, next = Dests [(victory_village, 96)], dist = 0, shop = shop0}
+
+pesky_pass :: Node
+pesky_pass = Node {name = "Pesky Pass", river = False, depth = 0, width = 0, next = Dests [(victory_village, 41)], dist = 0, shop = shop0}
+
+purple_canyon :: Node
+purple_canyon = Node {name = "Purple Canyon", river = False, depth = 0, width = 0, next = Dests [(pesky_pass, 310), (white_willow, 208)], dist = 0, shop = shop0}
+
+rushing_rapids :: Node
+rushing_rapids = Node {name = "Rushing Rapids", river = True, depth = 29, width = 86, next = Dests [(purple_canyon, 150)], dist = 0, shop = shop0}
+
 gold_gulch :: Node
-gold_gulch = Node {name = "Denver", river = False, depth = 0, width = 0, next = Empty, dist = 0, shop = shop0}
+gold_gulch = Node {name = "Gold Gulch", river = False, depth = 0, width = 0, next = Dests [(rushing_rapids, 90)], dist = 0, shop = shop0}
+
+red_ridge :: Node
+red_ridge = Node {name = "Red Ridge", river = False, depth = 0, width = 0, next = Dests [(rushing_rapids, 100)], dist = 0, shop = shop0}
 
 wandering_brook :: Node
 wandering_brook = Node {name = "Wandering Brook", river = True, depth = 9, width = 300, next = Dests [(gold_gulch, 175)], dist = 0, shop=shop0}
 
 salmon_run :: Node
-salmon_run = Node {name = "Salmon Run", river = False, depth = 0, width = 0, next = Dests [(gold_gulch, 220), (wandering_brook, 300)], dist = 0, shop = shop0}
-
-red_ridge :: Node
-red_ridge = Node {name = "Red Ridge", river = False, depth = 0, width = 0, next = Dests [(gold_gulch, 200)], dist = 0, shop = shop0}
+salmon_run = Node {name = "Salmon Run", river = False, depth = 0, width = 0, next = Dests [(red_ridge, 220), (wandering_brook, 300)], dist = 0, shop = shop0}
 
 blue_river :: Node
-blue_river = Node {name = "Blue River", river = True, depth = 50, width = 200, next = Dests [(salmon_run, 90), (red_ridge, 120)], dist = 0, shop = shop0}
+blue_river = Node {name = "Blue River", river = True, depth = 50, width = 200, next = Dests [(salmon_run, 90)], dist = 0, shop = shop0}
 
 buffalo_head :: Node
 buffalo_head = Node {name = "Buffalo Head", river = False, depth = 0, width = 0, next = Dests [(blue_river, 400)], dist = 0, shop = shop0}
+
+independence :: Node
+independence = Node {name = "Independence", river = False, depth = 0, width = 0, next = Dests [(buffalo_head, 150)], dist = 0, shop = shop0}
 
 
 
