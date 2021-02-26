@@ -29,6 +29,12 @@ handleSpaceKey w = if screenType w == "Start"
 											  then handleRiverSpace w
 											  else w
 
+handleKey0 :: World -> World 
+handleKey0 w = let newWorld
+					   | screenType w == "Shop" = handleShopNumbers 0 w
+					   | otherwise  = w
+					   in newWorld
+
 handleKey1 :: World -> World 
 handleKey1 w = let newWorld
                        | screenType w == "Start" = handleStartNumbers 1 w

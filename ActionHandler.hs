@@ -85,16 +85,34 @@ handleOnRouteCtl w = let stage = userstage w
 
 handleShopNumbers :: Int -> World -> World
 handleShopNumbers num w = let stage = userstage w
-                              chooseItem = num >= 1 && num <=5  -- bool to check if we're selecting item
+                              overview = stage == 0
+                              oldBill = bill w
+                              item
+                                 | stage == 1 = "Oxen"
+                                 | stage == 2 = "Food"
+                                 | stage == 3 = "Spare Parts"
+                                 | stage == 4 = "Clothing"
+                                 | stage == 5 = "Medicine"
+                              price = getItemPrice item (items (shop (currentLocation w)))
+                              newInput = userInput w ++ show num
+                              newBill = price * read newInput :: Float
+                              inputAmount = stage >= 1 && stage <=5     -- bool to check if concat for amt to buy
+                              chooseItemFromOver = num >= 1 && num <=5  -- bool to check if we're selecting item page
                               newWorld
-                                  | stage == 0 && chooseItem = w {userstage = num}
-                                  | chooseItem = updateCart num w
+                                  | overview && chooseItemFromOver = w {userInput = "", userstage = num}
+                                  | inputAmount = w {bill = oldBill + newBill, userInput = newInput}
+                                  | otherwise = w
                                   in newWorld
+                                      
+                                      
 
 handleShopSpace :: World -> World
 handleShopSpace w = let stage = userstage w
+                        overview = stage == 0
+                        hasMessage = message w /= ""
                         newWorld
-                            | stage == 0 = updateInvBalPurchase w
+                            | overview = updateInvBalPurchase w
+                            | overview && hasMessage = w {message ="", userstage = 0}
                             | otherwise = w
                             in newWorld
 
@@ -102,7 +120,7 @@ handleShopEnter :: World -> World
 handleShopEnter w = let stage = userstage w
                         isCartItem = stage >= 1 && stage <= 5  -- bool to check if adding item to cart
                         newWorld
-                            | isCartItem = w {userstage = 0}
+                            | isCartItem = updateCart w
                             | otherwise = w
                             in newWorld
                         
@@ -157,6 +175,7 @@ handleSettleNumbers num w = let stage = userstage w
                                         nextLoc
                                             | num == 1 = getFirstInNext (currentLocation w)
                                             | num == 2 = getSecondInNext (currentLocation w)
+                                            | otherwise = getFirstInNext (currentLocation w)
 
 handleSettleSpace :: World -> World 
 handleSettleSpace w = let stage = userstage w
@@ -236,27 +255,28 @@ useMedicine w = let temp = read (userInput w) :: Int
 -- uses updateHelper in Shop.hs
 -- 
 --
--- checks number key pressed (amt), checks user stage for context->item
+-- checks userInput(amt), checks user stage for context->item
 -- and shop in currentLocation for price 
-updateCart :: Int -> World -> World
-updateCart amt w = let oldCart = cart w
-                       stage = userstage w
-                       itemStr
-                           | stage == 1 = "Oxen"
-                           | stage == 2 = "Food"
-                           | stage == 3 = "Spare Parts"
-                           | stage == 4 = "Clothing"
-                           | stage == 5 = "Medicine"
-                       storeItems = items (shop (currentLocation w))
-                       price = getItemPrice itemStr storeItems
-                       cost = price * fromIntegral(amt)
-                       stock = stringItUp oldCart
-                       newCart
-                           | oldCart == [] = [(itemStr, amt, cost)]
-                           | itemStr `elem` stock = updateHelper oldCart itemStr amt cost
-                           | otherwise = (itemStr, amt, cost) : oldCart
-                       newWorld = w {bill = cost, cart = newCart}
-                       in newWorld
+updateCart :: World -> World
+updateCart w = let oldCart = cart w
+                   stage = userstage w
+                   itemStr
+                       | stage == 1 = "Oxen"
+                       | stage == 2 = "Food"
+                       | stage == 3 = "Spare Parts"
+                       | stage == 4 = "Clothing"
+                       | stage == 5 = "Medicine"
+                   storeItems = items (shop (currentLocation w))
+                   price = getItemPrice itemStr storeItems
+                   amt = read (userInput w) :: Int
+                   cost = price * fromIntegral amt
+                   stock = stringItUp oldCart
+                   newCart
+                       | null oldCart = [(itemStr, amt, cost)]
+                       | itemStr `elem` stock = updateHelper oldCart itemStr amt cost
+                       | otherwise = (itemStr, amt, cost) : oldCart
+                   newWorld = w {cart = newCart, userstage = 0}
+                   in newWorld
 
 
 -- **********************************************************
@@ -277,11 +297,11 @@ updateInvBalPurchase w = let purchases = cart w
                              numMeds = medicine w           -- original values
                              numParts = parts w             --
                              newWorld
-                                 | cost > wallet = w {screenType = "Shop", userstage = 0, message = "Not enough cash! Try again and select fewer items.", cart = []}
+                                 | cost > wallet = w {screenType = "Shop", bill = 0.0, userstage = 0, userInput = "", message = "Not enough cash! Try again and select fewer items.", cart = []}
                                  | otherwise = w {food = numFood + f, clothing = numClothes + c, 
-                                                  medicine = numMeds + m, parts = numParts + p, 
-                                                  cash = wallet - cost, oxen = numOxen + o,
-                                                  screenType = "Settlement", userstage = 0} where
+                                                  medicine = numMeds + m, parts = numParts + p,
+                                                  cash = wallet - cost, oxen = numOxen + o, bill = 0.0,
+                                                  screenType = "Settlement", userInput = "",userstage = 0} where
                                      f = getFoodTotal purchases
                                      c = getClothingTotal purchases
                                      m = getMedicineTotal purchases
@@ -313,7 +333,7 @@ restHealth days lst = let first = lst!!0
 
 heal :: Int -> Int
 heal i
-    | i == 0 = 0
+    | i <= 0 = 0
     | i `elem` [1..25] = i + restHealthIncreaseVeryPoor
     | i `elem` [26..50] = i + restHealthIncreasePoor
     | i `elem` [51..75] = i + restHealthIncreaseFair
