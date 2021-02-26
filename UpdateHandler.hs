@@ -50,6 +50,7 @@ update w = let partyHealths = (partyHealth w)
                 | distToNextLandmark <= 0                          = let newCurr = (nextLocation w)
                                                                          newWorld
                                                                             | (isNextEmpty newCurr) = w {screenType = "Win"}
+                                                                            | (checkRiver newCurr)  = w {screenType = "River", userstage = 0, currentLocation = newCurr} -- Assumes rivers cannot have branches
                                                                             | (hasBranch newCurr)   = w {screenType = "Settlement", userstage = 8, currentLocation = newCurr}
                                                                             | otherwise             = w {screenType = "Settlement", userstage = 0, currentLocation = newCurr, nextLocation = (getFirstInNext newCurr)}
                                                                          in newWorld
