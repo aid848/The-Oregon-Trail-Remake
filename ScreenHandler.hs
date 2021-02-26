@@ -69,7 +69,9 @@ sinePolyGen :: Float -> Float -> Float -> Float -> Picture
 sinePolyGen x y n step = Pictures (map (\s -> Translate (0) (s) (Line (zip [0,step..x] (map (\a -> (y/2)*(sin a)) [35,(35+step)..x])))) [0..n] )
 
 averageInt :: [Int] -> Int
-averageInt lst = (foldr (+) 0 lst) `div` (foldr (\x y -> if x>0 then 1+y else y) 0 lst)
+averageInt lst 
+    | (foldr (\x y -> if x>0 then 1+y else y) 0 lst) /= 0 = (foldr (+) 0 lst) `div` (foldr (\x y -> if x>0 then 1+y else y) 0 lst)
+    | otherwise = 0
 
 partyHealthToWord :: [Int] -> String
 partyHealthToWord partyHp
