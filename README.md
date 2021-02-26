@@ -4,6 +4,21 @@ A remake of the popular MECC computer game, The Oregon Trail, written in Haskell
 
 # Quick Start:
 
+## Pre-built binaries
+
+### Linux/Mac:
+Run commands inside of unzipped directory
+```
+chmod +x ./main
+```
+Then to run:
+```
+./main
+```
+### Windows:
+No support at this time, use WSL with xForwarding
+## Build from Source
+
 ### Requires Gloss Graphics Library: https://hackage.haskell.org/package/gloss
 
 ```
